@@ -1,0 +1,21 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div>
+      <p class="eyebrow">Travans</p>
+      <h1>Plan treningowy zsynchronizowany ze Strava</h1>
+      <p class="lead">
+        Szkielet aplikacji do zarzadzania planem, importu JSON i sprawdzania wykonanych aktywnosci.
+      </p>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+      <a routerLink="/plans" routerLinkActive="active">Plany</a>
+      <a routerLink="/integrations" routerLinkActive="active">Integracje</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

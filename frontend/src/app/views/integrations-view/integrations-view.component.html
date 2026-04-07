@@ -1,0 +1,27 @@
+<section class="page">
+  <article class="panel" *ngIf="status">
+    <p class="kicker">Strava</p>
+    <h2>Polaczenie konta</h2>
+
+    <div class="status-row">
+      <strong [class.connected]="status.connected">
+        {{ status.connected ? 'Polaczono' : 'Nie polaczono' }}
+      </strong>
+      <span *ngIf="status.athleteId">Athlete ID: {{ status.athleteId }}</span>
+    </div>
+
+    <div class="actions">
+      <a class="button" [href]="status.authorizationUrl">Polacz ze Strava</a>
+      <button *ngIf="status.connected && status.athleteId" type="button" (click)="sync(status.athleteId)">Synchronizuj</button>
+    </div>
+
+    <p class="muted" *ngIf="status.lastSyncAt">Ostatnia synchronizacja: {{ status.lastSyncAt }}</p>
+  </article>
+
+  <article class="panel" *ngIf="syncResult">
+    <p class="kicker">Wynik</p>
+    <h2>Ostatni sync</h2>
+    <p>Zaimportowane aktywnosci: <strong>{{ syncResult.importedActivities }}</strong></p>
+    <p>Dopasowane dni planu: <strong>{{ syncResult.matchedTrainingDays }}</strong></p>
+  </article>
+</section>

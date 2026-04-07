@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { StravaConnectionStatus, StravaSyncResult } from '../models/strava.model';
+import { StravaConnectionStatus, StravaSyncResult } from '../types/strava.model';
 import { API_BASE_URL } from './api-base';
 
 @Injectable({ providedIn: 'root' })
 export class StravaService {
-  private readonly http = inject(HttpClient);
+  constructor(private readonly http: HttpClient) {}
 
   getStatus(): Observable<StravaConnectionStatus> {
     return this.http.get<StravaConnectionStatus>(`${API_BASE_URL}/integrations/strava/status`);

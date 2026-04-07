@@ -1,0 +1,73 @@
+<section class="page">
+  <article class="panel">
+    <p class="kicker">Nowy plan</p>
+    <h2>Dodaj plan recznie</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="grid">
+        <label>
+          <span>Nazwa</span>
+          <input formControlName="name" type="text">
+        </label>
+        <label>
+          <span>Data startu</span>
+          <input formControlName="startDate" type="date">
+        </label>
+      </div>
+
+      <label>
+        <span>Opis</span>
+        <textarea formControlName="description" rows="3"></textarea>
+      </label>
+
+      <div formArrayName="trainingDays" class="day-list">
+        <div class="day-card" *ngFor="let day of trainingDays.controls; let i = index" [formGroupName]="i">
+          <div class="grid">
+            <label>
+              <span>Dzien</span>
+              <input formControlName="scheduledDate" type="date">
+            </label>
+            <label>
+              <span>Tytul</span>
+              <input formControlName="title" type="text">
+            </label>
+            <label>
+              <span>Typ</span>
+              <select formControlName="activityType">
+                <option value="RUN">Bieg</option>
+                <option value="RIDE">Rower</option>
+                <option value="SWIM">Plywanie</option>
+                <option value="WALK">Marsz</option>
+                <option value="STRENGTH">Sila</option>
+                <option value="OTHER">Inne</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="secondary" (click)="addTrainingDay()">Dodaj dzien</button>
+        <button type="submit">Zapisz plan</button>
+      </div>
+    </form>
+  </article>
+
+  <article class="panel">
+    <p class="kicker">Import JSON</p>
+    <h2>Wklej plan w formacie JSON</h2>
+    <textarea [(ngModel)]="jsonInput" [ngModelOptions]="{ standalone: true }" rows="12" class="json-box"></textarea>
+    <div class="actions">
+      <button type="button" (click)="importJson()">Importuj</button>
+    </div>
+  </article>
+
+  <article class="panel">
+    <p class="kicker">Lista</p>
+    <h2>Zapisane plany</h2>
+    <div class="saved-plan" *ngFor="let plan of plans">
+      <strong>{{ plan.name }}</strong>
+      <span>{{ plan.trainingDays.length }} dni</span>
+    </div>
+  </article>
+</section>
