@@ -84,6 +84,33 @@ export class IntegrationsViewComponent implements OnInit {
     return !!this.status?.authorizationUrl;
   }
 
+  trackByActivity(_: number, activity: StravaActivity): number {
+    return activity.id;
+  }
+
+  formatDistance(distanceMeters: number | null): string {
+    if (!distanceMeters) {
+      return '-';
+    }
+
+    return `${(distanceMeters / 1000).toFixed(1)} km`;
+  }
+
+  formatDuration(movingTimeSeconds: number | null): string {
+    if (!movingTimeSeconds) {
+      return '-';
+    }
+
+    const totalMinutes = Math.round(movingTimeSeconds / 60);
+    if (totalMinutes >= 60) {
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      return minutes > 0 ? `${hours} h ${minutes} min` : `${hours} h`;
+    }
+
+    return `${totalMinutes} min`;
+  }
+
   private loadStatus(autoSyncAfterConnect = false): void {
     this.loading = true;
     this.stravaService.getStatus().subscribe({

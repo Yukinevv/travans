@@ -65,27 +65,40 @@
     <p class="muted" *ngIf="activitiesLoading">Ladowanie aktywnosci...</p>
 
     <div class="activity-list" *ngIf="!activitiesLoading">
-      <article class="activity-card" *ngFor="let activity of activities">
-        <div>
+      <article class="activity-card" *ngFor="let activity of activities; trackBy: trackByActivity">
+        <div class="activity-top">
+          <span class="activity-type">{{ activity.activityType }}</span>
+          <span class="activity-date">{{ activity.activityDate | date:'dd.MM.yyyy' }}</span>
+        </div>
+
+        <div class="activity-main">
           <strong>{{ activity.name }}</strong>
-          <p>{{ activity.activityDate | date:'dd.MM.yyyy' }} · {{ activity.activityType }}</p>
+          <p class="activity-subtitle">
+            {{ formatDistance(activity.distanceMeters) }}
+            <span class="dot-separator"></span>
+            {{ formatDuration(activity.movingTimeSeconds) }}
+          </p>
         </div>
 
-        <div class="activity-metrics">
-          <span *ngIf="activity.distanceMeters">{{ (activity.distanceMeters / 1000) | number:'1.1-1' }} km</span>
-          <span *ngIf="activity.movingTimeSeconds">{{ (activity.movingTimeSeconds / 60) | number:'1.0-0' }} min</span>
+        <div class="activity-match matched" *ngIf="activity.matchedToPlan; else unmatchedBlock">
+          <span class="match-label">Dopasowano</span>
+          <p>
+            {{ activity.matchedTrainingDayTitle }}<br>
+            <span>{{ activity.matchedPlanName }}</span>
+          </p>
         </div>
 
-        <p class="match-success" *ngIf="activity.matchedToPlan">
-          Dopasowano do: <strong>{{ activity.matchedTrainingDayTitle }}</strong> ({{ activity.matchedPlanName }})
-        </p>
-        <p class="muted" *ngIf="!activity.matchedToPlan">Brak dopasowania do planu treningowego.</p>
+        <ng-template #unmatchedBlock>
+          <div class="activity-match">
+            <span class="match-label pending">Bez dopasowania</span>
+            <p>Ta aktywnosc nie zostala jeszcze powiazana z zadnym dniem planu.</p>
+          </div>
+        </ng-template>
       </article>
     </div>
 
     <p class="muted" *ngIf="!activitiesLoading && activities.length === 0">
-      Brak pobranych aktywnosci. Kliknij `Synchronizuj`, aby pobrac treningi z konta Strava.
+      Brak pobranych aktywnosci. Kliknij Synchronizuj, aby pobrac treningi z konta Strava.
     </p>
   </article>
-
 </section>
