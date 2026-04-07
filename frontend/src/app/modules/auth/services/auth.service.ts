@@ -10,18 +10,20 @@ export class AuthService {
   private readonly accessTokenKey = 'travans_access_token';
   private readonly refreshTokenKey = 'travans_refresh_token';
   private readonly profileKey = 'travans_user_profile';
+  private readonly rememberMeKey = 'travans_remember_me';
+  private readonly rememberedEmailKey = 'travans_remembered_email';
 
   constructor(private readonly http: HttpClient) {}
 
-  login(payload: LoginPayload): Observable<AuthResponse> {
+  login(payload: LoginPayload, rememberMe: boolean): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/login`, payload).pipe(
-      tap((response) => this.persistSession(response))
+      tap((response) => this.persistSession(response, payload.email, rememberMe))
     );
   }
 
-  register(payload: RegisterPayload): Observable<AuthResponse> {
+  register(payload: RegisterPayload, rememberMe: boolean): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/register`, payload).pipe(
-      tap((response) => this.persistSession(response))
+      tap((response) => this.persistSession(response, payload.email, rememberMe))
     );
   }
 
@@ -32,7 +34,7 @@ export class AuthService {
   refresh(): Observable<AuthResponse> {
     const refreshToken = this.getRefreshToken();
     return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/refresh`, { refreshToken }).pipe(
-      tap((response) => this.persistSession(response))
+      tap((response) => this.persistSession(response, this.getRememberedEmail(), this.shouldRememberMe()))
     );
   }
 
@@ -40,6 +42,9 @@ export class AuthService {
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.refreshTokenKey);
     localStorage.removeItem(this.profileKey);
+    sessionStorage.removeItem(this.accessTokenKey);
+    sessionStorage.removeItem(this.refreshTokenKey);
+    sessionStorage.removeItem(this.profileKey);
   }
 
   isAuthenticated(): boolean {
@@ -47,21 +52,43 @@ export class AuthService {
   }
 
   getAccessToken(): string | null {
-    return localStorage.getItem(this.accessTokenKey);
+    return localStorage.getItem(this.accessTokenKey) ?? sessionStorage.getItem(this.accessTokenKey);
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem(this.refreshTokenKey);
+    return localStorage.getItem(this.refreshTokenKey) ?? sessionStorage.getItem(this.refreshTokenKey);
   }
 
   getStoredProfile(): UserProfile | null {
-    const raw = localStorage.getItem(this.profileKey);
+    const raw = localStorage.getItem(this.profileKey) ?? sessionStorage.getItem(this.profileKey);
     return raw ? JSON.parse(raw) as UserProfile : null;
   }
 
-  private persistSession(response: AuthResponse): void {
-    localStorage.setItem(this.accessTokenKey, response.accessToken);
-    localStorage.setItem(this.refreshTokenKey, response.refreshToken);
-    localStorage.setItem(this.profileKey, JSON.stringify(response.user));
+  shouldRememberMe(): boolean {
+    return localStorage.getItem(this.rememberMeKey) === 'true';
+  }
+
+  getRememberedEmail(): string {
+    return localStorage.getItem(this.rememberedEmailKey) ?? '';
+  }
+
+  private persistSession(response: AuthResponse, email: string | null, rememberMe: boolean): void {
+    this.logout();
+
+    const storage = rememberMe ? localStorage : sessionStorage;
+    storage.setItem(this.accessTokenKey, response.accessToken);
+    storage.setItem(this.refreshTokenKey, response.refreshToken);
+    storage.setItem(this.profileKey, JSON.stringify(response.user));
+
+    if (rememberMe) {
+      localStorage.setItem(this.rememberMeKey, 'true');
+      if (email) {
+        localStorage.setItem(this.rememberedEmailKey, email);
+      }
+      return;
+    }
+
+    localStorage.removeItem(this.rememberMeKey);
+    localStorage.removeItem(this.rememberedEmailKey);
   }
 }

@@ -9,6 +9,7 @@ import com.travans.backend.config.AuthProperties;
 import com.travans.backend.domain.AppUser;
 import com.travans.backend.domain.RefreshToken;
 import com.travans.backend.domain.UserRole;
+import com.travans.backend.exception.AuthException;
 import com.travans.backend.repository.AppUserRepository;
 import com.travans.backend.repository.RefreshTokenRepository;
 import com.travans.backend.security.AuthenticatedUser;
@@ -18,6 +19,7 @@ import java.time.Clock;
 import java.time.temporal.ChronoUnit;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +59,7 @@ public class AuthService {
     public AuthTokenResponse register(RegisterRequest request) {
         appUserRepository.findByEmail(request.email().toLowerCase())
                 .ifPresent(user -> {
-                    throw new IllegalStateException("User with this email already exists");
+                    throw new IllegalStateException("Uzytkownik z takim adresem email juz istnieje");
                 });
 
         AppUser user = new AppUser();
@@ -73,9 +75,14 @@ public class AuthService {
 
     @Transactional
     public AuthTokenResponse login(LoginRequest request) {
-        AuthenticatedUser user = (AuthenticatedUser) authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email().toLowerCase(), request.password())
-        ).getPrincipal();
+        AuthenticatedUser user;
+        try {
+            user = (AuthenticatedUser) authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.email().toLowerCase(), request.password())
+            ).getPrincipal();
+        } catch (AuthenticationException exception) {
+            throw new AuthException("INVALID_CREDENTIALS", "Nieprawidlowy email lub haslo");
+        }
 
         return issueTokens(user);
     }
@@ -83,10 +90,10 @@ public class AuthService {
     @Transactional
     public AuthTokenResponse refresh(RefreshTokenRequest request) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(request.refreshToken())
-                .orElseThrow(() -> new IllegalArgumentException("Refresh token not found"));
+                .orElseThrow(() -> new AuthException("REFRESH_TOKEN_NOT_FOUND", "Sesja wygasla. Zaloguj sie ponownie"));
 
         if (refreshToken.isRevoked() || refreshToken.getExpiresAt().isBefore(clock.instant())) {
-            throw new IllegalArgumentException("Refresh token expired or revoked");
+            throw new AuthException("REFRESH_TOKEN_EXPIRED", "Sesja wygasla. Zaloguj sie ponownie");
         }
 
         revokeTokens(refreshToken.getUser());

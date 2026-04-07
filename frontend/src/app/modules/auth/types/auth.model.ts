@@ -21,3 +21,9 @@ export interface RegisterPayload {
   password: string;
   displayName: string;
 }
+
+export interface AuthErrorResponse {
+  code?: string;
+  message?: string;
+  errors?: Record<string, string>;
+}

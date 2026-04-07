@@ -13,12 +13,20 @@
       <label>
         <span>Email</span>
         <input type="email" formControlName="email">
+        <small class="field-error" *ngIf="getFieldError('login', 'email')">{{ getFieldError('login', 'email') }}</small>
       </label>
       <label>
         <span>Haslo</span>
         <input type="password" formControlName="password">
+        <small class="field-error" *ngIf="getFieldError('login', 'password')">{{ getFieldError('login', 'password') }}</small>
       </label>
-      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <label class="checkbox">
+        <input type="checkbox" formControlName="rememberMe">
+        <span>Zapamietaj mnie</span>
+      </label>
+      <div class="error-box" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
       <button type="submit">Zaloguj</button>
     </form>
 
@@ -26,16 +34,25 @@
       <label>
         <span>Nazwa</span>
         <input type="text" formControlName="displayName">
+        <small class="field-error" *ngIf="getFieldError('register', 'displayName')">{{ getFieldError('register', 'displayName') }}</small>
       </label>
       <label>
         <span>Email</span>
         <input type="email" formControlName="email">
+        <small class="field-error" *ngIf="getFieldError('register', 'email')">{{ getFieldError('register', 'email') }}</small>
       </label>
       <label>
         <span>Haslo</span>
         <input type="password" formControlName="password">
+        <small class="field-error" *ngIf="getFieldError('register', 'password')">{{ getFieldError('register', 'password') }}</small>
       </label>
-      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <label class="checkbox">
+        <input type="checkbox" formControlName="rememberMe">
+        <span>Zapamietaj mnie</span>
+      </label>
+      <div class="error-box" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
       <button type="submit">Utworz konto</button>
     </form>
   </article>
