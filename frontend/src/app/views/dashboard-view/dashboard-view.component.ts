@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { DashboardSummary } from '../../core/types/dashboard.model';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { TrainingDay } from '../../core/types/training-plan.model';
 
 @Component({
   selector: 'app-dashboard-view',
@@ -33,5 +34,35 @@ export class DashboardViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       }
     });
+  }
+
+  trackByDay(_: number, day: TrainingDay): number | string {
+    return day.id ?? `${day.scheduledDate}-${day.title}`;
+  }
+
+  hasCurrentPlan(): boolean {
+    return !!this.summary?.currentPlanId;
+  }
+
+  formatDistance(distanceMeters: number | null | undefined): string {
+    if (!distanceMeters) {
+      return '-';
+    }
+    return `${(distanceMeters / 1000).toFixed(1)} km`;
+  }
+
+  formatDuration(seconds: number | null | undefined): string {
+    if (!seconds) {
+      return '-';
+    }
+
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    }
+
+    return `${minutes} min`;
   }
 }

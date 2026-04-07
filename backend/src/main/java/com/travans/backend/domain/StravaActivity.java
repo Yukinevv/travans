@@ -36,8 +36,14 @@ public class StravaActivity {
     @Column(nullable = false, length = 32)
     private ActivityType activityType;
 
+    @Column(nullable = false, length = 160)
+    private String name;
+
     @Column(nullable = false)
     private LocalDate activityDate;
+
+    @Column(nullable = false)
+    private Instant startedAt;
 
     @Column
     private Integer distanceMeters;
@@ -84,12 +90,28 @@ public class StravaActivity {
         this.activityType = activityType;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public LocalDate getActivityDate() {
         return activityDate;
     }
 
     public void setActivityDate(LocalDate activityDate) {
         this.activityDate = activityDate;
+    }
+
+    public Instant getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(Instant startedAt) {
+        this.startedAt = startedAt;
     }
 
     public Integer getDistanceMeters() {

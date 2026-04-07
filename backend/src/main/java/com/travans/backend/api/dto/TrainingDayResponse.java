@@ -13,6 +13,10 @@ public record TrainingDayResponse(
         Integer plannedDurationSeconds,
         String notes,
         TrainingDayStatus status,
-        Long matchedActivityId
+        Long matchedActivityId,
+        String matchedActivityName,
+        LocalDate matchedActivityDate,
+        Integer matchedDistanceMeters,
+        Integer matchedMovingTimeSeconds
 ) {
 }

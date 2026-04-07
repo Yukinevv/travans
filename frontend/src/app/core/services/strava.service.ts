@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { StravaConnectionStatus, StravaSyncResult } from '../types/strava.model';
+import { ActivityType } from '../types/training-plan.model';
+import { StravaActivity, StravaConnectionStatus, StravaSyncResult } from '../types/strava.model';
 import { API_BASE_URL } from './api-base';
 
 @Injectable({ providedIn: 'root' })
@@ -11,6 +12,11 @@ export class StravaService {
 
   getStatus(): Observable<StravaConnectionStatus> {
     return this.http.get<StravaConnectionStatus>(`${API_BASE_URL}/integrations/strava/status`);
+  }
+
+  getActivities(activityType?: ActivityType | ''): Observable<StravaActivity[]> {
+    const suffix = activityType ? `?activityType=${activityType}` : '';
+    return this.http.get<StravaActivity[]>(`${API_BASE_URL}/integrations/strava/activities${suffix}`);
   }
 
   exchangeToken(code: string): Observable<void> {

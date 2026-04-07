@@ -10,6 +10,12 @@
     <p class="muted">Ladowanie danych dashboardu...</p>
   </article>
 
+  <article class="panel" *ngIf="summary && !hasCurrentPlan() && !loading">
+    <p class="panel-label">Biezacy plan</p>
+    <h3>Brak aktywnego planu</h3>
+    <p class="muted">Dodaj plan treningowy, a dashboard zacznie pokazywac postep i dopasowane treningi ze Stravy.</p>
+  </article>
+
   <div class="stats" *ngIf="summary">
     <article class="card">
       <span>Zaplanowane</span>
@@ -36,6 +42,33 @@
       <div class="progress-track">
         <div class="progress-bar" [style.width.%]="summary.completionRate"></div>
       </div>
+    </div>
+  </article>
+
+  <article class="panel" *ngIf="summary && hasCurrentPlan()">
+    <p class="panel-label">Biezacy plan</p>
+    <h3>{{ summary.currentPlanName }}</h3>
+
+    <div class="day-list">
+      <article class="day-card" *ngFor="let day of summary.trainingDays; trackBy: trackByDay" [class.completed]="day.status === 'COMPLETED'" [class.partial]="day.status === 'PARTIALLY_COMPLETED'" [class.missed]="day.status === 'MISSED'">
+        <div class="day-header">
+          <div>
+            <strong>{{ day.title }}</strong>
+            <p>{{ day.scheduledDate | date:'dd.MM.yyyy' }} · {{ day.activityType }}</p>
+          </div>
+          <span class="status-chip">{{ day.status }}</span>
+        </div>
+
+        <div class="metrics">
+          <span>Plan: {{ formatDistance(day.plannedDistanceMeters) }} / {{ formatDuration(day.plannedDurationSeconds) }}</span>
+          <span *ngIf="day.matchedActivityId">Wykonano: {{ formatDistance(day.matchedDistanceMeters) }} / {{ formatDuration(day.matchedMovingTimeSeconds) }}</span>
+        </div>
+
+        <p class="matched" *ngIf="day.matchedActivityId">
+          Powiazana aktywnosc: <strong>{{ day.matchedActivityName }}</strong>
+          <span *ngIf="day.matchedActivityDate">({{ day.matchedActivityDate | date:'dd.MM.yyyy' }})</span>
+        </p>
+      </article>
     </div>
   </article>
 

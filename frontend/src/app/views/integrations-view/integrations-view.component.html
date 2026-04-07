@@ -10,23 +10,32 @@
     <p class="muted">Ladowanie statusu integracji...</p>
   </article>
 
-  <article class="panel" *ngIf="status">
+  <article class="panel">
     <p class="kicker">Strava</p>
     <h2>Polaczenie konta</h2>
 
     <div class="status-row">
-      <strong [class.connected]="status.connected">
-        {{ status.connected ? 'Polaczono' : 'Nie polaczono' }}
+      <strong [class.connected]="status?.connected">
+        {{ status?.connected ? 'Polaczono' : 'Nie polaczono' }}
       </strong>
-      <span *ngIf="status.athleteId">Athlete ID: {{ status.athleteId }}</span>
+      <span *ngIf="status?.athleteId">Athlete ID: {{ status?.athleteId }}</span>
     </div>
 
     <div class="actions">
-      <a class="button" [href]="status.authorizationUrl">Polacz ze Strava</a>
-      <button *ngIf="status.connected && status.athleteId" type="button" (click)="sync(status.athleteId)">Synchronizuj</button>
+      <a class="button" *ngIf="canConnectToStrava(); else retryButton" [href]="status?.authorizationUrl">Polacz ze Strava</a>
+      <ng-template #retryButton>
+        <button type="button" (click)="retryLoadStatus()">Sprobuj ponownie</button>
+      </ng-template>
+      <button *ngIf="status?.connected && status?.athleteId" type="button" (click)="sync(status!.athleteId!)">Synchronizuj</button>
     </div>
 
-    <p class="muted" *ngIf="status.lastSyncAt">Ostatnia synchronizacja: {{ status.lastSyncAt }}</p>
+    <p class="muted" *ngIf="status?.lastSyncAt">Ostatnia synchronizacja: {{ status?.lastSyncAt }}</p>
+    <p class="muted" *ngIf="!status?.connected && !errorMessage">
+      Polacz konto Strava, aby pobrac swoje aktywnosci i dopasowac je do planu treningowego.
+    </p>
+    <p class="muted error-text" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </p>
   </article>
 
   <article class="panel" *ngIf="syncResult">
@@ -36,7 +45,41 @@
     <p>Dopasowane dni planu: <strong>{{ syncResult.matchedTrainingDays }}</strong></p>
   </article>
 
-  <article class="panel" *ngIf="errorMessage">
-    <p class="muted error-text">{{ errorMessage }}</p>
+  <article class="panel" *ngIf="status?.connected">
+    <div class="panel-header">
+      <div>
+        <p class="kicker">Aktywnosci</p>
+        <h2>Treningi pobrane ze Stravy</h2>
+      </div>
+
+      <label class="filter">
+        <span>Kategoria</span>
+        <select [ngModel]="selectedActivityType" (ngModelChange)="onActivityTypeChange($event)">
+          <option *ngFor="let option of activityTypes" [ngValue]="option.value">{{ option.label }}</option>
+        </select>
+      </label>
+    </div>
+
+    <p class="muted" *ngIf="activitiesLoading">Ladowanie aktywnosci...</p>
+
+    <div class="activity-list" *ngIf="!activitiesLoading">
+      <article class="activity-card" *ngFor="let activity of activities">
+        <div>
+          <strong>{{ activity.name }}</strong>
+          <p>{{ activity.activityDate | date:'dd.MM.yyyy' }} · {{ activity.activityType }}</p>
+        </div>
+
+        <div class="activity-metrics">
+          <span *ngIf="activity.distanceMeters">{{ (activity.distanceMeters / 1000) | number:'1.1-1' }} km</span>
+          <span *ngIf="activity.movingTimeSeconds">{{ (activity.movingTimeSeconds / 60) | number:'1.0-0' }} min</span>
+        </div>
+
+        <p class="match-success" *ngIf="activity.matchedToPlan">
+          Dopasowano do: <strong>{{ activity.matchedTrainingDayTitle }}</strong> ({{ activity.matchedPlanName }})
+        </p>
+        <p class="muted" *ngIf="!activity.matchedToPlan">Brak dopasowania do planu treningowego.</p>
+      </article>
+    </div>
   </article>
+
 </section>

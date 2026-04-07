@@ -11,6 +11,10 @@ export interface TrainingDay {
   notes?: string | null;
   status?: TrainingDayStatus;
   matchedActivityId?: number | null;
+  matchedActivityName?: string | null;
+  matchedActivityDate?: string | null;
+  matchedDistanceMeters?: number | null;
+  matchedMovingTimeSeconds?: number | null;
 }
 
 export interface TrainingPlan {

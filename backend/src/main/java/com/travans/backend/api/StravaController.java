@@ -1,9 +1,12 @@
 package com.travans.backend.api;
 
+import com.travans.backend.api.dto.StravaActivityResponse;
 import com.travans.backend.api.dto.StravaConnectionStatusResponse;
 import com.travans.backend.api.dto.StravaSyncResponse;
+import com.travans.backend.domain.ActivityType;
 import com.travans.backend.service.StravaService;
 import java.util.Map;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,6 +30,11 @@ public class StravaController {
     @GetMapping("/status")
     public StravaConnectionStatusResponse getStatus() {
         return stravaService.getConnectionStatus();
+    }
+
+    @GetMapping("/activities")
+    public List<StravaActivityResponse> getActivities(@RequestParam(required = false) ActivityType activityType) {
+        return stravaService.getActivities(activityType);
     }
 
     @PostMapping("/exchange-token")

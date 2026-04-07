@@ -4,14 +4,17 @@ import com.travans.backend.api.dto.TrainingDayRequest;
 import com.travans.backend.api.dto.TrainingDayResponse;
 import com.travans.backend.api.dto.TrainingPlanRequest;
 import com.travans.backend.api.dto.TrainingPlanResponse;
+import com.travans.backend.domain.StravaActivity;
 import com.travans.backend.domain.TrainingDay;
 import com.travans.backend.domain.TrainingDayStatus;
 import com.travans.backend.domain.TrainingPlan;
+import com.travans.backend.repository.StravaActivityRepository;
 import com.travans.backend.repository.TrainingPlanRepository;
 import com.travans.backend.security.CurrentUserService;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.Clock;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +22,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class TrainingPlanService {
 
     private final TrainingPlanRepository trainingPlanRepository;
+    private final StravaActivityRepository stravaActivityRepository;
     private final CurrentUserService currentUserService;
     private final Clock clock;
 
-    public TrainingPlanService(TrainingPlanRepository trainingPlanRepository, CurrentUserService currentUserService, Clock clock) {
+    public TrainingPlanService(
+            TrainingPlanRepository trainingPlanRepository,
+            StravaActivityRepository stravaActivityRepository,
+            CurrentUserService currentUserService,
+            Clock clock) {
         this.trainingPlanRepository = trainingPlanRepository;
+        this.stravaActivityRepository = stravaActivityRepository;
         this.currentUserService = currentUserService;
         this.clock = clock;
     }
@@ -68,17 +77,22 @@ public class TrainingPlanService {
     }
 
     TrainingPlanResponse toResponse(TrainingPlan plan) {
+        Long userId = plan.getOwner().getId();
         return new TrainingPlanResponse(
                 plan.getId(),
                 plan.getName(),
                 plan.getDescription(),
                 plan.getStartDate(),
                 plan.getCreatedAt(),
-                plan.getTrainingDays().stream().map(this::toResponse).toList()
+                plan.getTrainingDays().stream().map(day -> toResponse(userId, day)).toList()
         );
     }
 
-    private TrainingDayResponse toResponse(TrainingDay day) {
+    private TrainingDayResponse toResponse(Long userId, TrainingDay day) {
+        Optional<StravaActivity> matchedActivity = day.getMatchedActivityId() == null
+                ? Optional.empty()
+                : stravaActivityRepository.findByUserIdAndExternalActivityId(userId, day.getMatchedActivityId());
+
         return new TrainingDayResponse(
                 day.getId(),
                 day.getScheduledDate(),
@@ -88,7 +102,11 @@ public class TrainingPlanService {
                 day.getPlannedDurationSeconds(),
                 day.getNotes(),
                 day.getStatus(),
-                day.getMatchedActivityId()
+                day.getMatchedActivityId(),
+                matchedActivity.map(StravaActivity::getName).orElse(null),
+                matchedActivity.map(StravaActivity::getActivityDate).orElse(null),
+                matchedActivity.map(StravaActivity::getDistanceMeters).orElse(null),
+                matchedActivity.map(StravaActivity::getMovingTimeSeconds).orElse(null)
         );
     }
 }
