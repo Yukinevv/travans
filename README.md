@@ -26,6 +26,15 @@ mvn spring-boot:run
 
 API startuje na `http://localhost:8080`.
 
+Hot reload backendu:
+
+```powershell
+cd backend
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+Przy zmianach w kodzie Spring Boot DevTools wykona automatyczny restart aplikacji.
+
 ## Frontend
 
 Wymagania:
