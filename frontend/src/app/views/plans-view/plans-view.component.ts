@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { TrainingPlanService } from '../../core/services/training-plan.service';
@@ -13,6 +13,7 @@ import { TrainingPlan } from '../../core/types/training-plan.model';
 export class PlansViewComponent implements OnInit {
   plans: TrainingPlan[] = [];
   errorMessage = '';
+  loading = true;
   jsonInput = `{
   "name": "Przykladowy plan 10 km",
   "description": "4 tygodnie pracy nad tempem",
@@ -38,7 +39,8 @@ export class PlansViewComponent implements OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly trainingPlanService: TrainingPlanService
+    private readonly trainingPlanService: TrainingPlanService,
+    private readonly changeDetectorRef: ChangeDetectorRef
   ) {}
 
   get trainingDays(): FormArray<FormGroup> {
@@ -67,6 +69,7 @@ export class PlansViewComponent implements OnInit {
       this.loadPlans();
     }, () => {
       this.errorMessage = 'Nie udalo sie zapisac planu';
+      this.changeDetectorRef.detectChanges();
     });
   }
 
@@ -77,17 +80,23 @@ export class PlansViewComponent implements OnInit {
       this.loadPlans();
     }, () => {
       this.errorMessage = 'Nie udalo sie zaimportowac planu';
+      this.changeDetectorRef.detectChanges();
     });
   }
 
   private loadPlans(): void {
+    this.loading = true;
     this.trainingPlanService.getPlans().subscribe({
       next: (plans) => {
         this.plans = plans;
         this.errorMessage = '';
+        this.loading = false;
+        this.changeDetectorRef.detectChanges();
       },
       error: () => {
         this.errorMessage = 'Nie udalo sie pobrac planow';
+        this.loading = false;
+        this.changeDetectorRef.detectChanges();
       }
     });
   }

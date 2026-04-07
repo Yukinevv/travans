@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { StravaService } from '../../core/services/strava.service';
@@ -14,10 +14,12 @@ export class IntegrationsViewComponent implements OnInit {
   status?: StravaConnectionStatus;
   syncResult?: StravaSyncResult;
   errorMessage = '';
+  loading = true;
 
   constructor(
     private readonly stravaService: StravaService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -49,13 +51,18 @@ export class IntegrationsViewComponent implements OnInit {
   }
 
   private loadStatus(): void {
+    this.loading = true;
     this.stravaService.getStatus().subscribe({
       next: (status) => {
         this.status = status;
         this.errorMessage = '';
+        this.loading = false;
+        this.changeDetectorRef.detectChanges();
       },
       error: () => {
         this.errorMessage = 'Nie udalo sie pobrac statusu integracji';
+        this.loading = false;
+        this.changeDetectorRef.detectChanges();
       }
     });
   }

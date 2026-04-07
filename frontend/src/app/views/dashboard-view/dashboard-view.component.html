@@ -6,6 +6,10 @@
     </div>
   </header>
 
+  <article class="panel" *ngIf="loading">
+    <p class="muted">Ladowanie danych dashboardu...</p>
+  </article>
+
   <div class="stats" *ngIf="summary">
     <article class="card">
       <span>Zaplanowane</span>

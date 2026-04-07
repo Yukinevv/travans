@@ -1,4 +1,15 @@
 <section class="page">
+  <header class="header">
+    <div>
+      <p class="kicker">Integracje</p>
+      <h2>Polaczenie ze Strava</h2>
+    </div>
+  </header>
+
+  <article class="panel" *ngIf="loading">
+    <p class="muted">Ladowanie statusu integracji...</p>
+  </article>
+
   <article class="panel" *ngIf="status">
     <p class="kicker">Strava</p>
     <h2>Polaczenie konta</h2>
