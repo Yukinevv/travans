@@ -94,6 +94,16 @@ button {
   display: grid;
   gap: 14px;
   min-height: 220px;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.activity-card:hover,
+.activity-card:focus-visible {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 22px 42px rgba(87, 54, 21, 0.16);
+  border-color: rgba(214, 99, 42, 0.35);
+  outline: none;
 }
 
 .activity-top {

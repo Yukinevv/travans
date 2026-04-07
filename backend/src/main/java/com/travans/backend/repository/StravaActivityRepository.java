@@ -11,6 +11,8 @@ public interface StravaActivityRepository extends JpaRepository<StravaActivity, 
 
     Optional<StravaActivity> findByExternalActivityId(Long externalActivityId);
 
+    Optional<StravaActivity> findByUserIdAndId(Long userId, Long id);
+
     Optional<StravaActivity> findByUserIdAndExternalActivityId(Long userId, Long externalActivityId);
 
     List<StravaActivity> findByAthleteIdAndActivityDateBetween(Long athleteId, LocalDate startDate, LocalDate endDate);

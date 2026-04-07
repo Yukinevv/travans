@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 
 import { StravaService } from '../../core/services/strava.service';
@@ -34,6 +35,7 @@ export class IntegrationsViewComponent implements OnInit {
   constructor(
     private readonly stravaService: StravaService,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {}
 
@@ -86,6 +88,10 @@ export class IntegrationsViewComponent implements OnInit {
 
   trackByActivity(_: number, activity: StravaActivity): number {
     return activity.id;
+  }
+
+  openActivityDetails(activity: StravaActivity): void {
+    this.router.navigate(['/integrations/activities', activity.id]);
   }
 
   formatDistance(distanceMeters: number | null): string {

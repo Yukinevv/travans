@@ -1,0 +1,57 @@
+<section class="page">
+  <header class="header">
+    <div>
+      <p class="kicker">Integracje</p>
+      <h2>Szczegoly aktywnosci</h2>
+    </div>
+    <button type="button" class="back-button" (click)="backToIntegrations()">Wroc do listy</button>
+  </header>
+
+  <article class="panel" *ngIf="loading">
+    <p class="muted">Ladowanie szczegolow aktywnosci...</p>
+  </article>
+
+  <article class="panel error-panel" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </article>
+
+  <article class="panel" *ngIf="activity">
+    <div class="hero">
+      <div>
+        <p class="kicker">Strava</p>
+        <h3>{{ activity.name }}</h3>
+        <p class="meta">{{ activity.activityDate | date:'dd.MM.yyyy' }} · {{ activity.activityType }}</p>
+      </div>
+      <span class="badge" [class.matched]="activity.matchedToPlan">
+        {{ activity.matchedToPlan ? 'Dopasowano do planu' : 'Bez dopasowania' }}
+      </span>
+    </div>
+
+    <div class="stats">
+      <article class="stat-card">
+        <span>Dystans</span>
+        <strong>{{ formatDistance(activity.distanceMeters) }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Czas</span>
+        <strong>{{ formatDuration(activity.movingTimeSeconds) }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Data startu</span>
+        <strong>{{ activity.startedAt | date:'dd.MM.yyyy HH:mm' }}</strong>
+      </article>
+    </div>
+
+    <article class="match-panel">
+      <p class="kicker">Powiazanie z planem</p>
+      <ng-container *ngIf="activity.matchedToPlan; else unmatchedInfo">
+        <h4>{{ activity.matchedTrainingDayTitle }}</h4>
+        <p>{{ activity.matchedPlanName }}</p>
+      </ng-container>
+      <ng-template #unmatchedInfo>
+        <h4>Brak dopasowania</h4>
+        <p>Ta aktywnosc nie zostala jeszcze przypisana do zadnego dnia planu treningowego.</p>
+      </ng-template>
+    </article>
+  </article>
+</section>

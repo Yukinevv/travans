@@ -65,7 +65,7 @@
     <p class="muted" *ngIf="activitiesLoading">Ladowanie aktywnosci...</p>
 
     <div class="activity-list" *ngIf="!activitiesLoading">
-      <article class="activity-card" *ngFor="let activity of activities; trackBy: trackByActivity">
+      <article class="activity-card" *ngFor="let activity of activities; trackBy: trackByActivity" (click)="openActivityDetails(activity)" tabindex="0">
         <div class="activity-top">
           <span class="activity-type">{{ activity.activityType }}</span>
           <span class="activity-date">{{ activity.activityDate | date:'dd.MM.yyyy' }}</span>

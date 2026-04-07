@@ -136,6 +136,20 @@ public class StravaService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public StravaActivityResponse getActivity(Long activityId) {
+        Long userId = currentUserService.requireAuthenticatedUser().getId();
+        StravaActivity activity = stravaActivityRepository.findByUserIdAndId(userId, activityId)
+                .orElseThrow(() -> new EntityNotFoundException("Strava activity not found: " + activityId));
+
+        TrainingDay matchedDay = trainingDayRepository.findByPlanOwnerIdOrderByScheduledDateAsc(userId).stream()
+                .filter(day -> activity.getExternalActivityId().equals(day.getMatchedActivityId()))
+                .findFirst()
+                .orElse(null);
+
+        return toActivityResponse(matchedDay, activity);
+    }
+
     @Transactional
     public StravaSyncResponse syncActivities(Long athleteId) {
         AppUser user = currentUserService.requireCurrentUserEntity();
