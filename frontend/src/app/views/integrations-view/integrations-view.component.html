@@ -22,11 +22,13 @@
     </div>
 
     <div class="actions">
-      <a class="button" *ngIf="canConnectToStrava(); else retryButton" [href]="status?.authorizationUrl">Polacz ze Strava</a>
+      <a class="button" *ngIf="!status?.connected && canConnectToStrava(); else retryButton" [href]="status?.authorizationUrl">Polacz ze Strava</a>
       <ng-template #retryButton>
-        <button type="button" (click)="retryLoadStatus()">Sprobuj ponownie</button>
+        <button type="button" *ngIf="!status?.connected" (click)="retryLoadStatus()">Sprobuj ponownie</button>
       </ng-template>
-      <button *ngIf="status?.connected && status?.athleteId" type="button" (click)="sync(status!.athleteId!)">Synchronizuj</button>
+      <button *ngIf="status?.connected && status?.athleteId" type="button" (click)="sync(status!.athleteId!)" [disabled]="syncInProgress">
+        {{ syncInProgress ? 'Synchronizacja...' : 'Synchronizuj' }}
+      </button>
     </div>
 
     <p class="muted" *ngIf="status?.lastSyncAt">Ostatnia synchronizacja: {{ status?.lastSyncAt }}</p>
@@ -80,6 +82,10 @@
         <p class="muted" *ngIf="!activity.matchedToPlan">Brak dopasowania do planu treningowego.</p>
       </article>
     </div>
+
+    <p class="muted" *ngIf="!activitiesLoading && activities.length === 0">
+      Brak pobranych aktywnosci. Kliknij `Synchronizuj`, aby pobrac treningi z konta Strava.
+    </p>
   </article>
 
 </section>

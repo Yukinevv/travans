@@ -18,6 +18,7 @@ export class IntegrationsViewComponent implements OnInit {
   errorMessage = '';
   loading = true;
   activitiesLoading = false;
+  syncInProgress = false;
   selectedActivityType: ActivityType | '' = '';
   readonly activityTypes: Array<{ value: ActivityType | ''; label: string }> = [
     { value: '', label: 'Wszystkie' },
@@ -42,7 +43,7 @@ export class IntegrationsViewComponent implements OnInit {
 
       if (code) {
         this.stravaService.exchangeToken(code).subscribe(() => {
-          this.loadStatus();
+          this.loadStatus(true);
         });
         return;
       }
@@ -52,15 +53,18 @@ export class IntegrationsViewComponent implements OnInit {
   }
 
   sync(athleteId: number): void {
+    this.syncInProgress = true;
     this.stravaService.sync(athleteId).subscribe({
       next: (result) => {
         this.syncResult = result;
         this.errorMessage = '';
+        this.syncInProgress = false;
         this.loadStatus();
         this.loadActivities();
       },
       error: () => {
         this.errorMessage = 'Nie udalo sie zsynchronizowac danych ze Strava';
+        this.syncInProgress = false;
         this.changeDetectorRef.detectChanges();
       }
     });
@@ -80,7 +84,7 @@ export class IntegrationsViewComponent implements OnInit {
     return !!this.status?.authorizationUrl;
   }
 
-  private loadStatus(): void {
+  private loadStatus(autoSyncAfterConnect = false): void {
     this.loading = true;
     this.stravaService.getStatus().subscribe({
       next: (status) => {
@@ -88,6 +92,9 @@ export class IntegrationsViewComponent implements OnInit {
         this.errorMessage = '';
         this.loading = false;
         if (status.connected) {
+          if (autoSyncAfterConnect && status.athleteId) {
+            this.sync(status.athleteId);
+          }
           this.loadActivities();
         } else {
           this.activities = [];

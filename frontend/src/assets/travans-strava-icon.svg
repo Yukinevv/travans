@@ -1,0 +1,14 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="120" fill="#F6EFE3"/>
+  <rect x="36" y="36" width="440" height="440" rx="96" fill="url(#bg)"/>
+  <path d="M154 336L224 176L262 248H322L238 336H154Z" fill="#FFFFFF"/>
+  <path d="M292 336L356 220L389 276H433L367 336H292Z" fill="#FFF2E8"/>
+  <path d="M128 382C128 365.431 141.431 352 158 352H354C370.569 352 384 365.431 384 382V384H128V382Z" fill="#2D2117" fill-opacity="0.16"/>
+  <text x="256" y="124" text-anchor="middle" fill="#FFF8F1" font-size="60" font-family="Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="10">TV</text>
+  <defs>
+    <linearGradient id="bg" x1="84" y1="64" x2="430" y2="456" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D6632A"/>
+      <stop offset="1" stop-color="#9E3D11"/>
+    </linearGradient>
+  </defs>
+</svg>
