@@ -12,7 +12,14 @@
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
       <a routerLink="/plans" routerLinkActive="active">Plany</a>
       <a routerLink="/integrations" routerLinkActive="active">Integracje</a>
+      <a routerLink="/auth" routerLinkActive="active" *ngIf="!authService.isAuthenticated()">Auth</a>
     </nav>
+
+    <div class="session" *ngIf="authService.isAuthenticated()">
+      <strong>{{ authService.getStoredProfile()?.displayName }}</strong>
+      <span>{{ authService.getStoredProfile()?.email }}</span>
+      <button type="button" (click)="logout()">Wyloguj</button>
+    </div>
   </aside>
 
   <main class="content">

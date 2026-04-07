@@ -8,6 +8,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -24,6 +27,10 @@ public class StravaActivity {
 
     @Column(nullable = false)
     private Long athleteId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    private AppUser user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
@@ -59,6 +66,14 @@ public class StravaActivity {
 
     public void setAthleteId(Long athleteId) {
         this.athleteId = athleteId;
+    }
+
+    public AppUser getUser() {
+        return user;
+    }
+
+    public void setUser(AppUser user) {
+        this.user = user;
     }
 
     public ActivityType getActivityType() {

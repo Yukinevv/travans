@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { AuthGuard } from './modules/auth/services/auth.guard';
+import { AuthViewComponent } from './modules/auth/auth-view/auth-view.component';
 import { DashboardViewComponent } from './views/dashboard-view/dashboard-view.component';
 import { PlansViewComponent } from './views/plans-view/plans-view.component';
 import { IntegrationsViewComponent } from './views/integrations-view/integrations-view.component';
 
 const routes: Routes = [
-  { path: '', component: DashboardViewComponent },
-  { path: 'plans', component: PlansViewComponent },
-  { path: 'integrations', component: IntegrationsViewComponent },
+  { path: 'auth', component: AuthViewComponent },
+  { path: '', component: DashboardViewComponent, canActivate: [AuthGuard] },
+  { path: 'plans', component: PlansViewComponent, canActivate: [AuthGuard] },
+  { path: 'integrations', component: IntegrationsViewComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];
 

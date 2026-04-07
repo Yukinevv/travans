@@ -1,0 +1,127 @@
+package com.travans.backend.service;
+
+import com.travans.backend.api.dto.AuthTokenResponse;
+import com.travans.backend.api.dto.LoginRequest;
+import com.travans.backend.api.dto.RefreshTokenRequest;
+import com.travans.backend.api.dto.RegisterRequest;
+import com.travans.backend.api.dto.UserProfileResponse;
+import com.travans.backend.config.AuthProperties;
+import com.travans.backend.domain.AppUser;
+import com.travans.backend.domain.RefreshToken;
+import com.travans.backend.domain.UserRole;
+import com.travans.backend.repository.AppUserRepository;
+import com.travans.backend.repository.RefreshTokenRepository;
+import com.travans.backend.security.AuthenticatedUser;
+import com.travans.backend.security.CurrentUserService;
+import com.travans.backend.security.JwtService;
+import java.time.Clock;
+import java.time.temporal.ChronoUnit;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class AuthService {
+
+    private final AppUserRepository appUserRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final CurrentUserService currentUserService;
+    private final AuthProperties authProperties;
+    private final Clock clock;
+
+    public AuthService(
+            AppUserRepository appUserRepository,
+            RefreshTokenRepository refreshTokenRepository,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            JwtService jwtService,
+            CurrentUserService currentUserService,
+            AuthProperties authProperties,
+            Clock clock) {
+        this.appUserRepository = appUserRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.currentUserService = currentUserService;
+        this.authProperties = authProperties;
+        this.clock = clock;
+    }
+
+    @Transactional
+    public AuthTokenResponse register(RegisterRequest request) {
+        appUserRepository.findByEmail(request.email().toLowerCase())
+                .ifPresent(user -> {
+                    throw new IllegalStateException("User with this email already exists");
+                });
+
+        AppUser user = new AppUser();
+        user.setEmail(request.email().toLowerCase());
+        user.setDisplayName(request.displayName());
+        user.setPasswordHash(passwordEncoder.encode(request.password()));
+        user.setRole(UserRole.USER);
+        user.setCreatedAt(clock.instant());
+        user = appUserRepository.save(user);
+
+        return issueTokens(new AuthenticatedUser(user));
+    }
+
+    @Transactional
+    public AuthTokenResponse login(LoginRequest request) {
+        AuthenticatedUser user = (AuthenticatedUser) authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.email().toLowerCase(), request.password())
+        ).getPrincipal();
+
+        return issueTokens(user);
+    }
+
+    @Transactional
+    public AuthTokenResponse refresh(RefreshTokenRequest request) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(request.refreshToken())
+                .orElseThrow(() -> new IllegalArgumentException("Refresh token not found"));
+
+        if (refreshToken.isRevoked() || refreshToken.getExpiresAt().isBefore(clock.instant())) {
+            throw new IllegalArgumentException("Refresh token expired or revoked");
+        }
+
+        revokeTokens(refreshToken.getUser());
+        return issueTokens(new AuthenticatedUser(refreshToken.getUser()));
+    }
+
+    @Transactional(readOnly = true)
+    public UserProfileResponse me() {
+        AppUser user = currentUserService.requireCurrentUserEntity();
+        return toProfile(user);
+    }
+
+    private AuthTokenResponse issueTokens(AuthenticatedUser user) {
+        revokeTokens(user.getUser());
+
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(user.getUser());
+        refreshToken.setToken(jwtService.generateRefreshToken());
+        refreshToken.setCreatedAt(clock.instant());
+        refreshToken.setExpiresAt(clock.instant().plus(authProperties.getRefreshTokenTtlDays(), ChronoUnit.DAYS));
+        refreshToken.setRevoked(false);
+        refreshTokenRepository.save(refreshToken);
+
+        return new AuthTokenResponse(
+                jwtService.generateAccessToken(user),
+                refreshToken.getToken(),
+                toProfile(user.getUser())
+        );
+    }
+
+    private void revokeTokens(AppUser user) {
+        refreshTokenRepository.findByUserAndRevokedFalse(user).forEach(token -> token.setRevoked(true));
+    }
+
+    private UserProfileResponse toProfile(AppUser user) {
+        return new UserProfileResponse(user.getId(), user.getEmail(), user.getDisplayName(), user.getRole());
+    }
+}

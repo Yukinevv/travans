@@ -8,6 +8,7 @@ import com.travans.backend.domain.TrainingDay;
 import com.travans.backend.domain.TrainingDayStatus;
 import com.travans.backend.domain.TrainingPlan;
 import com.travans.backend.repository.TrainingPlanRepository;
+import com.travans.backend.security.CurrentUserService;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.Clock;
 import java.util.List;
@@ -18,29 +19,33 @@ import org.springframework.transaction.annotation.Transactional;
 public class TrainingPlanService {
 
     private final TrainingPlanRepository trainingPlanRepository;
+    private final CurrentUserService currentUserService;
     private final Clock clock;
 
-    public TrainingPlanService(TrainingPlanRepository trainingPlanRepository, Clock clock) {
+    public TrainingPlanService(TrainingPlanRepository trainingPlanRepository, CurrentUserService currentUserService, Clock clock) {
         this.trainingPlanRepository = trainingPlanRepository;
+        this.currentUserService = currentUserService;
         this.clock = clock;
     }
 
     @Transactional(readOnly = true)
     public List<TrainingPlanResponse> getPlans() {
-        return trainingPlanRepository.findAll().stream().map(this::toResponse).toList();
+        Long userId = currentUserService.requireAuthenticatedUser().getId();
+        return trainingPlanRepository.findByOwnerId(userId).stream().map(this::toResponse).toList();
     }
 
     @Transactional(readOnly = true)
     public TrainingPlanResponse getPlan(Long planId) {
-        TrainingPlan plan = trainingPlanRepository.findById(planId)
+        Long userId = currentUserService.requireAuthenticatedUser().getId();
+        TrainingPlan plan = trainingPlanRepository.findByIdAndOwnerId(planId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Training plan not found: " + planId));
-        plan.getTrainingDays().size();
         return toResponse(plan);
     }
 
     @Transactional
     public TrainingPlanResponse createPlan(TrainingPlanRequest request) {
         TrainingPlan plan = new TrainingPlan();
+        plan.setOwner(currentUserService.requireCurrentUserEntity());
         plan.setName(request.name());
         plan.setDescription(request.description());
         plan.setStartDate(request.startDate());

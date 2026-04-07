@@ -1,0 +1,81 @@
+.auth-page {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 64px);
+}
+
+.auth-panel {
+  width: min(100%, 520px);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+
+.kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+h2 {
+  margin: 8px 0 12px;
+}
+
+.intro {
+  color: var(--muted);
+}
+
+.switcher {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+
+  button {
+    flex: 1;
+    background: var(--surface-strong);
+    color: var(--text);
+    border: 1px solid var(--border);
+
+    &.active {
+      background: var(--accent);
+      color: white;
+    }
+  }
+}
+
+form {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+}
+
+.error {
+  color: var(--danger);
+  margin: 0;
+}

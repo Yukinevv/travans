@@ -5,6 +5,7 @@ import com.travans.backend.api.dto.StravaSyncResponse;
 import com.travans.backend.api.dto.StravaWebhookValidationResponse;
 import com.travans.backend.config.StravaProperties;
 import com.travans.backend.domain.ActivityType;
+import com.travans.backend.domain.AppUser;
 import com.travans.backend.domain.StravaActivity;
 import com.travans.backend.domain.StravaConnection;
 import com.travans.backend.domain.TrainingDay;
@@ -12,6 +13,7 @@ import com.travans.backend.domain.TrainingDayStatus;
 import com.travans.backend.repository.StravaActivityRepository;
 import com.travans.backend.repository.StravaConnectionRepository;
 import com.travans.backend.repository.TrainingDayRepository;
+import com.travans.backend.security.CurrentUserService;
 import jakarta.persistence.EntityNotFoundException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +41,7 @@ public class StravaService {
     private final StravaConnectionRepository stravaConnectionRepository;
     private final StravaActivityRepository stravaActivityRepository;
     private final TrainingDayRepository trainingDayRepository;
+    private final CurrentUserService currentUserService;
     private final Clock clock;
 
     public StravaService(
@@ -47,18 +50,21 @@ public class StravaService {
             StravaConnectionRepository stravaConnectionRepository,
             StravaActivityRepository stravaActivityRepository,
             TrainingDayRepository trainingDayRepository,
+            CurrentUserService currentUserService,
             Clock clock) {
         this.properties = properties;
         this.stravaWebClient = stravaWebClient;
         this.stravaConnectionRepository = stravaConnectionRepository;
         this.stravaActivityRepository = stravaActivityRepository;
         this.trainingDayRepository = trainingDayRepository;
+        this.currentUserService = currentUserService;
         this.clock = clock;
     }
 
     @Transactional(readOnly = true)
     public StravaConnectionStatusResponse getConnectionStatus() {
-        Optional<StravaConnection> connection = stravaConnectionRepository.findAll().stream().findFirst();
+        AppUser user = currentUserService.requireCurrentUserEntity();
+        Optional<StravaConnection> connection = stravaConnectionRepository.findByUser(user);
         return new StravaConnectionStatusResponse(
                 connection.isPresent(),
                 connection.map(StravaConnection::getAthleteId).orElse(null),
@@ -70,6 +76,7 @@ public class StravaService {
     @Transactional
     @SuppressWarnings("unchecked")
     public void exchangeAuthorizationCode(String code) {
+        AppUser user = currentUserService.requireCurrentUserEntity();
         if (properties.getClientId() == null || properties.getClientId().isBlank()) {
             throw new IllegalStateException("Strava client id is not configured");
         }
@@ -95,8 +102,9 @@ public class StravaService {
         Map<String, Object> athlete = (Map<String, Object>) response.get("athlete");
         Long athleteId = Long.valueOf(String.valueOf(athlete.get("id")));
 
-        StravaConnection connection = stravaConnectionRepository.findByAthleteId(athleteId)
+        StravaConnection connection = stravaConnectionRepository.findByUserIdAndAthleteId(user.getId(), athleteId)
                 .orElseGet(StravaConnection::new);
+        connection.setUser(user);
         connection.setAthleteId(athleteId);
         connection.setAccessToken(String.valueOf(response.get("access_token")));
         connection.setRefreshToken(String.valueOf(response.get("refresh_token")));
@@ -106,7 +114,8 @@ public class StravaService {
 
     @Transactional
     public StravaSyncResponse syncActivities(Long athleteId) {
-        StravaConnection connection = stravaConnectionRepository.findByAthleteId(athleteId)
+        AppUser user = currentUserService.requireCurrentUserEntity();
+        StravaConnection connection = stravaConnectionRepository.findByUserIdAndAthleteId(user.getId(), athleteId)
                 .orElseThrow(() -> new EntityNotFoundException("Strava connection not found for athlete " + athleteId));
 
         List<Map<String, Object>> remoteActivities = fetchActivities(connection.getAccessToken());
@@ -117,6 +126,7 @@ public class StravaService {
             StravaActivity activity = stravaActivityRepository.findByExternalActivityId(externalId)
                     .orElseGet(StravaActivity::new);
             activity.setExternalActivityId(externalId);
+            activity.setUser(user);
             activity.setAthleteId(athleteId);
             activity.setActivityType(mapActivityType(String.valueOf(payload.getOrDefault("sport_type", payload.getOrDefault("type", "Other")))));
             activity.setActivityDate(Instant.parse(String.valueOf(payload.get("start_date"))).atZone(ZoneOffset.UTC).toLocalDate());
@@ -127,7 +137,7 @@ public class StravaService {
             imported++;
         }
 
-        long matched = matchTrainingDays(athleteId);
+        long matched = matchTrainingDays(user.getId(), athleteId);
         connection.setLastSyncAt(clock.instant());
         stravaConnectionRepository.save(connection);
         return new StravaSyncResponse(athleteId, imported, matched);
@@ -159,14 +169,16 @@ public class StravaService {
         return response == null ? List.of() : response;
     }
 
-    private long matchTrainingDays(Long athleteId) {
-        List<StravaActivity> activities = stravaActivityRepository.findByAthleteIdAndActivityDateBetween(
+    private long matchTrainingDays(Long userId, Long athleteId) {
+        List<StravaActivity> activities = stravaActivityRepository.findByUserIdAndAthleteIdAndActivityDateBetween(
+                userId,
                 athleteId,
                 LocalDate.now(clock).minusMonths(6),
                 LocalDate.now(clock).plusMonths(1)
         );
 
         List<TrainingDay> days = trainingDayRepository.findAll().stream()
+                .filter(day -> day.getPlan().getOwner().getId().equals(userId))
                 .sorted(Comparator.comparing(TrainingDay::getScheduledDate))
                 .toList();
 

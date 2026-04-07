@@ -1,0 +1,42 @@
+<section class="auth-page">
+  <article class="auth-panel">
+    <p class="kicker">Auth</p>
+    <h2>{{ mode === 'login' ? 'Logowanie' : 'Rejestracja' }}</h2>
+    <p class="intro">Zaloguj sie, aby zarzadzac planem treningowym i synchronizacja Stravy.</p>
+
+    <div class="switcher">
+      <button type="button" [class.active]="mode === 'login'" (click)="setMode('login')">Login</button>
+      <button type="button" [class.active]="mode === 'register'" (click)="setMode('register')">Register</button>
+    </div>
+
+    <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+      <label>
+        <span>Email</span>
+        <input type="email" formControlName="email">
+      </label>
+      <label>
+        <span>Haslo</span>
+        <input type="password" formControlName="password">
+      </label>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <button type="submit">Zaloguj</button>
+    </form>
+
+    <form *ngIf="mode === 'register'" [formGroup]="registerForm" (ngSubmit)="submitRegister()">
+      <label>
+        <span>Nazwa</span>
+        <input type="text" formControlName="displayName">
+      </label>
+      <label>
+        <span>Email</span>
+        <input type="email" formControlName="email">
+      </label>
+      <label>
+        <span>Haslo</span>
+        <input type="password" formControlName="password">
+      </label>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <button type="submit">Utworz konto</button>
+    </form>
+  </article>
+</section>

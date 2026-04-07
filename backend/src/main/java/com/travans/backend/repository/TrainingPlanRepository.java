@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TrainingPlanRepository extends JpaRepository<TrainingPlan, Long> {
 
-    @Override
     @EntityGraph(attributePaths = "trainingDays")
-    List<TrainingPlan> findAll();
+    List<TrainingPlan> findByOwnerId(Long ownerId);
+
+    @EntityGraph(attributePaths = "trainingDays")
+    java.util.Optional<TrainingPlan> findByIdAndOwnerId(Long id, Long ownerId);
 }

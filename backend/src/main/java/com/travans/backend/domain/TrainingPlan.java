@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,6 +36,10 @@ public class TrainingPlan {
 
     @Column(nullable = false)
     private Instant createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_id")
+    private AppUser owner;
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("scheduledDate ASC")
@@ -73,6 +79,14 @@ public class TrainingPlan {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public AppUser getOwner() {
+        return owner;
+    }
+
+    public void setOwner(AppUser owner) {
+        this.owner = owner;
     }
 
     public List<TrainingDay> getTrainingDays() {

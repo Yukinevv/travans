@@ -6,6 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
 import java.time.Instant;
 
 @Entity
@@ -18,6 +21,10 @@ public class StravaConnection {
 
     @Column(nullable = false, unique = true)
     private Long athleteId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    private AppUser user;
 
     @Column(length = 1024)
     private String accessToken;
@@ -41,6 +48,14 @@ public class StravaConnection {
 
     public void setAthleteId(Long athleteId) {
         this.athleteId = athleteId;
+    }
+
+    public AppUser getUser() {
+        return user;
+    }
+
+    public void setUser(AppUser user) {
+        this.user = user;
     }
 
     public String getAccessToken() {
