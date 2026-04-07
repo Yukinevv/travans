@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: travans-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: travans
+      POSTGRES_USER: travans
+      POSTGRES_PASSWORD: travans
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
