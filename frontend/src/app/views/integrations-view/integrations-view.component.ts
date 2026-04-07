@@ -62,7 +62,7 @@ export class IntegrationsViewComponent implements OnInit {
         this.errorMessage = '';
         this.syncInProgress = false;
         this.loadStatus();
-        this.loadActivities();
+        this.loadActivities(true);
       },
       error: () => {
         this.errorMessage = 'Nie udalo sie zsynchronizowac danych ze Strava';
@@ -128,7 +128,7 @@ export class IntegrationsViewComponent implements OnInit {
           if (autoSyncAfterConnect && status.athleteId) {
             this.sync(status.athleteId);
           }
-          this.loadActivities();
+          this.loadActivities(autoSyncAfterConnect);
         } else {
           this.activities = [];
         }
@@ -149,14 +149,14 @@ export class IntegrationsViewComponent implements OnInit {
     });
   }
 
-  private loadActivities(): void {
+  private loadActivities(forceRefresh = false): void {
     if (!this.status?.connected) {
       this.activities = [];
       return;
     }
 
     this.activitiesLoading = true;
-    this.stravaService.getActivities(this.selectedActivityType).subscribe({
+    this.stravaService.getActivities(this.selectedActivityType, forceRefresh).subscribe({
       next: (activities) => {
         this.activities = activities;
         this.activitiesLoading = false;
