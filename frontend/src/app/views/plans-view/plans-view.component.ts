@@ -12,6 +12,7 @@ import { TrainingPlan } from '../../core/types/training-plan.model';
 })
 export class PlansViewComponent implements OnInit {
   plans: TrainingPlan[] = [];
+  errorMessage = '';
   jsonInput = `{
   "name": "Przykladowy plan 10 km",
   "description": "4 tygodnie pracy nad tempem",
@@ -62,20 +63,32 @@ export class PlansViewComponent implements OnInit {
       this.form.reset();
       this.trainingDays.clear();
       this.addTrainingDay();
+      this.errorMessage = '';
       this.loadPlans();
+    }, () => {
+      this.errorMessage = 'Nie udalo sie zapisac planu';
     });
   }
 
   importJson(): void {
     const payload = JSON.parse(this.jsonInput) as TrainingPlan;
     this.trainingPlanService.importPlan(payload).subscribe(() => {
+      this.errorMessage = '';
       this.loadPlans();
+    }, () => {
+      this.errorMessage = 'Nie udalo sie zaimportowac planu';
     });
   }
 
   private loadPlans(): void {
-    this.trainingPlanService.getPlans().subscribe((plans) => {
-      this.plans = plans;
+    this.trainingPlanService.getPlans().subscribe({
+      next: (plans) => {
+        this.plans = plans;
+        this.errorMessage = '';
+      },
+      error: () => {
+        this.errorMessage = 'Nie udalo sie pobrac planow';
+      }
     });
   }
 

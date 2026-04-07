@@ -13,6 +13,7 @@ import { StravaConnectionStatus, StravaSyncResult } from '../../core/types/strav
 export class IntegrationsViewComponent implements OnInit {
   status?: StravaConnectionStatus;
   syncResult?: StravaSyncResult;
+  errorMessage = '';
 
   constructor(
     private readonly stravaService: StravaService,
@@ -35,15 +36,27 @@ export class IntegrationsViewComponent implements OnInit {
   }
 
   sync(athleteId: number): void {
-    this.stravaService.sync(athleteId).subscribe((result) => {
-      this.syncResult = result;
-      this.loadStatus();
+    this.stravaService.sync(athleteId).subscribe({
+      next: (result) => {
+        this.syncResult = result;
+        this.errorMessage = '';
+        this.loadStatus();
+      },
+      error: () => {
+        this.errorMessage = 'Nie udalo sie zsynchronizowac danych ze Strava';
+      }
     });
   }
 
   private loadStatus(): void {
-    this.stravaService.getStatus().subscribe((status) => {
-      this.status = status;
+    this.stravaService.getStatus().subscribe({
+      next: (status) => {
+        this.status = status;
+        this.errorMessage = '';
+      },
+      error: () => {
+        this.errorMessage = 'Nie udalo sie pobrac statusu integracji';
+      }
     });
   }
 }

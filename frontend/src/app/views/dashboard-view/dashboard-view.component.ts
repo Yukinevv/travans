@@ -11,12 +11,19 @@ import { DashboardService } from '../../core/services/dashboard.service';
 })
 export class DashboardViewComponent implements OnInit {
   summary?: DashboardSummary;
+  errorMessage = '';
 
   constructor(private readonly dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-    this.dashboardService.getSummary().subscribe((summary) => {
-      this.summary = summary;
+    this.dashboardService.getSummary().subscribe({
+      next: (summary) => {
+        this.summary = summary;
+        this.errorMessage = '';
+      },
+      error: () => {
+        this.errorMessage = 'Nie udalo sie pobrac danych dashboardu';
+      }
     });
   }
 }

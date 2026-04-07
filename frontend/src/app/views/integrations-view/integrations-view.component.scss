@@ -39,6 +39,10 @@ h2 {
   color: var(--muted);
 }
 
+.error-text {
+  color: var(--danger);
+}
+
 .actions {
   display: flex;
   gap: 12px;

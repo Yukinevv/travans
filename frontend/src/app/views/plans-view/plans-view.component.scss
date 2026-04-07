@@ -92,6 +92,10 @@ button.secondary {
   font-family: Consolas, monospace;
 }
 
+.error-message {
+  color: var(--danger);
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;

@@ -24,4 +24,8 @@
     <p>Zaimportowane aktywnosci: <strong>{{ syncResult.importedActivities }}</strong></p>
     <p>Dopasowane dni planu: <strong>{{ syncResult.matchedTrainingDays }}</strong></p>
   </article>
+
+  <article class="panel" *ngIf="errorMessage">
+    <p class="muted error-text">{{ errorMessage }}</p>
+  </article>
 </section>
