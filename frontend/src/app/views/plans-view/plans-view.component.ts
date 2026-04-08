@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { TrainingPlanService } from '../../core/services/training-plan.service';
-import { TrainingPlan } from '../../core/types/training-plan.model';
+import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
 
 @Component({
   selector: 'app-plans-view',
@@ -13,6 +13,7 @@ import { TrainingPlan } from '../../core/types/training-plan.model';
 export class PlansViewComponent implements OnInit {
   plans: TrainingPlan[] = [];
   errorMessage = '';
+  jsonErrorMessage = '';
   loading = true;
   jsonInput = `{
   "name": "Przykladowy plan 10 km",
@@ -39,6 +40,9 @@ export class PlansViewComponent implements OnInit {
     trainingDays: this.fb.array([this.createTrainingDayGroup()])
   });
 
+  private syncingFormToJson = false;
+  private syncingJsonToForm = false;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly trainingPlanService: TrainingPlanService,
@@ -56,11 +60,29 @@ export class PlansViewComponent implements OnInit {
       }
     });
 
+    this.form.valueChanges.subscribe(() => {
+      if (this.syncingJsonToForm) {
+        return;
+      }
+
+      this.syncingFormToJson = true;
+      this.jsonInput = this.stringifyPlan(this.buildPlanFromForm());
+      this.jsonErrorMessage = '';
+      this.syncingFormToJson = false;
+      this.changeDetectorRef.detectChanges();
+    });
+
+    const initialPlan = this.parseJsonInput(this.jsonInput, false);
+    if (initialPlan) {
+      this.syncFormFromPlan(initialPlan);
+    }
+
     this.loadPlans();
   }
 
   addTrainingDay(): void {
     this.trainingDays.push(this.createTrainingDayGroup());
+    this.syncJsonFromForm();
   }
 
   submit(): void {
@@ -69,10 +91,8 @@ export class PlansViewComponent implements OnInit {
       return;
     }
 
-    this.trainingPlanService.createPlan(this.form.getRawValue() as TrainingPlan).subscribe(() => {
-      this.form.reset();
-      this.trainingDays.clear();
-      this.addTrainingDay();
+    this.trainingPlanService.createPlan(this.buildPlanFromForm()).subscribe(() => {
+      this.resetEditor();
       this.errorMessage = '';
       this.loadPlans();
     }, () => {
@@ -82,14 +102,37 @@ export class PlansViewComponent implements OnInit {
   }
 
   importJson(): void {
-    const payload = JSON.parse(this.jsonInput) as TrainingPlan;
+    const payload = this.parseJsonInput(this.jsonInput, true);
+    if (!payload) {
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
     this.trainingPlanService.importPlan(payload).subscribe(() => {
       this.errorMessage = '';
+      this.syncFormFromPlan(payload);
       this.loadPlans();
     }, () => {
       this.errorMessage = 'Nie udalo sie zaimportowac planu';
       this.changeDetectorRef.detectChanges();
     });
+  }
+
+  onJsonInputChange(value: string): void {
+    this.jsonInput = value;
+
+    if (this.syncingFormToJson) {
+      return;
+    }
+
+    const parsedPlan = this.parseJsonInput(value, false);
+    if (!parsedPlan) {
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
+    this.syncFormFromPlan(parsedPlan);
+    this.changeDetectorRef.detectChanges();
   }
 
   private loadPlans(): void {
@@ -109,14 +152,125 @@ export class PlansViewComponent implements OnInit {
     });
   }
 
-  private createTrainingDayGroup(): FormGroup {
-    return this.fb.group({
-      scheduledDate: ['', Validators.required],
-      title: ['', Validators.required],
-      activityType: ['RUN', Validators.required],
-      plannedDistanceMeters: [null],
-      plannedDurationSeconds: [null],
-      notes: ['']
+  private syncFormFromPlan(plan: TrainingPlan): void {
+    this.syncingJsonToForm = true;
+
+    this.form.patchValue({
+      name: plan.name,
+      description: plan.description ?? '',
+      startDate: plan.startDate,
+      stravaEvaluationStartDate: plan.stravaEvaluationStartDate ?? plan.startDate
+    }, { emitEvent: false });
+
+    this.trainingDays.clear({ emitEvent: false });
+    const trainingDays = plan.trainingDays.length > 0 ? plan.trainingDays : [this.createEmptyTrainingDay()];
+    trainingDays.forEach((day) => {
+      this.trainingDays.push(this.createTrainingDayGroup(day), { emitEvent: false });
     });
+
+    this.jsonErrorMessage = '';
+    this.syncingJsonToForm = false;
+  }
+
+  private syncJsonFromForm(): void {
+    if (this.syncingJsonToForm) {
+      return;
+    }
+
+    this.syncingFormToJson = true;
+    this.jsonInput = this.stringifyPlan(this.buildPlanFromForm());
+    this.jsonErrorMessage = '';
+    this.syncingFormToJson = false;
+  }
+
+  private buildPlanFromForm(): TrainingPlan {
+    const value = this.form.getRawValue();
+
+    return this.normalizePlan({
+      name: value.name ?? '',
+      description: value.description ?? '',
+      startDate: value.startDate ?? '',
+      stravaEvaluationStartDate: value.stravaEvaluationStartDate || value.startDate || '',
+      trainingDays: (value.trainingDays ?? []) as TrainingDay[]
+    });
+  }
+
+  private parseJsonInput(value: string, showError: boolean): TrainingPlan | null {
+    try {
+      const parsed = JSON.parse(value) as Partial<TrainingPlan>;
+      return this.normalizePlan(parsed);
+    } catch {
+      if (showError || value.trim()) {
+        this.jsonErrorMessage = 'JSON jest niepoprawny. Sprawdz skladnie i przecinki.';
+      }
+      return null;
+    }
+  }
+
+  private normalizePlan(plan: Partial<TrainingPlan>): TrainingPlan {
+    return {
+      id: plan.id,
+      name: plan.name ?? '',
+      description: plan.description ?? '',
+      startDate: plan.startDate ?? '',
+      stravaEvaluationStartDate: plan.stravaEvaluationStartDate ?? plan.startDate ?? '',
+      createdAt: plan.createdAt,
+      trainingDays: Array.isArray(plan.trainingDays)
+        ? plan.trainingDays.map((day) => ({
+            id: day.id,
+            scheduledDate: day.scheduledDate ?? '',
+            title: day.title ?? '',
+            activityType: day.activityType ?? 'RUN',
+            plannedDistanceMeters: day.plannedDistanceMeters ?? null,
+            plannedDurationSeconds: day.plannedDurationSeconds ?? null,
+            notes: day.notes ?? '',
+            status: day.status,
+            matchedActivityId: day.matchedActivityId,
+            matchedActivityName: day.matchedActivityName,
+            matchedActivityDate: day.matchedActivityDate,
+            matchedDistanceMeters: day.matchedDistanceMeters,
+            matchedMovingTimeSeconds: day.matchedMovingTimeSeconds
+          }))
+        : [this.createEmptyTrainingDay()]
+    };
+  }
+
+  private stringifyPlan(plan: TrainingPlan): string {
+    return JSON.stringify(plan, null, 2);
+  }
+
+  private resetEditor(): void {
+    const defaultPlan = this.normalizePlan({
+      name: '',
+      description: '',
+      startDate: '',
+      stravaEvaluationStartDate: '',
+      trainingDays: [this.createEmptyTrainingDay()]
+    });
+
+    this.syncFormFromPlan(defaultPlan);
+    this.syncJsonFromForm();
+  }
+
+  private createTrainingDayGroup(day?: Partial<TrainingDay>): FormGroup {
+    return this.fb.group({
+      scheduledDate: [day?.scheduledDate ?? '', Validators.required],
+      title: [day?.title ?? '', Validators.required],
+      activityType: [day?.activityType ?? 'RUN', Validators.required],
+      plannedDistanceMeters: [day?.plannedDistanceMeters ?? null],
+      plannedDurationSeconds: [day?.plannedDurationSeconds ?? null],
+      notes: [day?.notes ?? '']
+    });
+  }
+
+  private createEmptyTrainingDay(): TrainingDay {
+    return {
+      scheduledDate: '',
+      title: '',
+      activityType: 'RUN',
+      plannedDistanceMeters: null,
+      plannedDurationSeconds: null,
+      notes: ''
+    };
   }
 }

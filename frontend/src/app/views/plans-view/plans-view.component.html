@@ -64,7 +64,13 @@
   <article class="panel">
     <p class="kicker">Import JSON</p>
     <h2>Wklej plan w formacie JSON</h2>
-    <textarea [(ngModel)]="jsonInput" [ngModelOptions]="{ standalone: true }" rows="12" class="json-box"></textarea>
+    <textarea
+      [(ngModel)]="jsonInput"
+      (ngModelChange)="onJsonInputChange($event)"
+      [ngModelOptions]="{ standalone: true }"
+      rows="12"
+      class="json-box"></textarea>
+    <p class="error-message" *ngIf="jsonErrorMessage">{{ jsonErrorMessage }}</p>
     <div class="actions">
       <button type="button" (click)="importJson()">Importuj</button>
     </div>
