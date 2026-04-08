@@ -58,6 +58,9 @@ public class TrainingPlanService {
         plan.setName(request.name());
         plan.setDescription(request.description());
         plan.setStartDate(request.startDate());
+        plan.setStravaEvaluationStartDate(
+                request.stravaEvaluationStartDate() != null ? request.stravaEvaluationStartDate() : request.startDate()
+        );
         plan.setCreatedAt(clock.instant());
 
         for (TrainingDayRequest dayRequest : request.trainingDays()) {
@@ -83,6 +86,7 @@ public class TrainingPlanService {
                 plan.getName(),
                 plan.getDescription(),
                 plan.getStartDate(),
+                Optional.ofNullable(plan.getStravaEvaluationStartDate()).orElse(plan.getStartDate()),
                 plan.getCreatedAt(),
                 plan.getTrainingDays().stream().map(day -> toResponse(userId, day)).toList()
         );

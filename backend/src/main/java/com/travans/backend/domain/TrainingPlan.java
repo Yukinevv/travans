@@ -34,6 +34,9 @@ public class TrainingPlan {
     @Column(nullable = false)
     private LocalDate startDate;
 
+    @Column
+    private LocalDate stravaEvaluationStartDate;
+
     @Column(nullable = false)
     private Instant createdAt;
 
@@ -71,6 +74,14 @@ public class TrainingPlan {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public LocalDate getStravaEvaluationStartDate() {
+        return stravaEvaluationStartDate;
+    }
+
+    public void setStravaEvaluationStartDate(LocalDate stravaEvaluationStartDate) {
+        this.stravaEvaluationStartDate = stravaEvaluationStartDate;
     }
 
     public Instant getCreatedAt() {

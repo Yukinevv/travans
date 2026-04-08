@@ -9,6 +9,7 @@ public record TrainingPlanResponse(
         String name,
         String description,
         LocalDate startDate,
+        LocalDate stravaEvaluationStartDate,
         Instant createdAt,
         List<TrainingDayResponse> trainingDays
 ) {

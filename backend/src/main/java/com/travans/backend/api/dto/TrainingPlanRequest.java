@@ -11,6 +11,7 @@ public record TrainingPlanRequest(
         @NotBlank String name,
         String description,
         @NotNull LocalDate startDate,
+        LocalDate stravaEvaluationStartDate,
         @Valid @NotEmpty List<TrainingDayRequest> trainingDays
 ) {
 }

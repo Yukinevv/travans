@@ -235,6 +235,17 @@ public class StravaService {
         long matched = 0;
 
         for (TrainingDay day : days) {
+            LocalDate evaluationStartDate = day.getPlan().getStravaEvaluationStartDate() != null
+                    ? day.getPlan().getStravaEvaluationStartDate()
+                    : day.getPlan().getStartDate();
+
+            if (day.getScheduledDate().isBefore(evaluationStartDate)) {
+                day.setStatus(TrainingDayStatus.PLANNED);
+                day.setMatchedActivityId(null);
+                trainingDayRepository.save(day);
+                continue;
+            }
+
             Optional<StravaActivity> match = findBestMatch(day, activities, usedActivities);
 
             if (match.isPresent()) {

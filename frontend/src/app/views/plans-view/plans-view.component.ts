@@ -18,6 +18,7 @@ export class PlansViewComponent implements OnInit {
   "name": "Przykladowy plan 10 km",
   "description": "4 tygodnie pracy nad tempem",
   "startDate": "2026-04-13",
+  "stravaEvaluationStartDate": "2026-04-13",
   "trainingDays": [
     {
       "scheduledDate": "2026-04-13",
@@ -34,6 +35,7 @@ export class PlansViewComponent implements OnInit {
     name: ['', Validators.required],
     description: [''],
     startDate: ['', Validators.required],
+    stravaEvaluationStartDate: [''],
     trainingDays: this.fb.array([this.createTrainingDayGroup()])
   });
 
@@ -48,6 +50,12 @@ export class PlansViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.form.controls.startDate.valueChanges.subscribe((startDate) => {
+      if (!this.form.controls.stravaEvaluationStartDate.value) {
+        this.form.controls.stravaEvaluationStartDate.setValue(startDate ?? '', { emitEvent: false });
+      }
+    });
+
     this.loadPlans();
   }
 

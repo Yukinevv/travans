@@ -17,6 +17,10 @@
           <span>Data startu</span>
           <input formControlName="startDate" type="date">
         </label>
+        <label>
+          <span>Uwzgledniaj Strave od</span>
+          <input formControlName="stravaEvaluationStartDate" type="date">
+        </label>
       </div>
 
       <label>
@@ -73,6 +77,7 @@
     <div class="saved-plan" *ngFor="let plan of plans">
       <strong>{{ plan.name }}</strong>
       <span>{{ plan.trainingDays.length }} dni</span>
+      <span>Strava od: {{ plan.stravaEvaluationStartDate || plan.startDate }}</span>
     </div>
   </article>
 </section>
