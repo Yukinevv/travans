@@ -59,6 +59,25 @@ textarea {
   background: rgba(255, 255, 255, 0.7);
 }
 
+.day-card {
+  display: grid;
+  gap: 16px;
+}
+
+.day-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.day-card-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
 .saved-plan {
   display: flex;
   justify-content: space-between;
@@ -85,6 +104,12 @@ button.secondary {
   background: var(--surface-strong);
   color: var(--text);
   border: 1px solid var(--border);
+}
+
+button.danger-button {
+  background: rgba(183, 55, 31, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(183, 55, 31, 0.22);
 }
 
 .json-box {

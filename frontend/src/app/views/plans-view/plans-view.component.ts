@@ -85,6 +85,17 @@ export class PlansViewComponent implements OnInit {
     this.syncJsonFromForm();
   }
 
+  removeTrainingDay(index: number): void {
+    this.trainingDays.removeAt(index);
+
+    if (this.trainingDays.length === 0) {
+      this.trainingDays.push(this.createTrainingDayGroup());
+    }
+
+    this.syncJsonFromForm();
+    this.changeDetectorRef.detectChanges();
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

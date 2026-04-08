@@ -30,6 +30,11 @@
 
       <div formArrayName="trainingDays" class="day-list">
         <div class="day-card" *ngFor="let day of trainingDays.controls; let i = index" [formGroupName]="i">
+          <div class="day-card-header">
+            <p class="day-card-title">Dzien treningowy {{ i + 1 }}</p>
+            <button type="button" class="danger-button" (click)="removeTrainingDay(i)">Usun dzien</button>
+          </div>
+
           <div class="grid">
             <label>
               <span>Dzien</span>
@@ -50,7 +55,20 @@
                 <option value="OTHER">Inne</option>
               </select>
             </label>
+            <label>
+              <span>Dystans planowany (m)</span>
+              <input formControlName="plannedDistanceMeters" type="number" min="0" step="100">
+            </label>
+            <label>
+              <span>Czas planowany (s)</span>
+              <input formControlName="plannedDurationSeconds" type="number" min="0" step="60">
+            </label>
           </div>
+
+          <label>
+            <span>Notatki</span>
+            <textarea formControlName="notes" rows="3"></textarea>
+          </label>
         </div>
       </div>
 
