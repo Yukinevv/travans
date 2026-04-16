@@ -25,15 +25,28 @@ mvn spring-boot:run
 ```
 
 API startuje na `http://localhost:8080`.
+Domyslnie backend uruchamia profile `dev,local`, wiec lokalna konfiguracja z `application-local.yml` laduje sie automatycznie.
 
 Hot reload backendu:
 
 ```powershell
 cd backend
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+mvn spring-boot:run
 ```
 
 Przy zmianach w kodzie Spring Boot DevTools wykona automatyczny restart aplikacji.
+
+Lokalna konfiguracja bez zmiennych srodowiskowych:
+
+1. Uzupelnij plik `backend/src/main/resources/application-local.yml`
+2. Uruchom backend zwyklym poleceniem
+
+```powershell
+cd backend
+mvn spring-boot:run
+```
+
+Plik `application-local.yml` jest ignorowany przez Git, wiec mozesz tam trzymac lokalne sekrety developerskie, np. dane Stravy.
 
 ## Frontend
 
@@ -63,7 +76,7 @@ Aplikacja startuje na `http://localhost:4200`.
 
 ## Konfiguracja Stravy
 
-Ustaw w backendzie:
+Ustaw w backendzie przez zmienne srodowiskowe albo `application-local.yml`:
 
 - `TRAVANS_STRAVA_CLIENT_ID`
 - `TRAVANS_STRAVA_CLIENT_SECRET`

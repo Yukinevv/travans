@@ -11,6 +11,7 @@ import com.travans.backend.domain.StravaActivity;
 import com.travans.backend.domain.StravaConnection;
 import com.travans.backend.domain.TrainingDay;
 import com.travans.backend.domain.TrainingDayStatus;
+import com.travans.backend.exception.StravaIntegrationException;
 import com.travans.backend.repository.StravaActivityRepository;
 import com.travans.backend.repository.StravaConnectionRepository;
 import com.travans.backend.repository.TrainingDayRepository;
@@ -31,12 +32,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Service
 public class StravaService {
@@ -92,13 +95,18 @@ public class StravaService {
         body.add("code", code);
         body.add("grant_type", "authorization_code");
 
-        Map<String, Object> response = stravaWebClient.post()
-                .uri(properties.getTokenUrl())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
+        Map<String, Object> response;
+        try {
+            response = stravaWebClient.post()
+                    .uri(properties.getTokenUrl())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .bodyValue(body)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+        } catch (WebClientResponseException exception) {
+            throw mapStravaApiException(exception, true);
+        }
 
         if (response == null || response.get("athlete") == null) {
             throw new IllegalStateException("Invalid Strava token response");
@@ -212,13 +220,18 @@ public class StravaService {
     }
 
     private List<Map<String, Object>> fetchActivities(String accessToken) {
-        List<Map<String, Object>> response = stravaWebClient.get()
-                .uri(properties.getBaseUrl() + "/athlete/activities?page=1&per_page=100")
-                .headers(headers -> headers.setBearerAuth(accessToken))
-                .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {})
-                .collectList()
-                .block();
+        List<Map<String, Object>> response;
+        try {
+            response = stravaWebClient.get()
+                    .uri(properties.getBaseUrl() + "/athlete/activities?page=1&per_page=100")
+                    .headers(headers -> headers.setBearerAuth(accessToken))
+                    .retrieve()
+                    .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {})
+                    .collectList()
+                    .block();
+        } catch (WebClientResponseException exception) {
+            throw mapStravaApiException(exception, false);
+        }
         return response == null ? List.of() : response;
     }
 
@@ -316,13 +329,18 @@ public class StravaService {
         body.add("grant_type", "refresh_token");
         body.add("refresh_token", connection.getRefreshToken());
 
-        Map<String, Object> response = stravaWebClient.post()
-                .uri(properties.getTokenUrl())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
+        Map<String, Object> response;
+        try {
+            response = stravaWebClient.post()
+                    .uri(properties.getTokenUrl())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .bodyValue(body)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+        } catch (WebClientResponseException exception) {
+            throw mapStravaApiException(exception, true);
+        }
 
         if (response == null) {
             throw new IllegalStateException("Invalid Strava refresh token response");
@@ -377,5 +395,23 @@ public class StravaService {
 
     private String urlEncode(String value) {
         return URLEncoder.encode(value == null ? "" : value, StandardCharsets.UTF_8);
+    }
+
+    private StravaIntegrationException mapStravaApiException(WebClientResponseException exception, boolean tokenOperation) {
+        if (exception.getStatusCode() == HttpStatus.UNAUTHORIZED || exception.getStatusCode() == HttpStatus.BAD_REQUEST) {
+            return new StravaIntegrationException(
+                    "STRAVA_RECONNECT_REQUIRED",
+                    tokenOperation
+                            ? "Sesja Strava wygasla lub zostala uniewazniona. Polacz konto ponownie."
+                            : "Strava odrzucila autoryzacje dla aktywnosci. Polacz konto ponownie.",
+                    HttpStatus.CONFLICT
+            );
+        }
+
+        return new StravaIntegrationException(
+                "STRAVA_API_ERROR",
+                "Strava API jest chwilowo niedostepne. Sprobuj ponownie za chwile.",
+                HttpStatus.BAD_GATEWAY
+        );
     }
 }

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -17,6 +18,7 @@ export class IntegrationsViewComponent implements OnInit {
   syncResult?: StravaSyncResult;
   activities: StravaActivity[] = [];
   errorMessage = '';
+  reconnectRequired = false;
   loading = true;
   activitiesLoading = false;
   syncInProgress = false;
@@ -60,12 +62,17 @@ export class IntegrationsViewComponent implements OnInit {
       next: (result) => {
         this.syncResult = result;
         this.errorMessage = '';
+        this.reconnectRequired = false;
         this.syncInProgress = false;
         this.loadStatus();
         this.loadActivities(true);
       },
-      error: () => {
-        this.errorMessage = 'Nie udalo sie zsynchronizowac danych ze Strava';
+      error: (error: HttpErrorResponse) => {
+        this.errorMessage = this.resolveErrorMessage(error, 'Nie udalo sie zsynchronizowac danych ze Strava');
+        this.reconnectRequired = error.error?.code === 'STRAVA_RECONNECT_REQUIRED';
+        if (this.reconnectRequired) {
+          this.activities = [];
+        }
         this.syncInProgress = false;
         this.changeDetectorRef.detectChanges();
       }
@@ -79,6 +86,7 @@ export class IntegrationsViewComponent implements OnInit {
 
   retryLoadStatus(): void {
     this.errorMessage = '';
+    this.reconnectRequired = false;
     this.loadStatus();
   }
 
@@ -123,6 +131,7 @@ export class IntegrationsViewComponent implements OnInit {
       next: (status) => {
         this.status = status;
         this.errorMessage = '';
+        this.reconnectRequired = false;
         this.loading = false;
         if (status.connected) {
           if (autoSyncAfterConnect && status.athleteId) {
@@ -162,11 +171,20 @@ export class IntegrationsViewComponent implements OnInit {
         this.activitiesLoading = false;
         this.changeDetectorRef.detectChanges();
       },
-      error: () => {
-        this.errorMessage = 'Nie udalo sie pobrac aktywnosci ze Stravy';
+      error: (error: HttpErrorResponse) => {
+        this.errorMessage = this.resolveErrorMessage(error, 'Nie udalo sie pobrac aktywnosci ze Stravy');
+        this.reconnectRequired = error.error?.code === 'STRAVA_RECONNECT_REQUIRED';
+        if (this.reconnectRequired) {
+          this.activities = [];
+        }
         this.activitiesLoading = false;
         this.changeDetectorRef.detectChanges();
       }
     });
+  }
+
+  private resolveErrorMessage(error: HttpErrorResponse, fallback: string): string {
+    const message = error.error?.message;
+    return typeof message === 'string' && message.trim() ? message : fallback;
   }
 }

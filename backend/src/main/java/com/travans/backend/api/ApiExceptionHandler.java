@@ -2,6 +2,7 @@ package com.travans.backend.api;
 
 import com.travans.backend.api.dto.ApiErrorResponse;
 import com.travans.backend.exception.AuthException;
+import com.travans.backend.exception.StravaIntegrationException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,6 +52,12 @@ public class ApiExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiErrorResponse handleAuthException(AuthException exception) {
         return new ApiErrorResponse(exception.getCode(), exception.getMessage(), Map.of());
+    }
+
+    @ExceptionHandler(StravaIntegrationException.class)
+    public org.springframework.http.ResponseEntity<ApiErrorResponse> handleStravaIntegrationException(StravaIntegrationException exception) {
+        return org.springframework.http.ResponseEntity.status(exception.getStatus())
+                .body(new ApiErrorResponse(exception.getCode(), exception.getMessage(), Map.of()));
     }
 
     private String resolveValidationMessage(String defaultMessage) {

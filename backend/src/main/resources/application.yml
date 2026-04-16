@@ -1,6 +1,8 @@
 spring:
   application:
     name: travans-backend
+  profiles:
+    default: dev,local
   datasource:
     url: ${TRAVANS_DB_URL:jdbc:postgresql://localhost:5432/travans}
     username: ${TRAVANS_DB_USERNAME:travans}
@@ -27,7 +29,3 @@ travans:
     base-url: https://www.strava.com/api/v3
     oauth-url: https://www.strava.com/oauth/authorize
     token-url: https://www.strava.com/oauth/token
-    client-id: ${TRAVANS_STRAVA_CLIENT_ID:}
-    client-secret: ${TRAVANS_STRAVA_CLIENT_SECRET:}
-    redirect-uri: ${TRAVANS_STRAVA_REDIRECT_URI:http://localhost:4200/integrations}
-    webhook-verify-token: ${TRAVANS_STRAVA_WEBHOOK_VERIFY_TOKEN:travans-dev-token}

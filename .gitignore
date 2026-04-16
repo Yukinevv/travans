@@ -21,3 +21,4 @@ Thumbs.db
 # Environment
 .env
 backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-local.yaml

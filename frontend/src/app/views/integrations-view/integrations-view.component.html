@@ -22,11 +22,16 @@
     </div>
 
     <div class="actions">
-      <a class="button" *ngIf="!status?.connected && canConnectToStrava(); else retryButton" [href]="status?.authorizationUrl">Polacz ze Strava</a>
+      <a
+        class="button"
+        *ngIf="(!status?.connected || reconnectRequired) && canConnectToStrava(); else retryButton"
+        [href]="status?.authorizationUrl">
+        {{ reconnectRequired ? 'Polacz ponownie ze Strava' : 'Polacz ze Strava' }}
+      </a>
       <ng-template #retryButton>
-        <button type="button" *ngIf="!status?.connected" (click)="retryLoadStatus()">Sprobuj ponownie</button>
+        <button type="button" *ngIf="!status?.connected || reconnectRequired" (click)="retryLoadStatus()">Sprobuj ponownie</button>
       </ng-template>
-      <button *ngIf="status?.connected && status?.athleteId" type="button" (click)="sync(status!.athleteId!)" [disabled]="syncInProgress">
+      <button *ngIf="status?.connected && status?.athleteId && !reconnectRequired" type="button" (click)="sync(status!.athleteId!)" [disabled]="syncInProgress">
         {{ syncInProgress ? 'Synchronizacja...' : 'Synchronizuj' }}
       </button>
     </div>
@@ -34,6 +39,9 @@
     <p class="muted" *ngIf="status?.lastSyncAt">Ostatnia synchronizacja: {{ status?.lastSyncAt }}</p>
     <p class="muted" *ngIf="!status?.connected && !errorMessage">
       Polacz konto Strava, aby pobrac swoje aktywnosci i dopasowac je do planu treningowego.
+    </p>
+    <p class="muted reconnect-text" *ngIf="reconnectRequired">
+      Polaczenie ze Strava wymaga ponownej autoryzacji. Kliknij przycisk powyzej, aby odnowic dostep.
     </p>
     <p class="muted error-text" *ngIf="errorMessage">
       {{ errorMessage }}
@@ -47,7 +55,7 @@
     <p>Dopasowane dni planu: <strong>{{ syncResult.matchedTrainingDays }}</strong></p>
   </article>
 
-  <article class="panel" *ngIf="status?.connected">
+  <article class="panel" *ngIf="status?.connected && !reconnectRequired">
     <div class="panel-header">
       <div>
         <p class="kicker">Aktywnosci</p>

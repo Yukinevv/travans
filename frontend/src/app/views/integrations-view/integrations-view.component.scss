@@ -51,6 +51,11 @@ h2 {
   color: var(--danger);
 }
 
+.reconnect-text {
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+
 .filter {
   display: grid;
   gap: 8px;
