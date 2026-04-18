@@ -41,6 +41,15 @@ label {
   gap: 8px;
 }
 
+.file-picker {
+  margin-bottom: 12px;
+}
+
+.file-picker input[type='file'] {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .error-banner {
   margin: 0;
   padding: 12px 14px;

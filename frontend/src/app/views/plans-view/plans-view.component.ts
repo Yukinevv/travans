@@ -13,6 +13,7 @@ import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model'
   styleUrls: ['./plans-view.component.scss']
 })
 export class PlansViewComponent implements OnInit {
+  importedFileName = '';
   jsonErrorMessage = '';
   submitErrorMessage = '';
   loadingPlan = false;
@@ -184,6 +185,7 @@ export class PlansViewComponent implements OnInit {
 
   onJsonInputChange(value: string): void {
     this.jsonInput = value;
+    this.importedFileName = '';
 
     if (this.syncingFormToJson) {
       return;
@@ -197,6 +199,43 @@ export class PlansViewComponent implements OnInit {
 
     this.syncFormFromPlan(parsedPlan);
     this.changeDetectorRef.detectChanges();
+  }
+
+  onJsonFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const file = input?.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    this.submitErrorMessage = '';
+    this.jsonErrorMessage = '';
+
+    const isJsonFile = file.type === 'application/json' || file.name.toLowerCase().endsWith('.json');
+    if (!isJsonFile) {
+      this.importedFileName = '';
+      this.jsonErrorMessage = 'Wybierz plik JSON z rozszerzeniem .json.';
+      if (input) {
+        input.value = '';
+      }
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const content = typeof reader.result === 'string' ? reader.result : '';
+      this.importedFileName = file.name;
+      this.jsonInput = content;
+      this.onJsonInputChange(content);
+    };
+    reader.onerror = () => {
+      this.importedFileName = '';
+      this.jsonErrorMessage = 'Nie udalo sie odczytac pliku JSON.';
+      this.changeDetectorRef.detectChanges();
+    };
+
+    reader.readAsText(file);
   }
 
   hasControlError(controlPath: string): boolean {

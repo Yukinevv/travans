@@ -95,7 +95,12 @@
 
   <article class="panel" *ngIf="!isEditMode">
     <p class="kicker">Import JSON</p>
-    <h2>Wklej plan w formacie JSON</h2>
+    <h2>Wklej plan lub wczytaj plik JSON</h2>
+    <label class="file-picker">
+      <span>Plik JSON</span>
+      <input type="file" accept=".json,application/json" (change)="onJsonFileSelected($event)">
+    </label>
+    <p class="muted" *ngIf="importedFileName">Wczytano plik: {{ importedFileName }}</p>
     <textarea
       [(ngModel)]="jsonInput"
       (ngModelChange)="onJsonInputChange($event)"
