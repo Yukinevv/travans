@@ -32,7 +32,16 @@
         <div class="day-card" *ngFor="let day of trainingDays.controls; let i = index" [formGroupName]="i">
           <div class="day-card-header">
             <p class="day-card-title">Dzien treningowy {{ i + 1 }}</p>
-            <button type="button" class="danger-button" (click)="removeTrainingDay(i)">Usun dzien</button>
+
+            <div class="day-card-actions">
+              <button type="button" class="secondary icon-button" (click)="moveTrainingDay(i, -1)" [disabled]="i === 0" aria-label="Przenies wyzej">
+                ↑
+              </button>
+              <button type="button" class="secondary icon-button" (click)="moveTrainingDay(i, 1)" [disabled]="i === trainingDays.length - 1" aria-label="Przenies nizej">
+                ↓
+              </button>
+              <button type="button" class="danger-button" (click)="removeTrainingDay(i)">Usun dzien</button>
+            </div>
           </div>
 
           <div class="grid">

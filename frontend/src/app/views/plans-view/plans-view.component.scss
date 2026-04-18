@@ -71,6 +71,12 @@ textarea {
   gap: 12px;
 }
 
+.day-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .day-card-title {
   margin: 0;
   font-size: 0.95rem;
@@ -104,6 +110,13 @@ button.secondary {
   background: var(--surface-strong);
   color: var(--text);
   border: 1px solid var(--border);
+}
+
+button.icon-button {
+  min-width: 44px;
+  padding: 12px;
+  font-size: 1rem;
+  line-height: 1;
 }
 
 button.danger-button {

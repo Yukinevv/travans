@@ -85,6 +85,22 @@ export class PlansViewComponent implements OnInit {
     this.syncJsonFromForm();
   }
 
+  moveTrainingDay(index: number, direction: -1 | 1): void {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= this.trainingDays.length) {
+      return;
+    }
+
+    const currentControl = this.trainingDays.at(index);
+    const targetControl = this.trainingDays.at(targetIndex);
+
+    this.trainingDays.setControl(index, targetControl, { emitEvent: false });
+    this.trainingDays.setControl(targetIndex, currentControl, { emitEvent: false });
+
+    this.syncJsonFromForm();
+    this.changeDetectorRef.detectChanges();
+  }
+
   removeTrainingDay(index: number): void {
     this.trainingDays.removeAt(index);
 
