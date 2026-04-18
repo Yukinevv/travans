@@ -12,11 +12,8 @@ import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model'
   styleUrls: ['./plans-view.component.scss']
 })
 export class PlansViewComponent implements OnInit {
-  plans: TrainingPlan[] = [];
-  errorMessage = '';
   jsonErrorMessage = '';
   submitErrorMessage = '';
-  loading = true;
   jsonInput = `{
   "name": "Przykladowy plan 10 km",
   "description": "4 tygodnie pracy nad tempem",
@@ -78,8 +75,6 @@ export class PlansViewComponent implements OnInit {
     if (initialPlan) {
       this.syncFormFromPlan(initialPlan);
     }
-
-    this.loadPlans();
   }
 
   addTrainingDay(): void {
@@ -131,9 +126,7 @@ export class PlansViewComponent implements OnInit {
 
     this.trainingPlanService.createPlan(this.buildPlanFromForm()).subscribe(() => {
       this.resetEditor();
-      this.errorMessage = '';
       this.submitErrorMessage = '';
-      this.loadPlans();
     }, (error) => {
       this.submitErrorMessage = this.resolveApiErrorMessage(error, 'Nie udalo sie zapisac planu');
       this.changeDetectorRef.detectChanges();
@@ -149,11 +142,9 @@ export class PlansViewComponent implements OnInit {
     }
 
     this.trainingPlanService.importPlan(payload).subscribe(() => {
-      this.errorMessage = '';
       this.syncFormFromPlan(payload);
-      this.loadPlans();
     }, () => {
-      this.errorMessage = 'Nie udalo sie zaimportowac planu';
+      this.submitErrorMessage = 'Nie udalo sie zaimportowac planu';
       this.changeDetectorRef.detectChanges();
     });
   }
@@ -173,23 +164,6 @@ export class PlansViewComponent implements OnInit {
 
     this.syncFormFromPlan(parsedPlan);
     this.changeDetectorRef.detectChanges();
-  }
-
-  private loadPlans(): void {
-    this.loading = true;
-    this.trainingPlanService.getPlans().subscribe({
-      next: (plans) => {
-        this.plans = plans;
-        this.errorMessage = '';
-        this.loading = false;
-        this.changeDetectorRef.detectChanges();
-      },
-      error: () => {
-        this.errorMessage = 'Nie udalo sie pobrac planow';
-        this.loading = false;
-        this.changeDetectorRef.detectChanges();
-      }
-    });
   }
 
   hasControlError(controlPath: string): boolean {

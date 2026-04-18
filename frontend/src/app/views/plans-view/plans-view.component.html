@@ -1,8 +1,4 @@
 <section class="page">
-  <article class="panel" *ngIf="loading">
-    <p class="muted">Ladowanie planow...</p>
-  </article>
-
   <article class="panel">
     <p class="kicker">Nowy plan</p>
     <h2>Dodaj plan recznie</h2>
@@ -107,17 +103,6 @@
     <p class="error-message" *ngIf="jsonErrorMessage">{{ jsonErrorMessage }}</p>
     <div class="actions">
       <button type="button" (click)="importJson()">Importuj</button>
-    </div>
-  </article>
-
-  <article class="panel">
-    <p class="kicker">Lista</p>
-    <h2>Zapisane plany</h2>
-    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
-    <div class="saved-plan" *ngFor="let plan of plans">
-      <strong>{{ plan.name }}</strong>
-      <span>{{ plan.trainingDays.length }} dni</span>
-      <span>Strava od: {{ plan.stravaEvaluationStartDate || plan.startDate }}</span>
     </div>
   </article>
 </section>

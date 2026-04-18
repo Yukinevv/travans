@@ -10,7 +10,8 @@
 
     <nav class="nav">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
-      <a routerLink="/plans" routerLinkActive="active">Plany</a>
+      <a routerLink="/plans" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Nowy plan</a>
+      <a routerLink="/plans/list" routerLinkActive="active">Lista planow</a>
       <a routerLink="/integrations" routerLinkActive="active">Integracje</a>
       <a routerLink="/auth" routerLinkActive="active" *ngIf="!authService.isAuthenticated()">Auth</a>
     </nav>

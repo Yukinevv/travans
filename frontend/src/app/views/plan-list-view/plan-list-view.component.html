@@ -1,0 +1,62 @@
+<section class="page">
+  <article class="panel" *ngIf="loading">
+    <p class="muted">Ladowanie planow...</p>
+  </article>
+
+  <article class="panel">
+    <p class="kicker">Lista</p>
+    <h2>Zapisane plany</h2>
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="empty-state" *ngIf="!loading && !errorMessage && plans.length === 0">
+      <strong>Nie masz jeszcze zapisanych planow.</strong>
+      <span>Dodaj pierwszy plan w widoku "Nowy plan".</span>
+    </div>
+
+    <article
+      class="plan-card"
+      *ngFor="let plan of plans"
+      (click)="togglePlan(plan)"
+      (keydown.enter)="togglePlan(plan)"
+      (keydown.space)="togglePlan(plan); $event.preventDefault()"
+      tabindex="0">
+      <div class="plan-card-summary">
+        <strong>{{ plan.name }}</strong>
+        <span>{{ plan.trainingDays.length }} dni</span>
+        <span>Strava od: {{ plan.stravaEvaluationStartDate || plan.startDate }}</span>
+      </div>
+
+      <span class="plan-card-toggle">{{ isExpanded(plan) ? 'Ukryj szczegoly' : 'Pokaz szczegoly' }}</span>
+
+      <div class="plan-card-details" *ngIf="isExpanded(plan)">
+        <div class="plan-meta">
+          <span>Start planu: {{ plan.startDate }}</span>
+          <span *ngIf="plan.createdAt">Utworzono: {{ plan.createdAt | date:'yyyy-MM-dd HH:mm' }}</span>
+        </div>
+
+        <p class="plan-description" *ngIf="plan.description">{{ plan.description }}</p>
+
+        <div class="day-list">
+          <article class="day-card" *ngFor="let day of plan.trainingDays; let i = index">
+            <div class="day-card-header">
+              <strong>Dzien {{ i + 1 }}: {{ day.title }}</strong>
+              <span class="status-badge">{{ getStatusLabel(day) }}</span>
+            </div>
+
+            <div class="day-grid">
+              <span>Data: {{ day.scheduledDate }}</span>
+              <span>Typ: {{ day.activityType }}</span>
+              <span>Dystans: {{ formatDistance(day.plannedDistanceMeters) }}</span>
+              <span>Czas: {{ formatDuration(day.plannedDurationSeconds) }}</span>
+            </div>
+
+            <p class="day-notes" *ngIf="day.notes">{{ day.notes }}</p>
+            <p class="matched-activity" *ngIf="day.matchedActivityName">
+              Dopasowano: {{ day.matchedActivityName }} ({{ day.matchedActivityDate }})
+            </p>
+          </article>
+        </div>
+      </div>
+    </article>
+  </article>
+</section>
