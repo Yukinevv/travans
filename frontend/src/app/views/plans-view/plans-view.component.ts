@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TrainingPlanService } from '../../core/services/training-plan.service';
 import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
@@ -14,6 +15,9 @@ import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model'
 export class PlansViewComponent implements OnInit {
   jsonErrorMessage = '';
   submitErrorMessage = '';
+  loadingPlan = false;
+  isEditMode = false;
+  editingPlanId: number | null = null;
   jsonInput = `{
   "name": "Przykladowy plan 10 km",
   "description": "4 tygodnie pracy nad tempem",
@@ -45,7 +49,9 @@ export class PlansViewComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly trainingPlanService: TrainingPlanService,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly route: ActivatedRoute,
+    public readonly router: Router
   ) {}
 
   get trainingDays(): FormArray<FormGroup> {
@@ -71,10 +77,23 @@ export class PlansViewComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
     });
 
-    const initialPlan = this.parseJsonInput(this.jsonInput, false);
-    if (initialPlan) {
-      this.syncFormFromPlan(initialPlan);
-    }
+    this.route.paramMap.subscribe((params) => {
+      const rawPlanId = params.get('planId');
+      const planId = rawPlanId ? Number(rawPlanId) : NaN;
+
+      if (!Number.isNaN(planId) && planId > 0) {
+        this.loadPlanForEdit(planId);
+        return;
+      }
+
+      this.isEditMode = false;
+      this.editingPlanId = null;
+      const initialPlan = this.parseJsonInput(this.jsonInput, false);
+      if (initialPlan) {
+        this.syncFormFromPlan(initialPlan);
+      }
+      this.changeDetectorRef.detectChanges();
+    });
   }
 
   addTrainingDay(): void {
@@ -124,9 +143,17 @@ export class PlansViewComponent implements OnInit {
       return;
     }
 
-    this.trainingPlanService.createPlan(this.buildPlanFromForm()).subscribe(() => {
+    const payload = this.buildPlanFromForm();
+    const request = this.isEditMode && this.editingPlanId
+      ? this.trainingPlanService.updatePlan(this.editingPlanId, payload)
+      : this.trainingPlanService.createPlan(payload);
+
+    request.subscribe(() => {
       this.resetEditor();
       this.submitErrorMessage = '';
+      if (this.isEditMode) {
+        this.router.navigate(['/plans/list']);
+      }
     }, (error) => {
       this.submitErrorMessage = this.resolveApiErrorMessage(error, 'Nie udalo sie zapisac planu');
       this.changeDetectorRef.detectChanges();
@@ -135,6 +162,12 @@ export class PlansViewComponent implements OnInit {
 
   importJson(): void {
     this.submitErrorMessage = '';
+    if (this.isEditMode) {
+      this.submitErrorMessage = 'Import JSON jest dostepny tylko przy tworzeniu nowego planu.';
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
     const payload = this.parseJsonInput(this.jsonInput, true);
     if (!payload) {
       this.changeDetectorRef.detectChanges();
@@ -218,6 +251,27 @@ export class PlansViewComponent implements OnInit {
 
     this.jsonErrorMessage = '';
     this.syncingJsonToForm = false;
+  }
+
+  private loadPlanForEdit(planId: number): void {
+    this.loadingPlan = true;
+    this.isEditMode = true;
+    this.editingPlanId = planId;
+    this.submitErrorMessage = '';
+
+    this.trainingPlanService.getPlan(planId).subscribe({
+      next: (plan) => {
+        this.syncFormFromPlan(plan);
+        this.syncJsonFromForm();
+        this.loadingPlan = false;
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (error) => {
+        this.submitErrorMessage = this.resolveApiErrorMessage(error, 'Nie udalo sie pobrac planu do edycji');
+        this.loadingPlan = false;
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
   private syncJsonFromForm(): void {

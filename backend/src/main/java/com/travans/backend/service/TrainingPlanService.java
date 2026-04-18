@@ -55,28 +55,26 @@ public class TrainingPlanService {
     public TrainingPlanResponse createPlan(TrainingPlanRequest request) {
         TrainingPlan plan = new TrainingPlan();
         plan.setOwner(currentUserService.requireCurrentUserEntity());
-        plan.setName(request.name());
-        plan.setDescription(request.description());
-        plan.setStartDate(request.startDate());
-        plan.setStravaEvaluationStartDate(
-                request.stravaEvaluationStartDate() != null ? request.stravaEvaluationStartDate() : request.startDate()
-        );
         plan.setCreatedAt(clock.instant());
-
-        for (TrainingDayRequest dayRequest : request.trainingDays()) {
-            TrainingDay day = new TrainingDay();
-            day.setPlan(plan);
-            day.setScheduledDate(dayRequest.scheduledDate());
-            day.setTitle(dayRequest.title());
-            day.setActivityType(dayRequest.activityType());
-            day.setPlannedDistanceMeters(dayRequest.plannedDistanceMeters());
-            day.setPlannedDurationSeconds(dayRequest.plannedDurationSeconds());
-            day.setNotes(dayRequest.notes());
-            day.setStatus(TrainingDayStatus.PLANNED);
-            plan.getTrainingDays().add(day);
-        }
-
+        applyRequest(plan, request);
         return toResponse(trainingPlanRepository.save(plan));
+    }
+
+    @Transactional
+    public TrainingPlanResponse updatePlan(Long planId, TrainingPlanRequest request) {
+        Long userId = currentUserService.requireAuthenticatedUser().getId();
+        TrainingPlan plan = trainingPlanRepository.findByIdAndOwnerId(planId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Training plan not found: " + planId));
+        applyRequest(plan, request);
+        return toResponse(trainingPlanRepository.save(plan));
+    }
+
+    @Transactional
+    public void deletePlan(Long planId) {
+        Long userId = currentUserService.requireAuthenticatedUser().getId();
+        TrainingPlan plan = trainingPlanRepository.findByIdAndOwnerId(planId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Training plan not found: " + planId));
+        trainingPlanRepository.delete(plan);
     }
 
     TrainingPlanResponse toResponse(TrainingPlan plan) {
@@ -112,5 +110,29 @@ public class TrainingPlanService {
                 matchedActivity.map(StravaActivity::getDistanceMeters).orElse(null),
                 matchedActivity.map(StravaActivity::getMovingTimeSeconds).orElse(null)
         );
+    }
+
+    private void applyRequest(TrainingPlan plan, TrainingPlanRequest request) {
+        plan.setName(request.name());
+        plan.setDescription(request.description());
+        plan.setStartDate(request.startDate());
+        plan.setStravaEvaluationStartDate(
+                request.stravaEvaluationStartDate() != null ? request.stravaEvaluationStartDate() : request.startDate()
+        );
+
+        plan.getTrainingDays().clear();
+        for (TrainingDayRequest dayRequest : request.trainingDays()) {
+            TrainingDay day = new TrainingDay();
+            day.setPlan(plan);
+            day.setScheduledDate(dayRequest.scheduledDate());
+            day.setTitle(dayRequest.title());
+            day.setActivityType(dayRequest.activityType());
+            day.setPlannedDistanceMeters(dayRequest.plannedDistanceMeters());
+            day.setPlannedDurationSeconds(dayRequest.plannedDurationSeconds());
+            day.setNotes(dayRequest.notes());
+            day.setStatus(TrainingDayStatus.PLANNED);
+            day.setMatchedActivityId(null);
+            plan.getTrainingDays().add(day);
+        }
     }
 }

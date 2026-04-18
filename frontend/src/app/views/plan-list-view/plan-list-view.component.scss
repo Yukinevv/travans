@@ -71,6 +71,37 @@ h2 {
   font-size: 0.92rem;
 }
 
+.plan-card-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.plan-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.secondary-button,
+.danger-button {
+  border-radius: 999px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.secondary-button {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text);
+}
+
+.danger-button {
+  background: rgba(183, 55, 31, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(183, 55, 31, 0.22);
+}
+
 .plan-card-details {
   display: grid;
   gap: 16px;
@@ -135,5 +166,10 @@ h2 {
   .plan-meta,
   .day-grid {
     grid-template-columns: 1fr;
+  }
+
+  .plan-card-toolbar {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

@@ -13,8 +13,20 @@ export class TrainingPlanService {
     return this.http.get<TrainingPlan[]>(`${API_BASE_URL}/plans`);
   }
 
+  getPlan(planId: number): Observable<TrainingPlan> {
+    return this.http.get<TrainingPlan>(`${API_BASE_URL}/plans/${planId}`);
+  }
+
   createPlan(payload: TrainingPlan): Observable<TrainingPlan> {
     return this.http.post<TrainingPlan>(`${API_BASE_URL}/plans`, payload);
+  }
+
+  updatePlan(planId: number, payload: TrainingPlan): Observable<TrainingPlan> {
+    return this.http.put<TrainingPlan>(`${API_BASE_URL}/plans/${planId}`, payload);
+  }
+
+  deletePlan(planId: number): Observable<void> {
+    return this.http.delete<void>(`${API_BASE_URL}/plans/${planId}`);
   }
 
   importPlan(payload: TrainingPlan): Observable<TrainingPlan> {

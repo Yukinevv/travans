@@ -14,6 +14,7 @@ const routes: Routes = [
   { path: '', component: DashboardViewComponent, canActivate: [AuthGuard] },
   { path: 'plans', component: PlansViewComponent, canActivate: [AuthGuard] },
   { path: 'plans/list', component: PlanListViewComponent, canActivate: [AuthGuard] },
+  { path: 'plans/:planId/edit', component: PlansViewComponent, canActivate: [AuthGuard] },
   { path: 'integrations', component: IntegrationsViewComponent, canActivate: [AuthGuard] },
   { path: 'integrations/activities/:activityId', component: IntegrationActivityDetailViewComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }

@@ -1,7 +1,8 @@
 <section class="page">
   <article class="panel">
     <p class="kicker">Nowy plan</p>
-    <h2>Dodaj plan recznie</h2>
+    <h2>{{ isEditMode ? 'Edytuj plan' : 'Dodaj plan recznie' }}</h2>
+    <p class="muted" *ngIf="loadingPlan">Ladowanie planu do edycji...</p>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <p class="error-banner" *ngIf="submitErrorMessage">{{ submitErrorMessage }}</p>
@@ -86,12 +87,13 @@
 
       <div class="actions">
         <button type="button" class="secondary" (click)="addTrainingDay()">Dodaj dzien</button>
-        <button type="submit">Zapisz plan</button>
+        <button type="button" class="secondary" *ngIf="isEditMode" (click)="router.navigate(['/plans/list'])">Anuluj</button>
+        <button type="submit">{{ isEditMode ? 'Zapisz zmiany' : 'Zapisz plan' }}</button>
       </div>
     </form>
   </article>
 
-  <article class="panel">
+  <article class="panel" *ngIf="!isEditMode">
     <p class="kicker">Import JSON</p>
     <h2>Wklej plan w formacie JSON</h2>
     <textarea

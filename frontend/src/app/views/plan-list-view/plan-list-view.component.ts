@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { TrainingPlanService } from '../../core/services/training-plan.service';
 import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
@@ -17,7 +18,8 @@ export class PlanListViewComponent implements OnInit {
 
   constructor(
     private readonly trainingPlanService: TrainingPlanService,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +63,42 @@ export class PlanListViewComponent implements OnInit {
       default:
         return 'Zaplanowany';
     }
+  }
+
+  editPlan(plan: TrainingPlan, event: Event): void {
+    event.stopPropagation();
+    if (!plan.id) {
+      return;
+    }
+
+    this.router.navigate(['/plans', plan.id, 'edit']);
+  }
+
+  deletePlan(plan: TrainingPlan, event: Event): void {
+    event.stopPropagation();
+    if (!plan.id) {
+      return;
+    }
+
+    const confirmed = window.confirm(`Czy na pewno chcesz usunac plan "${plan.name}"?`);
+    if (!confirmed) {
+      return;
+    }
+
+    this.trainingPlanService.deletePlan(plan.id).subscribe({
+      next: () => {
+        this.plans = this.plans.filter((candidate) => candidate.id !== plan.id);
+        if (this.expandedPlanId === plan.id) {
+          this.expandedPlanId = null;
+        }
+        this.errorMessage = '';
+        this.changeDetectorRef.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Nie udalo sie usunac planu';
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
   private loadPlans(): void {

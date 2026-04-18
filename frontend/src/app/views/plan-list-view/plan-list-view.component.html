@@ -26,7 +26,13 @@
         <span>Strava od: {{ plan.stravaEvaluationStartDate || plan.startDate }}</span>
       </div>
 
-      <span class="plan-card-toggle">{{ isExpanded(plan) ? 'Ukryj szczegoly' : 'Pokaz szczegoly' }}</span>
+      <div class="plan-card-toolbar">
+        <span class="plan-card-toggle">{{ isExpanded(plan) ? 'Ukryj szczegoly' : 'Pokaz szczegoly' }}</span>
+        <div class="plan-card-actions">
+          <button type="button" class="secondary-button" (click)="editPlan(plan, $event)">Edytuj</button>
+          <button type="button" class="danger-button" (click)="deletePlan(plan, $event)">Usun</button>
+        </div>
+      </div>
 
       <div class="plan-card-details" *ngIf="isExpanded(plan)">
         <div class="plan-meta">
