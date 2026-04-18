@@ -4,6 +4,16 @@
       <p class="kicker">Dashboard</p>
       <h2>Postep realizacji planu</h2>
     </div>
+
+    <label class="plan-switcher" *ngIf="!loadingPlans && plans.length > 0">
+      <span>Wyswietlany plan</span>
+      <select [value]="selectedPlanId ?? ''" (change)="onSelectedPlanChange(($any($event.target)).value)">
+        <option value="">Automatycznie wybrany</option>
+        <option *ngFor="let plan of plans" [value]="plan.id">
+          {{ plan.name }}
+        </option>
+      </select>
+    </label>
   </header>
 
   <article class="panel" *ngIf="loading">
@@ -48,6 +58,7 @@
   <article class="panel" *ngIf="summary && hasCurrentPlan()">
     <p class="panel-label">Biezacy plan</p>
     <h3>{{ summary.currentPlanName }}</h3>
+    <p class="muted" *ngIf="selectedPlanId">Plan zostal przypiety do dashboardu.</p>
 
     <div class="day-list">
       <article class="day-card" *ngFor="let day of summary.trainingDays; trackBy: trackByDay" [class.completed]="day.status === 'COMPLETED'" [class.partial]="day.status === 'PARTIALLY_COMPLETED'" [class.missed]="day.status === 'MISSED'">

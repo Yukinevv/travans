@@ -81,13 +81,28 @@ h2 {
 .plan-card-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
+.primary-button,
 .secondary-button,
 .danger-button {
   border-radius: 999px;
   padding: 10px 14px;
   cursor: pointer;
+}
+
+.primary-button {
+  border: 1px solid rgba(183, 103, 29, 0.18);
+  background: rgba(183, 103, 29, 0.12);
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.primary-button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
 }
 
 .secondary-button {

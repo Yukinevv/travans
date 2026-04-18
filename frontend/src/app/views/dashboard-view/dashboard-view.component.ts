@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
+import { CurrentPlanService } from '../../core/services/current-plan.service';
 import { DashboardSummary } from '../../core/types/dashboard.model';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { TrainingDay } from '../../core/types/training-plan.model';
+import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
+import { TrainingPlanService } from '../../core/services/training-plan.service';
 
 @Component({
   selector: 'app-dashboard-view',
@@ -11,29 +13,50 @@ import { TrainingDay } from '../../core/types/training-plan.model';
   styleUrls: ['./dashboard-view.component.scss']
 })
 export class DashboardViewComponent implements OnInit {
+  plans: TrainingPlan[] = [];
   summary?: DashboardSummary;
+  selectedPlanId: number | null = null;
   errorMessage = '';
   loading = true;
+  loadingPlans = true;
 
   constructor(
     private readonly dashboardService: DashboardService,
+    private readonly trainingPlanService: TrainingPlanService,
+    private readonly currentPlanService: CurrentPlanService,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.dashboardService.getSummary().subscribe({
-      next: (summary) => {
-        this.summary = summary;
-        this.errorMessage = '';
-        this.loading = false;
-        this.changeDetectorRef.detectChanges();
+    this.trainingPlanService.getPlans().subscribe({
+      next: (plans) => {
+        this.plans = plans;
+        this.loadingPlans = false;
+
+        const storedPlanId = this.currentPlanService.getSelectedPlanId();
+        const hasStoredPlan = storedPlanId !== null && this.plans.some((plan) => plan.id === storedPlanId);
+        this.selectedPlanId = hasStoredPlan ? storedPlanId : null;
+
+        if (storedPlanId !== this.selectedPlanId) {
+          this.currentPlanService.setSelectedPlanId(this.selectedPlanId);
+        }
+
+        this.loadSummary(this.selectedPlanId);
       },
       error: () => {
-        this.errorMessage = 'Nie udalo sie pobrac danych dashboardu';
+        this.errorMessage = 'Nie udalo sie pobrac listy planow';
         this.loading = false;
+        this.loadingPlans = false;
         this.changeDetectorRef.detectChanges();
       }
     });
+  }
+
+  onSelectedPlanChange(value: string): void {
+    const nextPlanId = value ? Number(value) : null;
+    this.selectedPlanId = Number.isFinite(nextPlanId) ? nextPlanId : null;
+    this.currentPlanService.setSelectedPlanId(this.selectedPlanId);
+    this.loadSummary(this.selectedPlanId);
   }
 
   trackByDay(_: number, day: TrainingDay): number | string {
@@ -64,5 +87,28 @@ export class DashboardViewComponent implements OnInit {
     }
 
     return `${minutes} min`;
+  }
+
+  private loadSummary(planId: number | null): void {
+    this.loading = true;
+    this.dashboardService.getSummary(planId ?? undefined).subscribe({
+      next: (summary) => {
+        this.summary = summary;
+        this.errorMessage = '';
+        this.loading = false;
+
+        if (summary.currentPlanId !== this.selectedPlanId) {
+          this.selectedPlanId = summary.currentPlanId;
+          this.currentPlanService.setSelectedPlanId(summary.currentPlanId);
+        }
+
+        this.changeDetectorRef.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Nie udalo sie pobrac danych dashboardu';
+        this.loading = false;
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 }

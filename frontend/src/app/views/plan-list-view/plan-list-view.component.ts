@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { CurrentPlanService } from '../../core/services/current-plan.service';
 import { TrainingPlanService } from '../../core/services/training-plan.service';
 import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
 
@@ -13,16 +14,19 @@ import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model'
 export class PlanListViewComponent implements OnInit {
   plans: TrainingPlan[] = [];
   expandedPlanId: number | null = null;
+  selectedDashboardPlanId: number | null = null;
   errorMessage = '';
   loading = true;
 
   constructor(
     private readonly trainingPlanService: TrainingPlanService,
     private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly currentPlanService: CurrentPlanService,
     private readonly router: Router
   ) {}
 
   ngOnInit(): void {
+    this.selectedDashboardPlanId = this.currentPlanService.getSelectedPlanId();
     this.loadPlans();
   }
 
@@ -91,6 +95,10 @@ export class PlanListViewComponent implements OnInit {
         if (this.expandedPlanId === plan.id) {
           this.expandedPlanId = null;
         }
+        if (this.selectedDashboardPlanId === plan.id) {
+          this.selectedDashboardPlanId = null;
+          this.currentPlanService.setSelectedPlanId(null);
+        }
         this.errorMessage = '';
         this.changeDetectorRef.detectChanges();
       },
@@ -99,6 +107,21 @@ export class PlanListViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       }
     });
+  }
+
+  showOnDashboard(plan: TrainingPlan, event: Event): void {
+    event.stopPropagation();
+    if (!plan.id) {
+      return;
+    }
+
+    this.selectedDashboardPlanId = plan.id;
+    this.currentPlanService.setSelectedPlanId(plan.id);
+    this.router.navigate(['/']);
+  }
+
+  isSelectedForDashboard(plan: TrainingPlan): boolean {
+    return !!plan.id && this.selectedDashboardPlanId === plan.id;
   }
 
   private loadPlans(): void {
