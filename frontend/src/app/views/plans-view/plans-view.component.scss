@@ -41,6 +41,15 @@ label {
   gap: 8px;
 }
 
+.error-banner {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(183, 55, 31, 0.22);
+  background: rgba(183, 55, 31, 0.08);
+  color: var(--danger);
+}
+
 input,
 select,
 textarea {
@@ -132,6 +141,11 @@ button.danger-button {
 
 .error-message {
   color: var(--danger);
+}
+
+.field-error {
+  color: var(--danger);
+  font-size: 0.85rem;
 }
 
 @media (max-width: 900px) {

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -14,6 +15,7 @@ export class PlansViewComponent implements OnInit {
   plans: TrainingPlan[] = [];
   errorMessage = '';
   jsonErrorMessage = '';
+  submitErrorMessage = '';
   loading = true;
   jsonInput = `{
   "name": "Przykladowy plan 10 km",
@@ -118,22 +120,28 @@ export class PlansViewComponent implements OnInit {
   }
 
   submit(): void {
+    this.submitErrorMessage = '';
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.submitErrorMessage = 'Uzupelnij wymagane pola planu przed zapisem.';
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
     this.trainingPlanService.createPlan(this.buildPlanFromForm()).subscribe(() => {
       this.resetEditor();
       this.errorMessage = '';
+      this.submitErrorMessage = '';
       this.loadPlans();
-    }, () => {
-      this.errorMessage = 'Nie udalo sie zapisac planu';
+    }, (error) => {
+      this.submitErrorMessage = this.resolveApiErrorMessage(error, 'Nie udalo sie zapisac planu');
       this.changeDetectorRef.detectChanges();
     });
   }
 
   importJson(): void {
+    this.submitErrorMessage = '';
     const payload = this.parseJsonInput(this.jsonInput, true);
     if (!payload) {
       this.changeDetectorRef.detectChanges();
@@ -182,6 +190,40 @@ export class PlansViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       }
     });
+  }
+
+  hasControlError(controlPath: string): boolean {
+    const control = this.form.get(controlPath);
+    return !!control && control.invalid && (control.touched || control.dirty);
+  }
+
+  getControlErrorMessage(controlPath: string, label: string): string {
+    const control = this.form.get(controlPath);
+    if (!control || !control.errors) {
+      return '';
+    }
+
+    if (control.errors['required']) {
+      return `${label} jest wymagane.`;
+    }
+
+    return `${label} jest niepoprawne.`;
+  }
+
+  private resolveApiErrorMessage(error: unknown, fallbackMessage: string): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return fallbackMessage;
+    }
+
+    const response = error.error as { message?: string; errors?: Record<string, string> } | null;
+    if (response?.message) {
+      const fieldErrors = response.errors ? Object.values(response.errors).filter(Boolean) : [];
+      return fieldErrors.length > 0
+        ? `${response.message} ${fieldErrors.join(' ')}`
+        : response.message;
+    }
+
+    return fallbackMessage;
   }
 
   private syncFormFromPlan(plan: TrainingPlan): void {

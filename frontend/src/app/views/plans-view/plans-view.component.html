@@ -8,14 +8,18 @@
     <h2>Dodaj plan recznie</h2>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
+      <p class="error-banner" *ngIf="submitErrorMessage">{{ submitErrorMessage }}</p>
+
       <div class="grid">
         <label>
           <span>Nazwa</span>
           <input formControlName="name" type="text">
+          <small class="field-error" *ngIf="hasControlError('name')">{{ getControlErrorMessage('name', 'Nazwa') }}</small>
         </label>
         <label>
           <span>Data startu</span>
           <input formControlName="startDate" type="date">
+          <small class="field-error" *ngIf="hasControlError('startDate')">{{ getControlErrorMessage('startDate', 'Data startu') }}</small>
         </label>
         <label>
           <span>Uwzgledniaj Strave od</span>
@@ -48,10 +52,12 @@
             <label>
               <span>Dzien</span>
               <input formControlName="scheduledDate" type="date">
+              <small class="field-error" *ngIf="hasControlError('trainingDays.' + i + '.scheduledDate')">{{ getControlErrorMessage('trainingDays.' + i + '.scheduledDate', 'Dzien') }}</small>
             </label>
             <label>
               <span>Tytul</span>
               <input formControlName="title" type="text">
+              <small class="field-error" *ngIf="hasControlError('trainingDays.' + i + '.title')">{{ getControlErrorMessage('trainingDays.' + i + '.title', 'Tytul') }}</small>
             </label>
             <label>
               <span>Typ</span>
@@ -63,6 +69,7 @@
                 <option value="STRENGTH">Sila</option>
                 <option value="OTHER">Inne</option>
               </select>
+              <small class="field-error" *ngIf="hasControlError('trainingDays.' + i + '.activityType')">{{ getControlErrorMessage('trainingDays.' + i + '.activityType', 'Typ') }}</small>
             </label>
             <label>
               <span>Dystans planowany (m)</span>
