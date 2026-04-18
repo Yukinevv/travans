@@ -102,6 +102,11 @@ export class PlansViewComponent implements OnInit {
   }
 
   removeTrainingDay(index: number): void {
+    const confirmed = window.confirm(`Czy na pewno chcesz usunac dzien treningowy ${index + 1}?`);
+    if (!confirmed) {
+      return;
+    }
+
     this.trainingDays.removeAt(index);
 
     if (this.trainingDays.length === 0) {
