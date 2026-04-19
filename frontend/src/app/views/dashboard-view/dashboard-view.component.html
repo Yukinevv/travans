@@ -83,6 +83,26 @@
         <span>Zysk czasu</span>
         <strong>{{ formatDuration(summary.detailedStats.totalTimeSavedSeconds) }}</strong>
       </article>
+      <article class="detail-card">
+        <span>Srednie tempo biegu</span>
+        <strong>{{ formatPace(summary.detailedStats.averageRunPaceSecondsPerKm) }}</strong>
+      </article>
+      <article class="detail-card">
+        <span>Najszybsze tempo biegu</span>
+        <strong>{{ formatPace(summary.detailedStats.fastestRunPaceSecondsPerKm) }}</strong>
+      </article>
+      <article class="detail-card">
+        <span>Srednia predkosc jazdy</span>
+        <strong>{{ formatSpeed(summary.detailedStats.averageRideSpeedKph) }}</strong>
+      </article>
+      <article class="detail-card">
+        <span>Maksymalna predkosc jazdy</span>
+        <strong>{{ formatSpeed(summary.detailedStats.topRideSpeedKph) }}</strong>
+      </article>
+      <article class="detail-card">
+        <span>Przewyzszenie</span>
+        <strong>{{ summary.detailedStats.totalElevationGainMeters }} m</strong>
+      </article>
     </div>
   </article>
 
@@ -130,6 +150,11 @@
             <span>Cel dystansu: {{ getStatusLabel(day.distanceGoalMet) }}</span>
             <span>Cel czasu: {{ getStatusLabel(day.durationGoalMet) }}</span>
             <span>Cel tempa: {{ getStatusLabel(day.paceGoalMet) }}</span>
+            <span *ngIf="day.matchedAverageSpeedMetersPerSecond">Srednia predkosc: {{ formatSpeed(day.matchedAverageSpeedMetersPerSecond * 3.6) }}</span>
+            <span *ngIf="day.matchedMaxSpeedMetersPerSecond">Maks. predkosc: {{ formatSpeed(day.matchedMaxSpeedMetersPerSecond * 3.6) }}</span>
+            <span *ngIf="day.matchedElevationGainMeters">Przewyzszenie: {{ day.matchedElevationGainMeters }} m</span>
+            <span *ngIf="day.matchedAverageHeartrateBpm">Srednie tetno: {{ day.matchedAverageHeartrateBpm | number:'1.0-0' }} bpm</span>
+            <span *ngIf="day.matchedAverageCadenceRpm">Srednia kadencja: {{ day.matchedAverageCadenceRpm | number:'1.0-0' }}</span>
             <span *ngIf="day.distanceOverMeters">Nadwyzka dystansu: {{ formatDistance(day.distanceOverMeters) }}</span>
             <span *ngIf="day.durationOverSeconds">Nadwyzka czasu: {{ formatDuration(day.durationOverSeconds) }}</span>
             <span *ngIf="day.timeSavedSeconds">Zysk czasu: {{ formatDuration(day.timeSavedSeconds) }}</span>

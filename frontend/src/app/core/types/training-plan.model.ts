@@ -15,6 +15,12 @@ export interface TrainingDay {
   matchedActivityDate?: string | null;
   matchedDistanceMeters?: number | null;
   matchedMovingTimeSeconds?: number | null;
+  matchedAverageSpeedMetersPerSecond?: number | null;
+  matchedMaxSpeedMetersPerSecond?: number | null;
+  matchedElevationGainMeters?: number | null;
+  matchedAverageHeartrateBpm?: number | null;
+  matchedMaxHeartrateBpm?: number | null;
+  matchedAverageCadenceRpm?: number | null;
   distanceGoalMet?: boolean | null;
   durationGoalMet?: boolean | null;
   paceGoalMet?: boolean | null;

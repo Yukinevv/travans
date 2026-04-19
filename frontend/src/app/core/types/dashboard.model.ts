@@ -9,6 +9,11 @@ export interface DashboardDetailedStats {
   totalDistanceOverMeters: number;
   totalDurationOverSeconds: number;
   totalTimeSavedSeconds: number;
+  averageRunPaceSecondsPerKm: number | null;
+  fastestRunPaceSecondsPerKm: number | null;
+  averageRideSpeedKph: number | null;
+  topRideSpeedKph: number | null;
+  totalElevationGainMeters: number;
 }
 
 export interface DashboardSummary {

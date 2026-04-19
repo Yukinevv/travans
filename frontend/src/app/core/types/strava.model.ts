@@ -22,6 +22,12 @@ export interface StravaActivity {
   startedAt: string;
   distanceMeters: number | null;
   movingTimeSeconds: number | null;
+  averageSpeedMetersPerSecond: number | null;
+  maxSpeedMetersPerSecond: number | null;
+  elevationGainMeters: number | null;
+  averageHeartrateBpm: number | null;
+  maxHeartrateBpm: number | null;
+  averageCadenceRpm: number | null;
   matchedToPlan: boolean;
   matchedTrainingDayId: number | null;
   matchedTrainingDayTitle: string | null;

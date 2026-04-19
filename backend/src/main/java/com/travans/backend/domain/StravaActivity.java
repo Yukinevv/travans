@@ -51,6 +51,24 @@ public class StravaActivity {
     @Column
     private Integer movingTimeSeconds;
 
+    @Column
+    private Double averageSpeedMetersPerSecond;
+
+    @Column
+    private Double maxSpeedMetersPerSecond;
+
+    @Column
+    private Integer elevationGainMeters;
+
+    @Column
+    private Double averageHeartrateBpm;
+
+    @Column
+    private Integer maxHeartrateBpm;
+
+    @Column
+    private Double averageCadenceRpm;
+
     @Column(nullable = false)
     private Instant importedAt;
 
@@ -128,6 +146,54 @@ public class StravaActivity {
 
     public void setMovingTimeSeconds(Integer movingTimeSeconds) {
         this.movingTimeSeconds = movingTimeSeconds;
+    }
+
+    public Double getAverageSpeedMetersPerSecond() {
+        return averageSpeedMetersPerSecond;
+    }
+
+    public void setAverageSpeedMetersPerSecond(Double averageSpeedMetersPerSecond) {
+        this.averageSpeedMetersPerSecond = averageSpeedMetersPerSecond;
+    }
+
+    public Double getMaxSpeedMetersPerSecond() {
+        return maxSpeedMetersPerSecond;
+    }
+
+    public void setMaxSpeedMetersPerSecond(Double maxSpeedMetersPerSecond) {
+        this.maxSpeedMetersPerSecond = maxSpeedMetersPerSecond;
+    }
+
+    public Integer getElevationGainMeters() {
+        return elevationGainMeters;
+    }
+
+    public void setElevationGainMeters(Integer elevationGainMeters) {
+        this.elevationGainMeters = elevationGainMeters;
+    }
+
+    public Double getAverageHeartrateBpm() {
+        return averageHeartrateBpm;
+    }
+
+    public void setAverageHeartrateBpm(Double averageHeartrateBpm) {
+        this.averageHeartrateBpm = averageHeartrateBpm;
+    }
+
+    public Integer getMaxHeartrateBpm() {
+        return maxHeartrateBpm;
+    }
+
+    public void setMaxHeartrateBpm(Integer maxHeartrateBpm) {
+        this.maxHeartrateBpm = maxHeartrateBpm;
+    }
+
+    public Double getAverageCadenceRpm() {
+        return averageCadenceRpm;
+    }
+
+    public void setAverageCadenceRpm(Double averageCadenceRpm) {
+        this.averageCadenceRpm = averageCadenceRpm;
     }
 
     public Instant getImportedAt() {

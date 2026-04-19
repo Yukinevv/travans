@@ -211,6 +211,12 @@ public class StravaService {
             activity.setActivityDate(startedAt.atZone(ZoneOffset.UTC).toLocalDate());
             activity.setDistanceMeters((int) Math.round(Double.parseDouble(String.valueOf(payload.getOrDefault("distance", 0)))));
             activity.setMovingTimeSeconds(Integer.parseInt(String.valueOf(payload.getOrDefault("moving_time", 0))));
+            activity.setAverageSpeedMetersPerSecond(readDouble(payload.get("average_speed")));
+            activity.setMaxSpeedMetersPerSecond(readDouble(payload.get("max_speed")));
+            activity.setElevationGainMeters(readInteger(payload.get("total_elevation_gain")));
+            activity.setAverageHeartrateBpm(readDouble(payload.get("average_heartrate")));
+            activity.setMaxHeartrateBpm(readInteger(payload.get("max_heartrate")));
+            activity.setAverageCadenceRpm(readDouble(payload.get("average_cadence")));
             activity.setImportedAt(clock.instant());
             stravaActivityRepository.save(activity);
             imported++;
@@ -353,6 +359,12 @@ public class StravaService {
                 activity.getStartedAt(),
                 activity.getDistanceMeters(),
                 activity.getMovingTimeSeconds(),
+                activity.getAverageSpeedMetersPerSecond(),
+                activity.getMaxSpeedMetersPerSecond(),
+                activity.getElevationGainMeters(),
+                activity.getAverageHeartrateBpm(),
+                activity.getMaxHeartrateBpm(),
+                activity.getAverageCadenceRpm(),
                 matchedDay != null,
                 matchedDay != null ? matchedDay.getId() : null,
                 matchedDay != null ? matchedDay.getTitle() : null,
@@ -373,6 +385,22 @@ public class StravaService {
             return 0;
         }
         return Math.abs((long) day.getPlannedDurationSeconds() - activity.getMovingTimeSeconds());
+    }
+
+    private Double readDouble(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        return Double.parseDouble(String.valueOf(value));
+    }
+
+    private Integer readInteger(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        return (int) Math.round(Double.parseDouble(String.valueOf(value)));
     }
 
     private String buildAuthorizationUrl() {

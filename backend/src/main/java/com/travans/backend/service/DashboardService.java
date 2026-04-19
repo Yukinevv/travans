@@ -3,6 +3,7 @@ package com.travans.backend.service;
 import com.travans.backend.api.dto.DashboardSummaryResponse;
 import com.travans.backend.api.dto.DashboardDetailedStatsResponse;
 import com.travans.backend.api.dto.TrainingDayResponse;
+import com.travans.backend.domain.ActivityType;
 import com.travans.backend.domain.TrainingDay;
 import com.travans.backend.domain.TrainingDayStatus;
 import com.travans.backend.repository.TrainingDayRepository;
@@ -73,6 +74,11 @@ public class DashboardService {
         int totalDistanceOverMeters = trainingDays.stream().mapToInt(day -> getSafeValue(day.distanceOverMeters())).sum();
         int totalDurationOverSeconds = trainingDays.stream().mapToInt(day -> getSafeValue(day.durationOverSeconds())).sum();
         int totalTimeSavedSeconds = trainingDays.stream().mapToInt(day -> getSafeValue(day.timeSavedSeconds())).sum();
+        int totalElevationGainMeters = trainingDays.stream().mapToInt(day -> getSafeValue(day.matchedElevationGainMeters())).sum();
+        Integer averageRunPaceSecondsPerKm = calculateAverageRunPace(trainingDays);
+        Integer fastestRunPaceSecondsPerKm = calculateFastestRunPace(trainingDays);
+        Double averageRideSpeedKph = calculateAverageRideSpeed(trainingDays);
+        Double topRideSpeedKph = calculateTopRideSpeed(trainingDays);
 
         return new DashboardDetailedStatsResponse(
                 daysMeetingDistanceGoal,
@@ -82,12 +88,70 @@ public class DashboardService {
                 daysWithTimeSaved,
                 totalDistanceOverMeters,
                 totalDurationOverSeconds,
-                totalTimeSavedSeconds
+                totalTimeSavedSeconds,
+                averageRunPaceSecondsPerKm,
+                fastestRunPaceSecondsPerKm,
+                averageRideSpeedKph,
+                topRideSpeedKph,
+                totalElevationGainMeters
         );
     }
 
     private int getSafeValue(Integer value) {
         return value == null ? 0 : value;
+    }
+
+    private Integer calculateAverageRunPace(List<TrainingDayResponse> trainingDays) {
+        long totalDistance = trainingDays.stream()
+                .filter(day -> day.activityType() == ActivityType.RUN)
+                .mapToLong(day -> getSafeValue(day.matchedDistanceMeters()))
+                .sum();
+        long totalTime = trainingDays.stream()
+                .filter(day -> day.activityType() == ActivityType.RUN)
+                .mapToLong(day -> getSafeValue(day.matchedMovingTimeSeconds()))
+                .sum();
+
+        if (totalDistance <= 0 || totalTime <= 0) {
+            return null;
+        }
+
+        return (int) Math.round((double) totalTime * 1000.0 / totalDistance);
+    }
+
+    private Integer calculateFastestRunPace(List<TrainingDayResponse> trainingDays) {
+        return trainingDays.stream()
+                .filter(day -> day.activityType() == ActivityType.RUN)
+                .filter(day -> getSafeValue(day.matchedDistanceMeters()) > 0 && getSafeValue(day.matchedMovingTimeSeconds()) > 0)
+                .map(day -> (int) Math.round((double) day.matchedMovingTimeSeconds() * 1000.0 / day.matchedDistanceMeters()))
+                .min(Integer::compareTo)
+                .orElse(null);
+    }
+
+    private Double calculateAverageRideSpeed(List<TrainingDayResponse> trainingDays) {
+        long totalDistance = trainingDays.stream()
+                .filter(day -> day.activityType() == ActivityType.RIDE)
+                .mapToLong(day -> getSafeValue(day.matchedDistanceMeters()))
+                .sum();
+        long totalTime = trainingDays.stream()
+                .filter(day -> day.activityType() == ActivityType.RIDE)
+                .mapToLong(day -> getSafeValue(day.matchedMovingTimeSeconds()))
+                .sum();
+
+        if (totalDistance <= 0 || totalTime <= 0) {
+            return null;
+        }
+
+        return ((double) totalDistance / (double) totalTime) * 3.6;
+    }
+
+    private Double calculateTopRideSpeed(List<TrainingDayResponse> trainingDays) {
+        return trainingDays.stream()
+                .filter(day -> day.activityType() == ActivityType.RIDE)
+                .map(TrainingDayResponse::matchedMaxSpeedMetersPerSecond)
+                .filter(value -> value != null && value > 0)
+                .map(value -> value * 3.6)
+                .max(Double::compareTo)
+                .orElse(null);
     }
 
     private Optional<com.travans.backend.domain.TrainingPlan> resolveCurrentPlan(Long userId, Long planId) {

@@ -8,6 +8,11 @@ public record DashboardDetailedStatsResponse(
         long daysWithTimeSaved,
         int totalDistanceOverMeters,
         int totalDurationOverSeconds,
-        int totalTimeSavedSeconds
+        int totalTimeSavedSeconds,
+        Integer averageRunPaceSecondsPerKm,
+        Integer fastestRunPaceSecondsPerKm,
+        Double averageRideSpeedKph,
+        Double topRideSpeedKph,
+        int totalElevationGainMeters
 ) {
 }

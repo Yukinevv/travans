@@ -40,6 +40,34 @@
         <span>Data startu</span>
         <strong>{{ activity.startedAt | date:'dd.MM.yyyy HH:mm' }}</strong>
       </article>
+      <article class="stat-card" *ngIf="activity.averageSpeedMetersPerSecond">
+        <span>Srednia predkosc</span>
+        <strong>{{ formatSpeed(activity.averageSpeedMetersPerSecond) }}</strong>
+      </article>
+      <article class="stat-card" *ngIf="activity.maxSpeedMetersPerSecond">
+        <span>Maksymalna predkosc</span>
+        <strong>{{ formatSpeed(activity.maxSpeedMetersPerSecond) }}</strong>
+      </article>
+      <article class="stat-card" *ngIf="activity.activityType === 'RUN' || activity.activityType === 'WALK'">
+        <span>Srednie tempo</span>
+        <strong>{{ formatPace(activity.averageSpeedMetersPerSecond) }}</strong>
+      </article>
+      <article class="stat-card" *ngIf="activity.elevationGainMeters">
+        <span>Przewyzszenie</span>
+        <strong>{{ activity.elevationGainMeters }} m</strong>
+      </article>
+      <article class="stat-card" *ngIf="activity.averageHeartrateBpm">
+        <span>Srednie tetno</span>
+        <strong>{{ activity.averageHeartrateBpm | number:'1.0-0' }} bpm</strong>
+      </article>
+      <article class="stat-card" *ngIf="activity.maxHeartrateBpm">
+        <span>Maksymalne tetno</span>
+        <strong>{{ activity.maxHeartrateBpm }} bpm</strong>
+      </article>
+      <article class="stat-card" *ngIf="activity.averageCadenceRpm">
+        <span>Srednia kadencja</span>
+        <strong>{{ activity.averageCadenceRpm | number:'1.0-0' }}</strong>
+      </article>
     </div>
 
     <article class="match-panel">

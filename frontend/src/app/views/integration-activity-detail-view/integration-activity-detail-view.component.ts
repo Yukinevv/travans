@@ -73,6 +73,25 @@ export class IntegrationActivityDetailViewComponent implements OnInit {
     return `${totalMinutes} min`;
   }
 
+  formatSpeed(speedMetersPerSecond: number | null): string {
+    if (!speedMetersPerSecond) {
+      return '-';
+    }
+
+    return `${(speedMetersPerSecond * 3.6).toFixed(1)} km/h`;
+  }
+
+  formatPace(speedMetersPerSecond: number | null): string {
+    if (!speedMetersPerSecond || speedMetersPerSecond <= 0) {
+      return '-';
+    }
+
+    const secondsPerKm = 1000 / speedMetersPerSecond;
+    const minutes = Math.floor(secondsPerKm / 60);
+    const seconds = Math.round(secondsPerKm % 60);
+    return `${minutes}:${String(seconds).padStart(2, '0')} min/km`;
+  }
+
   getActivityTypeLabel(activityType: StravaActivity['activityType']): string {
     return getActivityTypeLabel(activityType);
   }

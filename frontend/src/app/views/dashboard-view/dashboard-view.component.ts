@@ -108,6 +108,24 @@ export class DashboardViewComponent implements OnInit {
     return `${minutes} min`;
   }
 
+  formatSpeed(speedKph: number | null | undefined): string {
+    if (!speedKph) {
+      return '-';
+    }
+
+    return `${speedKph.toFixed(1)} km/h`;
+  }
+
+  formatPace(secondsPerKm: number | null | undefined): string {
+    if (!secondsPerKm) {
+      return '-';
+    }
+
+    const minutes = Math.floor(secondsPerKm / 60);
+    const seconds = Math.round(secondsPerKm % 60);
+    return `${minutes}:${String(seconds).padStart(2, '0')} min/km`;
+  }
+
   getStatusLabel(value: boolean | null | undefined): string {
     if (value === null || value === undefined) {
       return 'Brak kryterium';
