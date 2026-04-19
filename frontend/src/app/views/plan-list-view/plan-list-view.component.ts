@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CurrentPlanService } from '../../core/services/current-plan.service';
 import { TrainingPlanService } from '../../core/services/training-plan.service';
 import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
+import { getActivityTypeLabel } from '../../core/utils/training-labels';
 
 @Component({
   selector: 'app-plan-list-view',
@@ -67,6 +68,10 @@ export class PlanListViewComponent implements OnInit {
       default:
         return 'Zaplanowany';
     }
+  }
+
+  getActivityTypeLabel(activityType: TrainingDay['activityType']): string {
+    return getActivityTypeLabel(activityType);
   }
 
   editPlan(plan: TrainingPlan, event: Event): void {

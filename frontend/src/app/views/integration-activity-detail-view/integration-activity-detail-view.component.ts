@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { StravaService } from '../../core/services/strava.service';
 import { StravaActivity } from '../../core/types/strava.model';
+import { getActivityTypeLabel } from '../../core/utils/training-labels';
 
 @Component({
   selector: 'app-integration-activity-detail-view',
@@ -70,5 +71,9 @@ export class IntegrationActivityDetailViewComponent implements OnInit {
     }
 
     return `${totalMinutes} min`;
+  }
+
+  getActivityTypeLabel(activityType: StravaActivity['activityType']): string {
+    return getActivityTypeLabel(activityType);
   }
 }

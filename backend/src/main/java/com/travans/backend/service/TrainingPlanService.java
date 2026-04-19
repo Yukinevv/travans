@@ -25,16 +25,19 @@ public class TrainingPlanService {
     private final StravaActivityRepository stravaActivityRepository;
     private final CurrentUserService currentUserService;
     private final Clock clock;
+    private final TrainingDayEvaluationService trainingDayEvaluationService;
 
     public TrainingPlanService(
             TrainingPlanRepository trainingPlanRepository,
             StravaActivityRepository stravaActivityRepository,
             CurrentUserService currentUserService,
-            Clock clock) {
+            Clock clock,
+            TrainingDayEvaluationService trainingDayEvaluationService) {
         this.trainingPlanRepository = trainingPlanRepository;
         this.stravaActivityRepository = stravaActivityRepository;
         this.currentUserService = currentUserService;
         this.clock = clock;
+        this.trainingDayEvaluationService = trainingDayEvaluationService;
     }
 
     @Transactional(readOnly = true)
@@ -94,6 +97,9 @@ public class TrainingPlanService {
         Optional<StravaActivity> matchedActivity = day.getMatchedActivityId() == null
                 ? Optional.empty()
                 : stravaActivityRepository.findByUserIdAndExternalActivityId(userId, day.getMatchedActivityId());
+        TrainingDayEvaluation evaluation = matchedActivity
+                .map(activity -> trainingDayEvaluationService.evaluate(day, activity))
+                .orElseGet(() -> new TrainingDayEvaluation(day.getStatus(), null, null, null, null, null, null));
 
         return new TrainingDayResponse(
                 day.getId(),
@@ -108,7 +114,13 @@ public class TrainingPlanService {
                 matchedActivity.map(StravaActivity::getName).orElse(null),
                 matchedActivity.map(StravaActivity::getActivityDate).orElse(null),
                 matchedActivity.map(StravaActivity::getDistanceMeters).orElse(null),
-                matchedActivity.map(StravaActivity::getMovingTimeSeconds).orElse(null)
+                matchedActivity.map(StravaActivity::getMovingTimeSeconds).orElse(null),
+                evaluation.distanceGoalMet(),
+                evaluation.durationGoalMet(),
+                evaluation.paceGoalMet(),
+                evaluation.distanceOverMeters(),
+                evaluation.durationOverSeconds(),
+                evaluation.timeSavedSeconds()
         );
     }
 

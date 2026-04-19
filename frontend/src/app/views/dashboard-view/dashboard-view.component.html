@@ -1,7 +1,7 @@
 <section class="page">
   <header class="header">
     <div>
-      <p class="kicker">Dashboard</p>
+      <p class="kicker">Pulpit</p>
       <h2>Postep realizacji planu</h2>
     </div>
 
@@ -56,18 +56,56 @@
   </article>
 
   <article class="panel" *ngIf="summary && hasCurrentPlan()">
+    <p class="panel-label">Statystyki szczegolowe</p>
+
+    <div class="detail-stats">
+      <article class="detail-card">
+        <span>Dni z celem dystansu</span>
+        <strong>{{ summary.detailedStats.daysMeetingDistanceGoal }}</strong>
+      </article>
+      <article class="detail-card">
+        <span>Dni z celem czasu</span>
+        <strong>{{ summary.detailedStats.daysMeetingDurationGoal }}</strong>
+      </article>
+      <article class="detail-card">
+        <span>Dni z celem tempa</span>
+        <strong>{{ summary.detailedStats.daysMeetingPaceGoal }}</strong>
+      </article>
+      <article class="detail-card">
+        <span>Nadwyzka dystansu</span>
+        <strong>{{ formatDistance(summary.detailedStats.totalDistanceOverMeters) }}</strong>
+      </article>
+      <article class="detail-card">
+        <span>Nadwyzka czasu</span>
+        <strong>{{ formatDuration(summary.detailedStats.totalDurationOverSeconds) }}</strong>
+      </article>
+      <article class="detail-card">
+        <span>Zysk czasu</span>
+        <strong>{{ formatDuration(summary.detailedStats.totalTimeSavedSeconds) }}</strong>
+      </article>
+    </div>
+  </article>
+
+  <article class="panel" *ngIf="summary && hasCurrentPlan()">
     <p class="panel-label">Biezacy plan</p>
     <h3>{{ summary.currentPlanName }}</h3>
     <p class="muted" *ngIf="selectedPlanId">Plan zostal przypiety do dashboardu.</p>
 
     <div class="day-list">
-      <article class="day-card" *ngFor="let day of summary.trainingDays; trackBy: trackByDay" [class.completed]="day.status === 'COMPLETED'" [class.partial]="day.status === 'PARTIALLY_COMPLETED'" [class.missed]="day.status === 'MISSED'">
+      <article
+        class="day-card"
+        *ngFor="let day of summary.trainingDays; trackBy: trackByDay"
+        [class.completed]="day.status === 'COMPLETED'"
+        [class.partial]="day.status === 'PARTIALLY_COMPLETED'"
+        [class.missed]="day.status === 'MISSED'">
         <div class="day-header">
           <div>
-            <strong>{{ day.title }}</strong>
-            <p>{{ day.scheduledDate | date:'dd.MM.yyyy' }} · {{ day.activityType }}</p>
+            <button type="button" class="day-title-button" (click)="toggleDayDetails(day)">
+              <strong>{{ day.title }}</strong>
+            </button>
+            <p>{{ day.scheduledDate | date:'dd.MM.yyyy' }} · {{ getActivityTypeLabel(day.activityType) }}</p>
           </div>
-          <span class="status-chip">{{ day.status }}</span>
+          <span class="status-chip">{{ getTrainingDayStatusLabel(day.status) }}</span>
         </div>
 
         <div class="metrics">
@@ -79,6 +117,17 @@
           Powiazana aktywnosc: <strong>{{ day.matchedActivityName }}</strong>
           <span *ngIf="day.matchedActivityDate">({{ day.matchedActivityDate | date:'dd.MM.yyyy' }})</span>
         </p>
+
+        <div class="evaluation-details" *ngIf="isDayExpanded(day)">
+          <div class="evaluation-grid">
+            <span>Cel dystansu: {{ getStatusLabel(day.distanceGoalMet) }}</span>
+            <span>Cel czasu: {{ getStatusLabel(day.durationGoalMet) }}</span>
+            <span>Cel tempa: {{ getStatusLabel(day.paceGoalMet) }}</span>
+            <span *ngIf="day.distanceOverMeters">Nadwyzka dystansu: {{ formatDistance(day.distanceOverMeters) }}</span>
+            <span *ngIf="day.durationOverSeconds">Nadwyzka czasu: {{ formatDuration(day.durationOverSeconds) }}</span>
+            <span *ngIf="day.timeSavedSeconds">Zysk czasu: {{ formatDuration(day.timeSavedSeconds) }}</span>
+          </div>
+        </div>
       </article>
     </div>
   </article>

@@ -18,7 +18,7 @@
       <strong [class.connected]="status?.connected">
         {{ status?.connected ? 'Polaczono' : 'Nie polaczono' }}
       </strong>
-      <span *ngIf="status?.athleteId">Athlete ID: {{ status?.athleteId }}</span>
+      <span *ngIf="status?.athleteId">ID atleta: {{ status?.athleteId }}</span>
     </div>
 
     <div class="actions">
@@ -50,7 +50,7 @@
 
   <article class="panel" *ngIf="syncResult">
     <p class="kicker">Wynik</p>
-    <h2>Ostatni sync</h2>
+    <h2>Ostatnia synchronizacja</h2>
     <p>Zaimportowane aktywnosci: <strong>{{ syncResult.importedActivities }}</strong></p>
     <p>Dopasowane dni planu: <strong>{{ syncResult.matchedTrainingDays }}</strong></p>
   </article>
@@ -75,7 +75,7 @@
     <div class="activity-list" *ngIf="!activitiesLoading">
       <article class="activity-card" *ngFor="let activity of activities; trackBy: trackByActivity" (click)="openActivityDetails(activity)" tabindex="0">
         <div class="activity-top">
-          <span class="activity-type">{{ activity.activityType }}</span>
+          <span class="activity-type">{{ getActivityTypeLabel(activity.activityType) }}</span>
           <span class="activity-date">{{ activity.activityDate | date:'dd.MM.yyyy' }}</span>
         </div>
 

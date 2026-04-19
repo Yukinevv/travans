@@ -5,6 +5,7 @@ import { DashboardSummary } from '../../core/types/dashboard.model';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
 import { TrainingPlanService } from '../../core/services/training-plan.service';
+import { getActivityTypeLabel, getTrainingDayStatusLabel } from '../../core/utils/training-labels';
 
 @Component({
   selector: 'app-dashboard-view',
@@ -16,6 +17,7 @@ export class DashboardViewComponent implements OnInit {
   plans: TrainingPlan[] = [];
   summary?: DashboardSummary;
   selectedPlanId: number | null = null;
+  expandedDayId: number | string | null = null;
   errorMessage = '';
   loading = true;
   loadingPlans = true;
@@ -63,6 +65,23 @@ export class DashboardViewComponent implements OnInit {
     return day.id ?? `${day.scheduledDate}-${day.title}`;
   }
 
+  toggleDayDetails(day: TrainingDay): void {
+    const dayKey = this.trackByDay(0, day);
+    this.expandedDayId = this.expandedDayId === dayKey ? null : dayKey;
+  }
+
+  isDayExpanded(day: TrainingDay): boolean {
+    return this.expandedDayId === this.trackByDay(0, day);
+  }
+
+  getActivityTypeLabel(activityType: TrainingDay['activityType']): string {
+    return getActivityTypeLabel(activityType);
+  }
+
+  getTrainingDayStatusLabel(status: TrainingDay['status']): string {
+    return getTrainingDayStatusLabel(status);
+  }
+
   hasCurrentPlan(): boolean {
     return !!this.summary?.currentPlanId;
   }
@@ -89,11 +108,20 @@ export class DashboardViewComponent implements OnInit {
     return `${minutes} min`;
   }
 
+  getStatusLabel(value: boolean | null | undefined): string {
+    if (value === null || value === undefined) {
+      return 'Brak kryterium';
+    }
+
+    return value ? 'Osiagniete' : 'Nieosigniete';
+  }
+
   private loadSummary(planId: number | null): void {
     this.loading = true;
     this.dashboardService.getSummary(planId ?? undefined).subscribe({
       next: (summary) => {
         this.summary = summary;
+        this.expandedDayId = null;
         this.errorMessage = '';
         this.loading = false;
 

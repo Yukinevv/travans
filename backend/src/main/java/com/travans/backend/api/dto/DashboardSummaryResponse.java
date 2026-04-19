@@ -10,6 +10,7 @@ public record DashboardSummaryResponse(
         double completionRate,
         Long currentPlanId,
         String currentPlanName,
-        List<TrainingDayResponse> trainingDays
+        List<TrainingDayResponse> trainingDays,
+        DashboardDetailedStatsResponse detailedStats
 ) {
 }

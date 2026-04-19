@@ -17,6 +17,12 @@ public record TrainingDayResponse(
         String matchedActivityName,
         LocalDate matchedActivityDate,
         Integer matchedDistanceMeters,
-        Integer matchedMovingTimeSeconds
+        Integer matchedMovingTimeSeconds,
+        Boolean distanceGoalMet,
+        Boolean durationGoalMet,
+        Boolean paceGoalMet,
+        Integer distanceOverMeters,
+        Integer durationOverSeconds,
+        Integer timeSavedSeconds
 ) {
 }

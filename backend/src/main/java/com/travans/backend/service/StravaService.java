@@ -51,6 +51,7 @@ public class StravaService {
     private final TrainingDayRepository trainingDayRepository;
     private final CurrentUserService currentUserService;
     private final Clock clock;
+    private final TrainingDayEvaluationService trainingDayEvaluationService;
 
     public StravaService(
             StravaProperties properties,
@@ -59,7 +60,8 @@ public class StravaService {
             StravaActivityRepository stravaActivityRepository,
             TrainingDayRepository trainingDayRepository,
             CurrentUserService currentUserService,
-            Clock clock) {
+            Clock clock,
+            TrainingDayEvaluationService trainingDayEvaluationService) {
         this.properties = properties;
         this.stravaWebClient = stravaWebClient;
         this.stravaConnectionRepository = stravaConnectionRepository;
@@ -67,6 +69,7 @@ public class StravaService {
         this.trainingDayRepository = trainingDayRepository;
         this.currentUserService = currentUserService;
         this.clock = clock;
+        this.trainingDayEvaluationService = trainingDayEvaluationService;
     }
 
     @Transactional(readOnly = true)
@@ -264,7 +267,7 @@ public class StravaService {
             if (match.isPresent()) {
                 StravaActivity activity = match.get();
                 day.setMatchedActivityId(activity.getExternalActivityId());
-                day.setStatus(resolveStatus(day, activity));
+                day.setStatus(trainingDayEvaluationService.evaluate(day, activity).status());
                 usedActivities.add(activity.getExternalActivityId());
                 trainingDayRepository.save(day);
                 matched++;
@@ -291,18 +294,6 @@ public class StravaService {
                         .comparingLong((StravaActivity activity) -> Math.abs(ChronoUnit.DAYS.between(day.getScheduledDate(), activity.getActivityDate())))
                         .thenComparingLong(activity -> distanceDelta(day, activity))
                         .thenComparingLong(activity -> durationDelta(day, activity)));
-    }
-
-    private TrainingDayStatus resolveStatus(TrainingDay day, StravaActivity activity) {
-        boolean distanceMatches = day.getPlannedDistanceMeters() == null
-                || activity.getDistanceMeters() >= (int) (day.getPlannedDistanceMeters() * 0.9);
-        boolean durationMatches = day.getPlannedDurationSeconds() == null
-                || activity.getMovingTimeSeconds() >= (int) (day.getPlannedDurationSeconds() * 0.9);
-
-        if (distanceMatches && durationMatches) {
-            return TrainingDayStatus.COMPLETED;
-        }
-        return TrainingDayStatus.PARTIALLY_COMPLETED;
     }
 
     private ActivityType mapActivityType(String rawType) {

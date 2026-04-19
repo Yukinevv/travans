@@ -1,6 +1,8 @@
 package com.travans.backend.service;
 
 import com.travans.backend.api.dto.DashboardSummaryResponse;
+import com.travans.backend.api.dto.DashboardDetailedStatsResponse;
+import com.travans.backend.api.dto.TrainingDayResponse;
 import com.travans.backend.domain.TrainingDay;
 import com.travans.backend.domain.TrainingDayStatus;
 import com.travans.backend.repository.TrainingDayRepository;
@@ -44,6 +46,10 @@ public class DashboardService {
         long partial = days.stream().filter(day -> day.getStatus() == TrainingDayStatus.PARTIALLY_COMPLETED).count();
         long missed = days.stream().filter(day -> day.getStatus() == TrainingDayStatus.MISSED).count();
         double completionRate = total == 0 ? 0 : ((double) completed / (double) total) * 100.0;
+        List<TrainingDayResponse> trainingDays = selectedPlan
+                .map(trainingPlanService::toResponse)
+                .map(com.travans.backend.api.dto.TrainingPlanResponse::trainingDays)
+                .orElse(List.of());
 
         return new DashboardSummaryResponse(
                 total,
@@ -53,8 +59,35 @@ public class DashboardService {
                 completionRate,
                 selectedPlan.map(com.travans.backend.domain.TrainingPlan::getId).orElse(null),
                 selectedPlan.map(com.travans.backend.domain.TrainingPlan::getName).orElse(null),
-                selectedPlan.map(trainingPlanService::toResponse).map(com.travans.backend.api.dto.TrainingPlanResponse::trainingDays).orElse(List.of())
+                trainingDays,
+                buildDetailedStats(trainingDays)
         );
+    }
+
+    private DashboardDetailedStatsResponse buildDetailedStats(List<TrainingDayResponse> trainingDays) {
+        long daysMeetingDistanceGoal = trainingDays.stream().filter(day -> Boolean.TRUE.equals(day.distanceGoalMet())).count();
+        long daysMeetingDurationGoal = trainingDays.stream().filter(day -> Boolean.TRUE.equals(day.durationGoalMet())).count();
+        long daysMeetingPaceGoal = trainingDays.stream().filter(day -> Boolean.TRUE.equals(day.paceGoalMet())).count();
+        long daysWithExtraDistance = trainingDays.stream().filter(day -> getSafeValue(day.distanceOverMeters()) > 0).count();
+        long daysWithTimeSaved = trainingDays.stream().filter(day -> getSafeValue(day.timeSavedSeconds()) > 0).count();
+        int totalDistanceOverMeters = trainingDays.stream().mapToInt(day -> getSafeValue(day.distanceOverMeters())).sum();
+        int totalDurationOverSeconds = trainingDays.stream().mapToInt(day -> getSafeValue(day.durationOverSeconds())).sum();
+        int totalTimeSavedSeconds = trainingDays.stream().mapToInt(day -> getSafeValue(day.timeSavedSeconds())).sum();
+
+        return new DashboardDetailedStatsResponse(
+                daysMeetingDistanceGoal,
+                daysMeetingDurationGoal,
+                daysMeetingPaceGoal,
+                daysWithExtraDistance,
+                daysWithTimeSaved,
+                totalDistanceOverMeters,
+                totalDurationOverSeconds,
+                totalTimeSavedSeconds
+        );
+    }
+
+    private int getSafeValue(Integer value) {
+        return value == null ? 0 : value;
     }
 
     private Optional<com.travans.backend.domain.TrainingPlan> resolveCurrentPlan(Long userId, Long planId) {

@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { StravaService } from '../../core/services/strava.service';
 import { ActivityType } from '../../core/types/training-plan.model';
 import { StravaActivity, StravaConnectionStatus, StravaSyncResult } from '../../core/types/strava.model';
+import { getActivityTypeLabel } from '../../core/utils/training-labels';
 
 @Component({
   selector: 'app-integrations-view',
@@ -29,8 +30,8 @@ export class IntegrationsViewComponent implements OnInit {
     { value: 'RIDE', label: 'Rower' },
     { value: 'SWIM', label: 'Plywanie' },
     { value: 'WALK', label: 'Marsz' },
-    { value: 'WORKOUT', label: 'Workout' },
-    { value: 'STRENGTH', label: 'Sila' },
+    { value: 'WORKOUT', label: 'Trening' },
+    { value: 'STRENGTH', label: 'Silownia' },
     { value: 'OTHER', label: 'Inne' }
   ];
 
@@ -123,6 +124,10 @@ export class IntegrationsViewComponent implements OnInit {
     }
 
     return `${totalMinutes} min`;
+  }
+
+  getActivityTypeLabel(activityType: ActivityType): string {
+    return getActivityTypeLabel(activityType);
   }
 
   private loadStatus(autoSyncAfterConnect = false): void {

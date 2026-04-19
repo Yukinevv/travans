@@ -20,7 +20,7 @@
       <div>
         <p class="kicker">Strava</p>
         <h3>{{ activity.name }}</h3>
-        <p class="meta">{{ activity.activityDate | date:'dd.MM.yyyy' }} · {{ activity.activityType }}</p>
+        <p class="meta">{{ activity.activityDate | date:'dd.MM.yyyy' }} · {{ getActivityTypeLabel(activity.activityType) }}</p>
       </div>
       <span class="badge" [class.matched]="activity.matchedToPlan">
         {{ activity.matchedToPlan ? 'Dopasowano do planu' : 'Bez dopasowania' }}

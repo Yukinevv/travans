@@ -58,7 +58,7 @@
 
             <div class="day-grid">
               <span>Data: {{ day.scheduledDate }}</span>
-              <span>Typ: {{ day.activityType }}</span>
+              <span>Typ: {{ getActivityTypeLabel(day.activityType) }}</span>
               <span>Dystans: {{ formatDistance(day.plannedDistanceMeters) }}</span>
               <span>Czas: {{ formatDuration(day.plannedDurationSeconds) }}</span>
             </div>
