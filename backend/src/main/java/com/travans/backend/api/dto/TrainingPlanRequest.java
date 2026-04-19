@@ -1,5 +1,6 @@
 package com.travans.backend.api.dto;
 
+import com.travans.backend.domain.ActivityType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,6 +13,7 @@ public record TrainingPlanRequest(
         String description,
         @NotNull LocalDate startDate,
         LocalDate stravaEvaluationStartDate,
+        @NotNull ActivityType planType,
         @Valid @NotEmpty List<TrainingDayRequest> trainingDays
 ) {
 }

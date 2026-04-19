@@ -22,6 +22,7 @@
       tabindex="0">
       <div class="plan-card-summary">
         <strong>{{ plan.name }}</strong>
+        <span>Typ planu: {{ getActivityTypeLabel(plan.planType) }}</span>
         <span>{{ plan.trainingDays.length }} dni</span>
         <span>Strava od: {{ plan.stravaEvaluationStartDate || plan.startDate }}</span>
       </div>

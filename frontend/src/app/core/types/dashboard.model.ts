@@ -1,4 +1,4 @@
-import { TrainingDay } from './training-plan.model';
+import { ActivityType, TrainingDay } from './training-plan.model';
 
 export interface DashboardDetailedStats {
   daysMeetingDistanceGoal: number;
@@ -24,6 +24,7 @@ export interface DashboardSummary {
   completionRate: number;
   currentPlanId: number | null;
   currentPlanName: string | null;
+  currentPlanType: ActivityType | null;
   trainingDays: TrainingDay[];
   detailedStats: DashboardDetailedStats;
 }

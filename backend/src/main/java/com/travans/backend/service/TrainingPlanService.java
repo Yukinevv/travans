@@ -4,6 +4,7 @@ import com.travans.backend.api.dto.TrainingDayRequest;
 import com.travans.backend.api.dto.TrainingDayResponse;
 import com.travans.backend.api.dto.TrainingPlanRequest;
 import com.travans.backend.api.dto.TrainingPlanResponse;
+import com.travans.backend.domain.ActivityType;
 import com.travans.backend.domain.StravaActivity;
 import com.travans.backend.domain.TrainingDay;
 import com.travans.backend.domain.TrainingDayStatus;
@@ -88,6 +89,7 @@ public class TrainingPlanService {
                 plan.getDescription(),
                 plan.getStartDate(),
                 Optional.ofNullable(plan.getStravaEvaluationStartDate()).orElse(plan.getStartDate()),
+                resolvePlanType(plan),
                 plan.getCreatedAt(),
                 plan.getTrainingDays().stream().map(day -> toResponse(userId, day)).toList()
         );
@@ -137,6 +139,7 @@ public class TrainingPlanService {
         plan.setStravaEvaluationStartDate(
                 request.stravaEvaluationStartDate() != null ? request.stravaEvaluationStartDate() : request.startDate()
         );
+        plan.setPlanType(request.planType());
 
         plan.getTrainingDays().clear();
         for (TrainingDayRequest dayRequest : request.trainingDays()) {
@@ -152,5 +155,17 @@ public class TrainingPlanService {
             day.setMatchedActivityId(null);
             plan.getTrainingDays().add(day);
         }
+    }
+
+    ActivityType resolvePlanType(TrainingPlan plan) {
+        if (plan.getPlanType() != null) {
+            return plan.getPlanType();
+        }
+
+        return plan.getTrainingDays().stream()
+                .map(TrainingDay::getActivityType)
+                .filter(type -> type != null)
+                .findFirst()
+                .orElse(ActivityType.OTHER);
     }
 }

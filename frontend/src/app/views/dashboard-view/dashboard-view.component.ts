@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrentPlanService } from '../../core/services/current-plan.service';
 import { DashboardSummary } from '../../core/types/dashboard.model';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
+import { ActivityType, TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
 import { TrainingPlanService } from '../../core/services/training-plan.service';
 import { getActivityTypeLabel, getTrainingDayStatusLabel } from '../../core/utils/training-labels';
 
@@ -84,6 +84,11 @@ export class DashboardViewComponent implements OnInit {
 
   hasCurrentPlan(): boolean {
     return !!this.summary?.currentPlanId;
+  }
+
+  isPlanType(...planTypes: ActivityType[]): boolean {
+    const currentPlanType = this.summary?.currentPlanType;
+    return !!currentPlanType && planTypes.includes(currentPlanType);
   }
 
   formatDistance(distanceMeters: number | null | undefined): string {

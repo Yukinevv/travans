@@ -3,6 +3,8 @@ package com.travans.backend.domain;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,6 +38,10 @@ public class TrainingPlan {
 
     @Column
     private LocalDate stravaEvaluationStartDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 24)
+    private ActivityType planType;
 
     @Column(nullable = false)
     private Instant createdAt;
@@ -82,6 +88,14 @@ public class TrainingPlan {
 
     public void setStravaEvaluationStartDate(LocalDate stravaEvaluationStartDate) {
         this.stravaEvaluationStartDate = stravaEvaluationStartDate;
+    }
+
+    public ActivityType getPlanType() {
+        return planType;
+    }
+
+    public void setPlanType(ActivityType planType) {
+        this.planType = planType;
     }
 
     public Instant getCreatedAt() {

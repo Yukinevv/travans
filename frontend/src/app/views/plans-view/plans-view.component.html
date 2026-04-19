@@ -22,6 +22,19 @@
           <span>Uwzgledniaj Strave od</span>
           <input formControlName="stravaEvaluationStartDate" type="date">
         </label>
+        <label>
+          <span>Typ planu</span>
+          <select formControlName="planType">
+            <option value="RUN">Bieg</option>
+            <option value="RIDE">Rower</option>
+            <option value="SWIM">Plywanie</option>
+            <option value="WALK">Marsz</option>
+            <option value="WORKOUT">Trening</option>
+            <option value="STRENGTH">Sila</option>
+            <option value="OTHER">Inne</option>
+          </select>
+          <small class="field-error" *ngIf="hasControlError('planType')">{{ getControlErrorMessage('planType', 'Typ planu') }}</small>
+        </label>
       </div>
 
       <label>

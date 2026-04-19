@@ -60,6 +60,7 @@ public class DashboardService {
                 completionRate,
                 selectedPlan.map(com.travans.backend.domain.TrainingPlan::getId).orElse(null),
                 selectedPlan.map(com.travans.backend.domain.TrainingPlan::getName).orElse(null),
+                selectedPlan.map(trainingPlanService::resolvePlanType).orElse(null),
                 trainingDays,
                 buildDetailedStats(trainingDays)
         );

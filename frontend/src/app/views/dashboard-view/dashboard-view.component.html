@@ -83,19 +83,19 @@
         <span>Zysk czasu</span>
         <strong>{{ formatDuration(summary.detailedStats.totalTimeSavedSeconds) }}</strong>
       </article>
-      <article class="detail-card">
+      <article class="detail-card" *ngIf="isPlanType('RUN', 'WALK')">
         <span>Srednie tempo biegu</span>
         <strong>{{ formatPace(summary.detailedStats.averageRunPaceSecondsPerKm) }}</strong>
       </article>
-      <article class="detail-card">
+      <article class="detail-card" *ngIf="isPlanType('RUN', 'WALK')">
         <span>Najszybsze tempo biegu</span>
         <strong>{{ formatPace(summary.detailedStats.fastestRunPaceSecondsPerKm) }}</strong>
       </article>
-      <article class="detail-card">
+      <article class="detail-card" *ngIf="isPlanType('RIDE')">
         <span>Srednia predkosc jazdy</span>
         <strong>{{ formatSpeed(summary.detailedStats.averageRideSpeedKph) }}</strong>
       </article>
-      <article class="detail-card">
+      <article class="detail-card" *ngIf="isPlanType('RIDE')">
         <span>Maksymalna predkosc jazdy</span>
         <strong>{{ formatSpeed(summary.detailedStats.topRideSpeedKph) }}</strong>
       </article>
@@ -109,6 +109,7 @@
   <article class="panel" *ngIf="summary && hasCurrentPlan()">
     <p class="panel-label">Biezacy plan</p>
     <h3>{{ summary.currentPlanName }}</h3>
+    <p class="muted" *ngIf="summary.currentPlanType">Typ planu: {{ getActivityTypeLabel(summary.currentPlanType) }}</p>
     <p class="muted" *ngIf="selectedPlanId">Plan zostal przypiety do dashboardu.</p>
 
     <div class="day-list">

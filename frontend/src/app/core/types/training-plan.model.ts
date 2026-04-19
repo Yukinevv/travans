@@ -35,6 +35,7 @@ export interface TrainingPlan {
   description?: string | null;
   startDate: string;
   stravaEvaluationStartDate?: string | null;
+  planType: ActivityType;
   createdAt?: string;
   trainingDays: TrainingDay[];
 }

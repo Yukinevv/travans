@@ -4,7 +4,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TrainingPlanService } from '../../core/services/training-plan.service';
-import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
+import { ActivityType, TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
 
 @Component({
   selector: 'app-plans-view',
@@ -24,6 +24,7 @@ export class PlansViewComponent implements OnInit {
   "description": "4 tygodnie pracy nad tempem",
   "startDate": "2026-04-13",
   "stravaEvaluationStartDate": "2026-04-13",
+  "planType": "RUN",
   "trainingDays": [
     {
       "scheduledDate": "2026-04-13",
@@ -41,6 +42,7 @@ export class PlansViewComponent implements OnInit {
     description: [''],
     startDate: ['', Validators.required],
     stravaEvaluationStartDate: [''],
+    planType: ['RUN', Validators.required],
     trainingDays: this.fb.array([this.createTrainingDayGroup()])
   });
 
@@ -277,7 +279,8 @@ export class PlansViewComponent implements OnInit {
       name: plan.name,
       description: plan.description ?? '',
       startDate: plan.startDate,
-      stravaEvaluationStartDate: plan.stravaEvaluationStartDate ?? plan.startDate
+      stravaEvaluationStartDate: plan.stravaEvaluationStartDate ?? plan.startDate,
+      planType: plan.planType
     }, { emitEvent: false });
 
     this.trainingDays.clear({ emitEvent: false });
@@ -330,6 +333,7 @@ export class PlansViewComponent implements OnInit {
       description: value.description ?? '',
       startDate: value.startDate ?? '',
       stravaEvaluationStartDate: value.stravaEvaluationStartDate || value.startDate || '',
+      planType: (value.planType as ActivityType | null) ?? 'RUN',
       trainingDays: (value.trainingDays ?? []) as TrainingDay[]
     });
   }
@@ -353,6 +357,7 @@ export class PlansViewComponent implements OnInit {
       description: plan.description ?? '',
       startDate: plan.startDate ?? '',
       stravaEvaluationStartDate: plan.stravaEvaluationStartDate ?? plan.startDate ?? '',
+      planType: plan.planType ?? 'RUN',
       createdAt: plan.createdAt,
       trainingDays: Array.isArray(plan.trainingDays)
         ? plan.trainingDays.map((day) => ({
@@ -384,6 +389,7 @@ export class PlansViewComponent implements OnInit {
       description: '',
       startDate: '',
       stravaEvaluationStartDate: '',
+      planType: 'RUN',
       trainingDays: [this.createEmptyTrainingDay()]
     });
 
