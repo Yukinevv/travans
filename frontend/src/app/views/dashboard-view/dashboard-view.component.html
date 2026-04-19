@@ -105,7 +105,14 @@
             </button>
             <p>{{ day.scheduledDate | date:'dd.MM.yyyy' }} · {{ getActivityTypeLabel(day.activityType) }}</p>
           </div>
-          <span class="status-chip">{{ getTrainingDayStatusLabel(day.status) }}</span>
+          <span
+            class="status-chip"
+            [class.completed]="day.status === 'COMPLETED'"
+            [class.partial]="day.status === 'PARTIALLY_COMPLETED'"
+            [class.missed]="day.status === 'MISSED'"
+            [class.planned]="day.status === 'PLANNED'">
+            {{ getTrainingDayStatusLabel(day.status) }}
+          </span>
         </div>
 
         <div class="metrics">

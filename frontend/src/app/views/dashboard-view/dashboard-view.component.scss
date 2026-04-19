@@ -191,9 +191,33 @@
   align-self: flex-start;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(31, 28, 23, 0.08);
+  border: 1px solid transparent;
   font-size: 0.8rem;
   font-weight: 700;
+}
+
+.status-chip.completed {
+  background: rgba(87, 126, 98, 0.16);
+  border-color: rgba(87, 126, 98, 0.24);
+  color: #355c44;
+}
+
+.status-chip.partial {
+  background: rgba(214, 155, 62, 0.18);
+  border-color: rgba(214, 155, 62, 0.28);
+  color: #8b5a12;
+}
+
+.status-chip.missed {
+  background: rgba(191, 98, 71, 0.16);
+  border-color: rgba(191, 98, 71, 0.26);
+  color: #9a3f2a;
+}
+
+.status-chip.planned {
+  background: rgba(125, 108, 90, 0.12);
+  border-color: rgba(125, 108, 90, 0.18);
+  color: #6d5a49;
 }
 
 .evaluation-details {

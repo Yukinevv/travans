@@ -161,10 +161,33 @@ h2 {
 .status-badge {
   padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(183, 103, 29, 0.12);
-  color: var(--accent-dark);
+  border: 1px solid transparent;
   font-size: 0.8rem;
   font-weight: 700;
+}
+
+.status-badge.completed {
+  background: rgba(87, 126, 98, 0.16);
+  border-color: rgba(87, 126, 98, 0.24);
+  color: #355c44;
+}
+
+.status-badge.partial {
+  background: rgba(214, 155, 62, 0.18);
+  border-color: rgba(214, 155, 62, 0.28);
+  color: #8b5a12;
+}
+
+.status-badge.missed {
+  background: rgba(191, 98, 71, 0.16);
+  border-color: rgba(191, 98, 71, 0.26);
+  color: #9a3f2a;
+}
+
+.status-badge.planned {
+  background: rgba(125, 108, 90, 0.12);
+  border-color: rgba(125, 108, 90, 0.18);
+  color: #6d5a49;
 }
 
 .matched-activity {

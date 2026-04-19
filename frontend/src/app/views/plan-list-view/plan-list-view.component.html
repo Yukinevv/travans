@@ -53,7 +53,14 @@
           <article class="day-card" *ngFor="let day of plan.trainingDays; let i = index">
             <div class="day-card-header">
               <strong>Dzien {{ i + 1 }}: {{ day.title }}</strong>
-              <span class="status-badge">{{ getStatusLabel(day) }}</span>
+              <span
+                class="status-badge"
+                [class.completed]="day.status === 'COMPLETED'"
+                [class.partial]="day.status === 'PARTIALLY_COMPLETED'"
+                [class.missed]="day.status === 'MISSED'"
+                [class.planned]="day.status === 'PLANNED' || !day.status">
+                {{ getStatusLabel(day) }}
+              </span>
             </div>
 
             <div class="day-grid">
