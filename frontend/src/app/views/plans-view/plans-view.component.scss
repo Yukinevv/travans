@@ -42,13 +42,44 @@ label {
 }
 
 .file-picker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 12px;
+  position: relative;
+  cursor: pointer;
 }
 
 .file-picker input[type='file'] {
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.72);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
 }
+
+.file-picker-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1;
+  box-shadow: 0 14px 28px rgba(205, 94, 40, 0.18);
+  cursor: pointer;
+}
+
+.file-picker-name {
+  color: var(--muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
 
 .error-banner {
   margin: 0;

@@ -161,28 +161,6 @@ export class PlansViewComponent implements OnInit {
     });
   }
 
-  importJson(): void {
-    this.submitErrorMessage = '';
-    if (this.isEditMode) {
-      this.submitErrorMessage = 'Import JSON jest dostepny tylko przy tworzeniu nowego planu.';
-      this.changeDetectorRef.detectChanges();
-      return;
-    }
-
-    const payload = this.parseJsonInput(this.jsonInput, true);
-    if (!payload) {
-      this.changeDetectorRef.detectChanges();
-      return;
-    }
-
-    this.trainingPlanService.importPlan(payload).subscribe(() => {
-      this.syncFormFromPlan(payload);
-    }, () => {
-      this.submitErrorMessage = 'Nie udalo sie zaimportowac planu';
-      this.changeDetectorRef.detectChanges();
-    });
-  }
-
   onJsonInputChange(value: string): void {
     this.jsonInput = value;
     this.importedFileName = '';

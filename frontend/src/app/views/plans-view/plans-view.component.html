@@ -110,11 +110,12 @@
   <article class="panel" *ngIf="!isEditMode">
     <p class="kicker">Import JSON</p>
     <h2>Wklej plan lub wczytaj plik JSON</h2>
+    <p class="muted">Wybranie pliku lub wklejenie poprawnego JSON-a automatycznie uzupelni formularz planu.</p>
     <label class="file-picker">
-      <span>Plik JSON</span>
       <input type="file" accept=".json,application/json" (change)="onJsonFileSelected($event)">
+      <span class="file-picker-button">Wczytaj plik</span>
+      <span class="file-picker-name">{{ importedFileName || 'Nie wybrano pliku' }}</span>
     </label>
-    <p class="muted" *ngIf="importedFileName">Wczytano plik: {{ importedFileName }}</p>
     <textarea
       [(ngModel)]="jsonInput"
       (ngModelChange)="onJsonInputChange($event)"
@@ -122,8 +123,5 @@
       rows="12"
       class="json-box"></textarea>
     <p class="error-message" *ngIf="jsonErrorMessage">{{ jsonErrorMessage }}</p>
-    <div class="actions">
-      <button type="button" (click)="importJson()">Importuj</button>
-    </div>
   </article>
 </section>
