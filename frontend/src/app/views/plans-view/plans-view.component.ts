@@ -152,9 +152,7 @@ export class PlansViewComponent implements OnInit {
     request.subscribe(() => {
       this.resetEditor();
       this.submitErrorMessage = '';
-      if (this.isEditMode) {
-        this.router.navigate(['/plans/list']);
-      }
+      this.router.navigate(['/plans/list']);
     }, (error) => {
       this.submitErrorMessage = this.resolveApiErrorMessage(error, 'Nie udalo sie zapisac planu');
       this.changeDetectorRef.detectChanges();
