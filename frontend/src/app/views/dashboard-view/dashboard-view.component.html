@@ -50,7 +50,7 @@
     <div class="progress-row">
       <strong>{{ summary.completionRate | number:'1.0-1' }}%</strong>
       <div class="progress-track">
-        <div class="progress-bar" [style.width.%]="summary.completionRate"></div>
+        <div class="progress-bar" [style.width.%]="animatedCompletionRate"></div>
       </div>
     </div>
   </article>

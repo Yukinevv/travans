@@ -20,6 +20,7 @@ export class DashboardViewComponent implements OnInit {
   summary?: DashboardSummary;
   selectedPlanId: number | null = null;
   expandedDayId: number | string | null = null;
+  animatedCompletionRate = 0;
   errorMessage = '';
   loading = true;
   loadingPlans = true;
@@ -160,6 +161,7 @@ export class DashboardViewComponent implements OnInit {
 
   private loadSummary(planId: number | null): void {
     this.loading = true;
+    this.animatedCompletionRate = 0;
     this.dashboardService.getSummary(planId ?? undefined).subscribe({
       next: (summary) => {
         this.summary = summary;
@@ -173,6 +175,12 @@ export class DashboardViewComponent implements OnInit {
         }
 
         this.changeDetectorRef.detectChanges();
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.animatedCompletionRate = summary.completionRate;
+            this.changeDetectorRef.detectChanges();
+          });
+        });
       },
       error: () => {
         this.errorMessage = this.moduleStrings.errors.loadSummary;
