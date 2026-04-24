@@ -118,47 +118,88 @@
         *ngFor="let day of summary.trainingDays; trackBy: trackByDay"
         [class.completed]="day.status === 'COMPLETED'"
         [class.partial]="day.status === 'PARTIALLY_COMPLETED'"
-        [class.missed]="day.status === 'MISSED'">
+        [class.missed]="day.status === 'MISSED'"
+        [class.expanded]="isDayExpanded(day)"
+        tabindex="0"
+        role="button"
+        [attr.aria-expanded]="isDayExpanded(day)"
+        (click)="toggleDayDetails(day)"
+        (keydown)="onDayCardKeydown($event, day)">
         <div class="day-header">
-          <div>
-            <button type="button" class="day-title-button" (click)="toggleDayDetails(day)">
+          <div class="day-heading">
+            <div class="day-title-text">
               <strong>{{ day.title }}</strong>
-            </button>
-            <p>{{ day.scheduledDate | date:'dd.MM.yyyy' }} | {{ getActivityTypeLabel(day.activityType) }}</p>
+              <span class="day-subtitle">{{ day.scheduledDate | date:'dd.MM.yyyy' }} | {{ getActivityTypeLabel(day.activityType) }}</span>
+            </div>
           </div>
-          <span
-            class="status-chip"
-            [class.completed]="day.status === 'COMPLETED'"
-            [class.partial]="day.status === 'PARTIALLY_COMPLETED'"
-            [class.missed]="day.status === 'MISSED'"
-            [class.planned]="day.status === 'PLANNED'">
-            {{ getTrainingDayStatusLabel(day.status) }}
-          </span>
+          <div class="day-header-actions">
+            <div
+              class="day-expand-button"
+              [attr.aria-label]="getDayDetailsToggleLabel(day)"
+              aria-hidden="true">
+              <span class="day-expand-icon" [class.expanded]="isDayExpanded(day)" aria-hidden="true"></span>
+            </div>
+            <span
+              class="status-chip"
+              [class.completed]="day.status === 'COMPLETED'"
+              [class.partial]="day.status === 'PARTIALLY_COMPLETED'"
+              [class.missed]="day.status === 'MISSED'"
+              [class.planned]="day.status === 'PLANNED'">
+              {{ getTrainingDayStatusLabel(day.status) }}
+            </span>
+          </div>
         </div>
 
-        <div class="metrics">
-          <span>{{ moduleStrings.details.planned }} {{ formatDistance(day.plannedDistanceMeters) }} / {{ formatDuration(day.plannedDurationSeconds) }}</span>
-          <span *ngIf="day.matchedActivityId">{{ moduleStrings.details.done }} {{ formatDistance(day.matchedDistanceMeters) }} / {{ formatDuration(day.matchedMovingTimeSeconds) }}</span>
+        <div class="day-overview">
+          <article class="overview-card">
+            <span class="overview-label">{{ moduleStrings.details.scheduledFor }}</span>
+            <strong>{{ day.scheduledDate | date:'EEEE, dd.MM.yyyy' }}</strong>
+          </article>
+          <article class="overview-card">
+            <span class="overview-label">{{ moduleStrings.details.activity }}</span>
+            <strong>{{ getActivityTypeLabel(day.activityType) }}</strong>
+          </article>
+          <article class="overview-card">
+            <span class="overview-label">{{ moduleStrings.details.plannedSection }}</span>
+            <strong>{{ formatDistance(day.plannedDistanceMeters) }}</strong>
+            <span>{{ formatDuration(day.plannedDurationSeconds) }}</span>
+          </article>
+          <article class="overview-card" *ngIf="day.matchedActivityId">
+            <span class="overview-label">{{ moduleStrings.details.completedSection }}</span>
+            <strong>{{ formatDistance(day.matchedDistanceMeters) }}</strong>
+            <span>{{ formatDuration(day.matchedMovingTimeSeconds) }}</span>
+          </article>
         </div>
 
-        <p class="matched" *ngIf="day.matchedActivityId">
-          {{ moduleStrings.details.matchedActivity }} <strong>{{ day.matchedActivityName }}</strong>
-          <span *ngIf="day.matchedActivityDate">({{ day.matchedActivityDate | date:'dd.MM.yyyy' }})</span>
-        </p>
+        <div class="activity-summary" *ngIf="day.matchedActivityId">
+          <p class="matched">
+            {{ moduleStrings.details.matchedActivity }} <strong>{{ day.matchedActivityName }}</strong>
+            <span *ngIf="day.matchedActivityDate">({{ day.matchedActivityDate | date:'dd.MM.yyyy' }})</span>
+          </p>
+        </div>
 
         <div class="evaluation-details" *ngIf="isDayExpanded(day)">
+          <div class="detail-block" *ngIf="day.notes">
+            <span class="detail-block-label">{{ moduleStrings.details.notes }}</span>
+            <div class="detail-notes-card">
+              <span class="detail-notes-icon" aria-hidden="true">✎</span>
+              <p class="detail-notes">{{ day.notes }}</p>
+            </div>
+          </div>
+
           <div class="evaluation-grid">
-            <span>{{ moduleStrings.details.distanceGoal }} {{ getStatusLabel(day.distanceGoalMet) }}</span>
-            <span>{{ moduleStrings.details.durationGoal }} {{ getStatusLabel(day.durationGoalMet) }}</span>
-            <span>{{ moduleStrings.details.paceGoal }} {{ getStatusLabel(day.paceGoalMet) }}</span>
-            <span *ngIf="day.matchedAverageSpeedMetersPerSecond">{{ moduleStrings.details.averageSpeed }} {{ formatSpeed(day.matchedAverageSpeedMetersPerSecond * 3.6) }}</span>
-            <span *ngIf="day.matchedMaxSpeedMetersPerSecond">{{ moduleStrings.details.maxSpeed }} {{ formatSpeed(day.matchedMaxSpeedMetersPerSecond * 3.6) }}</span>
-            <span *ngIf="day.matchedElevationGainMeters">{{ moduleStrings.details.elevationGain }}: {{ day.matchedElevationGainMeters }} m</span>
-            <span *ngIf="day.matchedAverageHeartrateBpm">{{ moduleStrings.details.averageHeartrate }}: {{ day.matchedAverageHeartrateBpm | number:'1.0-0' }} bpm</span>
-            <span *ngIf="day.matchedAverageCadenceRpm">{{ moduleStrings.details.averageCadence }}: {{ day.matchedAverageCadenceRpm | number:'1.0-0' }}</span>
-            <span *ngIf="day.distanceOverMeters">{{ moduleStrings.details.overDistance }}: {{ formatDistance(day.distanceOverMeters) }}</span>
-            <span *ngIf="day.durationOverSeconds">{{ moduleStrings.details.overDuration }}: {{ formatDuration(day.durationOverSeconds) }}</span>
-            <span *ngIf="day.timeSavedSeconds">{{ moduleStrings.details.savedTime }}: {{ formatDuration(day.timeSavedSeconds) }}</span>
+            <span class="detail-item icon-goal">{{ moduleStrings.details.distanceGoal }}: {{ getStatusLabel(day.distanceGoalMet) }}</span>
+            <span class="detail-item icon-time">{{ moduleStrings.details.durationGoal }}: {{ getStatusLabel(day.durationGoalMet) }}</span>
+            <span class="detail-item icon-pace">{{ moduleStrings.details.paceGoal }}: {{ getStatusLabel(day.paceGoalMet) }}</span>
+            <span class="detail-item icon-speed" *ngIf="day.matchedAverageSpeedMetersPerSecond">{{ moduleStrings.details.averageSpeed }}: {{ formatSpeed(day.matchedAverageSpeedMetersPerSecond * 3.6) }}</span>
+            <span class="detail-item icon-max-speed" *ngIf="day.matchedMaxSpeedMetersPerSecond">{{ moduleStrings.details.maxSpeed }}: {{ formatSpeed(day.matchedMaxSpeedMetersPerSecond * 3.6) }}</span>
+            <span class="detail-item icon-elevation" *ngIf="day.matchedElevationGainMeters">{{ moduleStrings.details.elevationGain }}: {{ day.matchedElevationGainMeters }} m</span>
+            <span class="detail-item icon-heart" *ngIf="day.matchedAverageHeartrateBpm">{{ moduleStrings.details.averageHeartrate }}: {{ day.matchedAverageHeartrateBpm | number:'1.0-0' }} bpm</span>
+            <span class="detail-item icon-heart-max" *ngIf="day.matchedMaxHeartrateBpm">{{ moduleStrings.details.maxHeartrate }}: {{ day.matchedMaxHeartrateBpm | number:'1.0-0' }} bpm</span>
+            <span class="detail-item icon-cadence" *ngIf="day.matchedAverageCadenceRpm">{{ moduleStrings.details.averageCadence }}: {{ day.matchedAverageCadenceRpm | number:'1.0-0' }}</span>
+            <span class="detail-item icon-distance-over" *ngIf="day.distanceOverMeters">{{ moduleStrings.details.overDistance }}: {{ formatDistance(day.distanceOverMeters) }}</span>
+            <span class="detail-item icon-time-over" *ngIf="day.durationOverSeconds">{{ moduleStrings.details.overDuration }}: {{ formatDuration(day.durationOverSeconds) }}</span>
+            <span class="detail-item icon-time-saved" *ngIf="day.timeSavedSeconds">{{ moduleStrings.details.savedTime }}: {{ formatDuration(day.timeSavedSeconds) }}</span>
           </div>
         </div>
       </article>

@@ -7,10 +7,12 @@ export const strings = {
     typePrefix: 'Typ planu:'
   },
   details: {
+    activity: 'Aktywność',
     averageCadence: 'Średnia kadencja',
     averageHeartrate: 'Średnie tętno',
     averageRideSpeed: 'Średnia prędkość jazdy',
     averageRunPace: 'Średnie tempo biegu',
+    completedSection: 'Wykonanie',
     daysMeetingDistanceGoal: 'Dni z celem dystansu',
     daysMeetingDurationGoal: 'Dni z celem czasu',
     daysMeetingPaceGoal: 'Dni z celem tempa',
@@ -19,17 +21,24 @@ export const strings = {
     elevationGain: 'Przewyższenie',
     fastestRunPace: 'Najszybsze tempo biegu',
     label: 'Statystyki szczegółowe',
+    maxHeartrate: 'Maks. tętno',
     maxRideSpeed: 'Maksymalna prędkość jazdy',
     maxSpeed: 'Maks. prędkość',
     matchedActivity: 'Powiązana aktywność:',
+    more: 'Więcej danych',
+    notes: 'Notatki',
     overDistance: 'Nadwyżka dystansu',
     overDuration: 'Nadwyżka czasu',
     paceGoal: 'Cel tempa',
     planned: 'Plan:',
+    plannedSection: 'Plan',
     savedTime: 'Zysk czasu',
+    scheduledFor: 'Termin',
     topSpeed: 'Średnia prędkość:',
     averageSpeed: 'Średnia prędkość:',
-    done: 'Wykonano:'
+    done: 'Wykonano:',
+    hideDetails: 'Ukryj szczegóły',
+    showDetails: 'Pokaż szczegóły'
   },
   errors: {
     loadPlans: 'Nie udało się pobrać listy planów',

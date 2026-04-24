@@ -74,8 +74,23 @@ export class DashboardViewComponent implements OnInit {
     this.expandedDayId = this.expandedDayId === dayKey ? null : dayKey;
   }
 
+  onDayCardKeydown(event: KeyboardEvent, day: TrainingDay): void {
+    if (event.key !== 'Enter' && event.key !== ' ') {
+      return;
+    }
+
+    event.preventDefault();
+    this.toggleDayDetails(day);
+  }
+
   isDayExpanded(day: TrainingDay): boolean {
     return this.expandedDayId === this.trackByDay(0, day);
+  }
+
+  getDayDetailsToggleLabel(day: TrainingDay): string {
+    return this.isDayExpanded(day)
+      ? this.moduleStrings.details.hideDetails
+      : this.moduleStrings.details.showDetails;
   }
 
   getActivityTypeLabel(activityType: TrainingDay['activityType']): string {
