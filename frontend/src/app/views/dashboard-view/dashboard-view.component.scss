@@ -544,3 +544,65 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .page {
+    gap: 20px;
+  }
+
+  .header {
+    gap: 12px;
+    padding-left: 52px;
+  }
+
+  .header h2 {
+    font-size: 1.55rem;
+    line-height: 1.2;
+  }
+
+  .plan-switcher {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .card,
+  .panel {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .detail-card,
+  .overview-card,
+  .detail-item,
+  .detail-notes-card {
+    padding-inline: 14px;
+  }
+
+  .day-card {
+    padding: 16px;
+  }
+
+  .day-header-actions {
+    gap: 10px;
+  }
+
+  .day-expand-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+  }
+
+  .status-chip {
+    padding: 7px 11px;
+    font-size: 0.76rem;
+  }
+
+  .activity-summary {
+    padding: 12px;
+  }
+
+  .matched {
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+  }
+}
