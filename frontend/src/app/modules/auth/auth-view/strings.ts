@@ -6,7 +6,7 @@ export const strings = {
     rememberMe: 'Zapamiętaj mnie'
   },
   intro: 'Zaloguj się, aby zarządzać planem treningowym i synchronizacją Stravy.',
-  kicker: 'Auth',
+  kicker: 'Witaj w Travans',
   modes: {
     login: {
       button: 'Login',

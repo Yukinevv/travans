@@ -47,7 +47,6 @@ export class AuthViewComponent implements OnInit {
     const rememberedEmail = this.authService.getRememberedEmail();
     if (rememberedEmail) {
       this.loginForm.patchValue({ email: rememberedEmail, rememberMe: true });
-      this.registerForm.patchValue({ email: rememberedEmail, rememberMe: true });
     }
   }
 
