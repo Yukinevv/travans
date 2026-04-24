@@ -8,6 +8,7 @@
   align-items: end;
   justify-content: space-between;
   gap: 16px;
+  padding-left: 72px;
 }
 
 .header h2 {
@@ -507,6 +508,7 @@
   .header {
     flex-direction: column;
     align-items: stretch;
+    padding-left: 60px;
   }
 
   .stats {

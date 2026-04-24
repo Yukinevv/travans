@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 import { CommonStrings, CommonStringsLoader } from './core/misc';
 import { AuthService } from './modules/auth/services/auth.service';
@@ -14,6 +15,7 @@ import { ModuleStrings, strings } from './strings';
 export class AppComponent implements OnInit {
   sidebarOpen = true;
   isMobileViewport = false;
+  suppressHoverOpen = false;
   readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
   readonly moduleStrings: ModuleStrings = strings;
 
@@ -24,6 +26,11 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateSidebarForViewport();
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.sidebarOpen = false;
+      });
   }
 
   @HostListener('window:resize')
@@ -35,8 +42,29 @@ export class AppComponent implements OnInit {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
+  openSidebar(): void {
+    this.sidebarOpen = true;
+  }
+
   closeSidebar(): void {
     this.sidebarOpen = false;
+  }
+
+  closeSidebarFromToggle(): void {
+    this.suppressHoverOpen = true;
+    this.sidebarOpen = false;
+  }
+
+  openSidebarOnHover(): void {
+    if (this.isMobileViewport || this.sidebarOpen || this.suppressHoverOpen) {
+      return;
+    }
+
+    this.openSidebar();
+  }
+
+  resetHoverOpen(): void {
+    this.suppressHoverOpen = false;
   }
 
   closeSidebarAfterNavigation(): void {

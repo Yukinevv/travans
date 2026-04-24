@@ -3,6 +3,10 @@
   gap: 24px;
 }
 
+.page > .header:first-child {
+  padding-left: 72px;
+}
+
 .panel {
   border: 1px solid var(--border);
   background: var(--surface);
@@ -188,6 +192,10 @@ button {
 }
 
 @media (max-width: 720px) {
+  .page > .header:first-child {
+    padding-left: 60px;
+  }
+
   .panel-header {
     flex-direction: column;
     align-items: stretch;

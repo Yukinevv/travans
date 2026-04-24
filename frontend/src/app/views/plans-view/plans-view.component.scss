@@ -3,6 +3,11 @@
   gap: 24px;
 }
 
+.page > .panel:first-child > .kicker,
+.page > .panel:first-child > h2 {
+  padding-left: 50px;
+}
+
 .panel {
   border: 1px solid var(--border);
   background: var(--surface);
@@ -185,6 +190,11 @@ button.danger-button {
 }
 
 @media (max-width: 900px) {
+  .page > .panel:first-child > .kicker,
+  .page > .panel:first-child > h2 {
+    padding-left: 44px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }

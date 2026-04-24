@@ -1,48 +1,70 @@
 .shell {
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
+  position: relative;
   min-height: 100vh;
-  transition: grid-template-columns 220ms ease;
-}
-
-.shell.sidebar-open {
-  grid-template-columns: 320px minmax(0, 1fr);
 }
 
 .menu-toggle {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: rgba(255, 252, 247, 0.96);
   box-shadow: var(--shadow);
   display: grid;
   place-content: center;
-  gap: 5px;
+  gap: 4px;
   cursor: pointer;
 }
 
+.sidebar-launcher {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  z-index: 40;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 252, 247, 0.96);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-content: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.sidebar-launcher span,
 .menu-toggle span {
   display: block;
-  width: 22px;
+  width: 18px;
   height: 2px;
   border-radius: 999px;
   background: var(--text);
 }
 
 .sidebar {
+  width: 320px;
   padding: 32px;
-  background: rgba(255, 248, 239, 0.7);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 248, 239, 0.56);
+  backdrop-filter: blur(18px);
   display: flex;
   flex-direction: column;
   gap: 24px;
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: 0;
+  z-index: 30;
   height: 100vh;
   overflow: hidden;
-  transition: padding 220ms ease;
+  border-right: 1px solid rgba(89, 66, 44, 0.08);
+  box-shadow: 0 26px 48px rgba(71, 44, 22, 0.18);
+  transform: translateX(-100%);
+  transition: transform 260ms ease, background 220ms ease, backdrop-filter 220ms ease;
   box-sizing: border-box;
+}
+
+.sidebar.open {
+  transform: translateX(0);
 }
 
 .sidebar-top {
@@ -112,15 +134,24 @@ h1 {
 }
 
 .content {
+  position: relative;
+  z-index: 1;
   padding: 32px;
   min-width: 0;
   overflow: hidden;
 }
 
-.shell:not(.sidebar-open) .sidebar {
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  border: 0;
   background: transparent;
-  backdrop-filter: none;
-  border-right: 0;
+  cursor: pointer;
+}
+
+.shell:not(.sidebar-open) .sidebar-backdrop {
+  display: none;
 }
 
 .session {
@@ -193,20 +224,18 @@ h1 {
 }
 
 @media (max-width: 960px) {
-  .shell {
-    grid-template-columns: 88px minmax(0, 1fr);
-  }
-
-  .shell.sidebar-open {
-    grid-template-columns: min(320px, 72vw) minmax(0, 1fr);
-  }
-
   .sidebar {
+    width: min(320px, calc(100vw - 24px));
     padding: 24px;
   }
 
   h1 {
     font-size: 1.8rem;
+  }
+
+  .sidebar-launcher {
+    top: 24px;
+    left: 24px;
   }
 
   .content {

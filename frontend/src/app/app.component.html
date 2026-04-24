@@ -1,4 +1,17 @@
 <div class="shell" [class.sidebar-open]="sidebarOpen">
+  <button
+    type="button"
+    class="sidebar-launcher"
+    *ngIf="!sidebarOpen"
+    [attr.aria-label]="moduleStrings.sidebar.expandAriaLabel"
+    (mouseenter)="openSidebarOnHover()"
+    (mouseleave)="resetHoverOpen()"
+    (click)="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
   <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="sidebar-top">
       <button
@@ -6,7 +19,7 @@
         class="menu-toggle"
         [attr.aria-expanded]="sidebarOpen"
         [attr.aria-label]="sidebarOpen ? moduleStrings.sidebar.collapseAriaLabel : moduleStrings.sidebar.expandAriaLabel"
-        (click)="toggleSidebar()">
+        (click)="closeSidebarFromToggle()">
         <span></span>
         <span></span>
         <span></span>
@@ -42,6 +55,13 @@
       <button type="button" (click)="logout()">{{ commonStrings.actions.logout }}</button>
     </div>
   </aside>
+
+  <button
+    type="button"
+    class="sidebar-backdrop"
+    *ngIf="sidebarOpen"
+    (click)="closeSidebar()"
+    aria-label="Zamknij menu boczne"></button>
 
   <main class="content">
     <router-outlet></router-outlet>
