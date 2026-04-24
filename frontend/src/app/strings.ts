@@ -5,13 +5,13 @@ export const strings = {
     dashboard: 'Pulpit',
     integrations: 'Integracje',
     newPlan: 'Nowy plan',
-    planList: 'Lista planow'
+    planList: 'Lista planów'
   },
   sidebar: {
-    collapseAriaLabel: 'Zwin menu boczne',
-    expandAriaLabel: 'Rozwin menu boczne',
+    collapseAriaLabel: 'Zwiń menu boczne',
+    expandAriaLabel: 'Rozwiń menu boczne',
     headline: 'Plan treningowy zsynchronizowany ze Strava',
-    lead: 'Tworz plany treningowe, synchronizuj aktywnosci ze Stravy i analizuj realizacje swoich celow.'
+    lead: 'Twórz plany treningowe, synchronizuj aktywności ze Stravy i analizuj realizację swoich celów.'
   },
   session: {
     logout: 'Wyloguj'

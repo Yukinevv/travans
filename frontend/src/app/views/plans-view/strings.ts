@@ -1,24 +1,24 @@
 export const strings = {
   actions: {
-    addDay: 'Dodaj dzien',
+    addDay: 'Dodaj dzień',
     cancel: 'Anuluj',
-    removeDay: 'Usun dzien',
+    removeDay: 'Usuń dzień',
     saveChanges: 'Zapisz zmiany',
     savePlan: 'Zapisz plan'
   },
   day: {
-    dayLabel: 'Dzien',
-    downAriaLabel: 'Przenies nizej',
+    dayLabel: 'Dzień',
+    downAriaLabel: 'Przenieś niżej',
     notes: 'Notatki',
     plannedDistance: 'Dystans planowany (m)',
     plannedDuration: 'Czas planowany (s)',
-    removeConfirmation: 'Czy na pewno chcesz usunac dzien treningowy %d?',
-    title: 'Dzien treningowy %d',
-    upAriaLabel: 'Przenies wyzej'
+    removeConfirmation: 'Czy na pewno chcesz usunąć dzień treningowy %d?',
+    title: 'Dzień treningowy %d',
+    upAriaLabel: 'Przenieś wyżej'
   },
   defaults: {
     jsonInput: `{
-  "name": "Przykladowy plan 10 km",
+  "name": "Przykładowy plan 10 km",
   "description": "4 tygodnie pracy nad tempem",
   "startDate": "2026-04-13",
   "stravaEvaluationStartDate": "2026-04-13",
@@ -37,30 +37,30 @@ export const strings = {
   },
   errors: {
     invalidField: '%s jest niepoprawne.',
-    invalidJson: 'JSON jest niepoprawny. Sprawdz skladnie i przecinki.',
+    invalidJson: 'JSON jest niepoprawny. Sprawdź składnię i przecinki.',
     invalidJsonFile: 'Wybierz plik JSON z rozszerzeniem .json.',
-    loadPlan: 'Nie udalo sie pobrac planu do edycji',
-    readJsonFile: 'Nie udalo sie odczytac pliku JSON.',
+    loadPlan: 'Nie udało się pobrać planu do edycji',
+    readJsonFile: 'Nie udało się odczytać pliku JSON.',
     requiredField: '%s jest wymagane.',
-    savePlan: 'Nie udalo sie zapisac planu',
-    submitRequired: 'Uzupelnij wymagane pola planu przed zapisem.'
+    savePlan: 'Nie udało się zapisać planu',
+    submitRequired: 'Uzupełnij wymagane pola planu przed zapisem.'
   },
   form: {
     description: 'Opis',
     name: 'Nazwa',
     planType: 'Typ planu',
     startDate: 'Data startu',
-    stravaEvaluationStartDate: 'Uwzgledniaj Strave od',
-    title: 'Tytul'
+    stravaEvaluationStartDate: 'Uwzględniaj Stravę od',
+    title: 'Tytuł'
   },
   header: {
     editTitle: 'Edytuj plan',
     kicker: 'Nowy plan',
-    loadingEdit: 'Ladowanie planu do edycji...',
-    newTitle: 'Dodaj plan recznie'
+    loadingEdit: 'Ładowanie planu do edycji...',
+    newTitle: 'Dodaj plan ręcznie'
   },
   import: {
-    description: 'Wybranie pliku lub wklejenie poprawnego JSON-a automatycznie uzupelni formularz planu.',
+    description: 'Wybranie pliku lub wklejenie poprawnego JSON-a automatycznie uzupełni formularz planu.',
     fileButton: 'Wczytaj plik',
     fileNotSelected: 'Nie wybrano pliku',
     kicker: 'Import JSON',

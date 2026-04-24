@@ -2,10 +2,10 @@ export const strings = {
   form: {
     displayName: 'Nazwa',
     email: 'Email',
-    password: 'Haslo',
-    rememberMe: 'Zapamietaj mnie'
+    password: 'Hasło',
+    rememberMe: 'Zapamiętaj mnie'
   },
-  intro: 'Zaloguj sie, aby zarzadzac planem treningowym i synchronizacja Stravy.',
+  intro: 'Zaloguj się, aby zarządzać planem treningowym i synchronizacją Stravy.',
   kicker: 'Auth',
   modes: {
     login: {
@@ -15,7 +15,7 @@ export const strings = {
     },
     register: {
       button: 'Register',
-      submit: 'Utworz konto',
+      submit: 'Utwórz konto',
       title: 'Rejestracja'
     }
   }

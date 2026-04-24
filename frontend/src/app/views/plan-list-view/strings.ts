@@ -1,32 +1,32 @@
 export const strings = {
   emptyState: {
     description: 'Dodaj pierwszy plan w widoku "Nowy plan".',
-    title: 'Nie masz jeszcze zapisanych planow.'
+    title: 'Nie masz jeszcze zapisanych planów.'
   },
   errors: {
-    deletePlan: 'Nie udalo sie usunac planu',
-    loadPlans: 'Nie udalo sie pobrac planow'
+    deletePlan: 'Nie udało się usunąć planu',
+    loadPlans: 'Nie udało się pobrać planów'
   },
   header: {
     kicker: 'Lista',
     title: 'Zapisane plany'
   },
-  loading: 'Ladowanie planow...',
+  loading: 'Ładowanie planów...',
   plan: {
     createdAt: 'Utworzono:',
-    dayPrefix: 'Dzien',
-    deleteConfirmation: 'Czy na pewno chcesz usunac plan "%s"?',
+    dayPrefix: 'Dzień',
+    deleteConfirmation: 'Czy na pewno chcesz usunąć plan "%s"?',
     edit: 'Edytuj',
     matched: 'Dopasowano:',
-    showOnDashboard: 'Pokaz na dashboardzie',
+    showOnDashboard: 'Pokaż na dashboardzie',
     startDate: 'Start planu:',
     stravaFrom: 'Strava od:',
     typePrefix: 'Typ planu:',
     visibleOnDashboard: 'Widoczny na dashboardzie'
   },
   toggle: {
-    hideDetails: 'Ukryj szczegoly',
-    showDetails: 'Pokaz szczegoly'
+    hideDetails: 'Ukryj szczegóły',
+    showDetails: 'Pokaż szczegóły'
   },
   units: {
     days: 'dni'

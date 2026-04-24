@@ -1,44 +1,44 @@
 export const strings = {
   activities: {
-    empty: 'Brak pobranych aktywnosci. Kliknij Synchronizuj, aby pobrac treningi z konta Strava.',
-    kicker: 'Aktywnosci',
-    loading: 'Ladowanie aktywnosci...',
+    empty: 'Brak pobranych aktywności. Kliknij Synchronizuj, aby pobrać treningi z konta Strava.',
+    kicker: 'Aktywności',
+    loading: 'Ładowanie aktywności...',
     matched: 'Dopasowano',
     title: 'Treningi pobrane ze Stravy',
     unmatched: {
-      description: 'Ta aktywnosc nie zostala jeszcze powiazana z zadnym dniem planu.',
+      description: 'Ta aktywność nie została jeszcze powiązana z żadnym dniem planu.',
       label: 'Bez dopasowania'
     }
   },
   connection: {
-    authorizationRequired: 'Polaczenie ze Strava wymaga ponownej autoryzacji. Kliknij przycisk powyzej, aby odnowic dostep.',
-    connect: 'Polacz ze Strava',
-    connectedAccount: 'Polaczenie konta',
-    connectIntro: 'Polacz konto Strava, aby pobrac swoje aktywnosci i dopasowac je do planu treningowego.',
+    authorizationRequired: 'Połączenie ze Strava wymaga ponownej autoryzacji. Kliknij przycisk powyżej, aby odnowić dostęp.',
+    connect: 'Połącz ze Strava',
+    connectedAccount: 'Połączenie konta',
+    connectIntro: 'Połącz konto Strava, aby pobrać swoje aktywności i dopasować je do planu treningowego.',
     kicker: 'Strava',
-    loading: 'Ladowanie statusu integracji...',
-    reconnect: 'Polacz ponownie ze Strava',
-    retry: 'Sprobuj ponownie',
+    loading: 'Ładowanie statusu integracji...',
+    reconnect: 'Połącz ponownie ze Strava',
+    retry: 'Spróbuj ponownie',
     syncInProgress: 'Synchronizacja...',
-    title: 'Polaczenie ze Strava'
+    title: 'Połączenie ze Strava'
   },
   errors: {
-    loadActivities: 'Nie udalo sie pobrac aktywnosci ze Stravy',
-    loadStatus: 'Nie udalo sie pobrac statusu integracji',
-    sync: 'Nie udalo sie zsynchronizowac danych ze Strava'
+    loadActivities: 'Nie udało się pobrać aktywności ze Stravy',
+    loadStatus: 'Nie udało się pobrać statusu integracji',
+    sync: 'Nie udało się zsynchronizować danych ze Strava'
   },
   filters: {
     all: 'Wszystkie',
-    strength: 'Silownia'
+    strength: 'Siłownia'
   },
   header: {
     kicker: 'Integracje',
-    title: 'Polaczenie ze Strava'
+    title: 'Połączenie ze Strava'
   },
   labels: {
     athleteId: 'ID atleta:',
     category: 'Kategoria',
-    importedActivities: 'Zaimportowane aktywnosci:',
+    importedActivities: 'Zaimportowane aktywności:',
     matchedTrainingDays: 'Dopasowane dni planu:',
     resultKicker: 'Wynik',
     resultTitle: 'Ostatnia synchronizacja'

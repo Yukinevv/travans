@@ -1,26 +1,26 @@
 export const strings = {
   actions: {
-    back: 'Wroc',
+    back: 'Wróć',
     cancel: 'Anuluj',
-    delete: 'Usun',
+    delete: 'Usuń',
     edit: 'Edytuj',
     login: 'Zaloguj',
     logout: 'Wyloguj',
-    register: 'Utworz konto',
-    retry: 'Sprobuj ponownie',
+    register: 'Utwórz konto',
+    retry: 'Spróbuj ponownie',
     save: 'Zapisz',
     sync: 'Synchronizuj'
   },
   auth: {
     validation: {
       email: 'Podaj poprawny adres email',
-      minlength: 'Minimalna dlugosc to 8 znakow',
+      minlength: 'Minimalna długość to 8 znaków',
       required: 'Pole jest wymagane'
     },
     errors: {
-      badCredentials: 'Nieprawidlowy email lub haslo',
-      conflict: 'Nie mozna wykonac operacji z powodu konfliktu danych',
-      default: 'Wystapil blad podczas autoryzacji',
+      badCredentials: 'Nieprawidłowy email lub hasło',
+      conflict: 'Nie można wykonać operacji z powodu konfliktu danych',
+      default: 'Wystąpił błąd podczas autoryzacji',
       invalidForm: 'Popraw dane formularza'
     }
   },
@@ -37,10 +37,10 @@ export const strings = {
     lastSync: 'Ostatnia synchronizacja',
     name: 'Nazwa',
     notes: 'Notatki',
-    password: 'Haslo',
+    password: 'Hasło',
     startDate: 'Data startu',
     strava: 'Strava',
-    title: 'Tytul',
+    title: 'Tytuł',
     type: 'Typ'
   },
   metrics: {
@@ -50,27 +50,27 @@ export const strings = {
     none: '-'
   },
   states: {
-    achieved: 'Osiagniete',
-    connected: 'Polaczono',
-    disconnected: 'Nie polaczono',
+    achieved: 'Osiągnięte',
+    connected: 'Połączono',
+    disconnected: 'Nie połączono',
     matched: 'Dopasowano',
-    notAchieved: 'Nieosigniete',
+    notAchieved: 'Nieosiągnięte',
     unmatched: 'Bez dopasowania'
   },
   training: {
     activityTypes: {
-      OTHER: 'Inna aktywnosc',
+      OTHER: 'Inna aktywność',
       RIDE: 'Rower',
       RUN: 'Bieg',
-      STRENGTH: 'Silownia',
-      SWIM: 'Plywanie',
+      STRENGTH: 'Siłownia',
+      SWIM: 'Pływanie',
       WALK: 'Marsz',
       WORKOUT: 'Trening'
     },
     dayStatuses: {
       COMPLETED: 'Wykonany',
-      MISSED: 'Pominiety',
-      PARTIALLY_COMPLETED: 'Czesciowo wykonany',
+      MISSED: 'Pominięty',
+      PARTIALLY_COMPLETED: 'Częściowo wykonany',
       PLANNED: 'Zaplanowany'
     }
   }

@@ -1,54 +1,54 @@
 export const strings = {
   currentPlan: {
-    emptyDescription: 'Dodaj plan treningowy, a dashboard zacznie pokazywac postep i dopasowane treningi ze Stravy.',
+    emptyDescription: 'Dodaj plan treningowy, a dashboard zacznie pokazywać postęp i dopasowane treningi ze Stravy.',
     emptyTitle: 'Brak aktywnego planu',
-    label: 'Biezacy plan',
-    pinnedMessage: 'Plan zostal przypiety do dashboardu.',
+    label: 'Bieżący plan',
+    pinnedMessage: 'Plan został przypięty do dashboardu.',
     typePrefix: 'Typ planu:'
   },
   details: {
-    averageCadence: 'Srednia kadencja',
-    averageHeartrate: 'Srednie tetno',
-    averageRideSpeed: 'Srednia predkosc jazdy',
-    averageRunPace: 'Srednie tempo biegu',
+    averageCadence: 'Średnia kadencja',
+    averageHeartrate: 'Średnie tętno',
+    averageRideSpeed: 'Średnia prędkość jazdy',
+    averageRunPace: 'Średnie tempo biegu',
     daysMeetingDistanceGoal: 'Dni z celem dystansu',
     daysMeetingDurationGoal: 'Dni z celem czasu',
     daysMeetingPaceGoal: 'Dni z celem tempa',
     distanceGoal: 'Cel dystansu',
     durationGoal: 'Cel czasu',
-    elevationGain: 'Przewyzszenie',
+    elevationGain: 'Przewyższenie',
     fastestRunPace: 'Najszybsze tempo biegu',
-    label: 'Statystyki szczegolowe',
-    maxRideSpeed: 'Maksymalna predkosc jazdy',
-    maxSpeed: 'Maks. predkosc',
-    matchedActivity: 'Powiazana aktywnosc:',
-    overDistance: 'Nadwyzka dystansu',
-    overDuration: 'Nadwyzka czasu',
+    label: 'Statystyki szczegółowe',
+    maxRideSpeed: 'Maksymalna prędkość jazdy',
+    maxSpeed: 'Maks. prędkość',
+    matchedActivity: 'Powiązana aktywność:',
+    overDistance: 'Nadwyżka dystansu',
+    overDuration: 'Nadwyżka czasu',
     paceGoal: 'Cel tempa',
     planned: 'Plan:',
     savedTime: 'Zysk czasu',
-    topSpeed: 'Srednia predkosc:',
-    averageSpeed: 'Srednia predkosc:',
+    topSpeed: 'Średnia prędkość:',
+    averageSpeed: 'Średnia prędkość:',
     done: 'Wykonano:'
   },
   errors: {
-    loadPlans: 'Nie udalo sie pobrac listy planow',
-    loadSummary: 'Nie udalo sie pobrac danych dashboardu'
+    loadPlans: 'Nie udało się pobrać listy planów',
+    loadSummary: 'Nie udało się pobrać danych dashboardu'
   },
   header: {
     autoSelect: 'Automatycznie wybrany',
-    displayedPlan: 'Wyswietlany plan',
+    displayedPlan: 'Wyświetlany plan',
     kicker: 'Pulpit',
-    title: 'Postep realizacji planu'
+    title: 'Postęp realizacji planu'
   },
   loading: {
-    dashboard: 'Ladowanie danych dashboardu...'
+    dashboard: 'Ładowanie danych dashboardu...'
   },
   stats: {
     completed: 'Wykonane',
-    effectiveness: 'Skutecznosc',
-    missed: 'Pominiete',
-    partial: 'Czesciowo',
+    effectiveness: 'Skuteczność',
+    missed: 'Pominięte',
+    partial: 'Częściowo',
     planned: 'Zaplanowane'
   }
 };

@@ -1,30 +1,30 @@
 export const strings = {
   details: {
-    averageCadence: 'Srednia kadencja',
-    averageHeartrate: 'Srednie tetno',
-    averagePace: 'Srednie tempo',
-    averageSpeed: 'Srednia predkosc',
+    averageCadence: 'Średnia kadencja',
+    averageHeartrate: 'Średnie tętno',
+    averagePace: 'Średnie tempo',
+    averageSpeed: 'Średnia prędkość',
     distance: 'Dystans',
     duration: 'Czas',
-    elevationGain: 'Przewyzszenie',
-    maxHeartrate: 'Maksymalne tetno',
-    maxSpeed: 'Maksymalna predkosc',
+    elevationGain: 'Przewyższenie',
+    maxHeartrate: 'Maksymalne tętno',
+    maxSpeed: 'Maksymalna prędkość',
     startDate: 'Data startu'
   },
   errors: {
-    invalidId: 'Nie znaleziono identyfikatora aktywnosci',
-    loadActivity: 'Nie udalo sie pobrac szczegolow aktywnosci'
+    invalidId: 'Nie znaleziono identyfikatora aktywności',
+    loadActivity: 'Nie udało się pobrać szczegółów aktywności'
   },
   header: {
-    back: 'Wroc do listy',
+    back: 'Wróć do listy',
     kicker: 'Integracje',
-    loading: 'Ladowanie szczegolow aktywnosci...',
-    title: 'Szczegoly aktywnosci'
+    loading: 'Ładowanie szczegółów aktywności...',
+    title: 'Szczegóły aktywności'
   },
   match: {
-    kicker: 'Powiazanie z planem',
+    kicker: 'Powiązanie z planem',
     matched: 'Dopasowano do planu',
-    unmatchedDescription: 'Ta aktywnosc nie zostala jeszcze przypisana do zadnego dnia planu treningowego.',
+    unmatchedDescription: 'Ta aktywność nie została jeszcze przypisana do żadnego dnia planu treningowego.',
     unmatchedTitle: 'Brak dopasowania'
   },
   section: {
