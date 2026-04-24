@@ -29,8 +29,16 @@
     </nav>
 
     <div class="session" *ngIf="authService.isAuthenticated()" [class.hidden]="!sidebarOpen">
-      <strong>{{ authService.getStoredProfile()?.displayName }}</strong>
-      <span>{{ authService.getStoredProfile()?.email }}</span>
+      <div class="session-profile">
+        <span class="session-icon" aria-hidden="true">
+          <span class="session-icon-head"></span>
+          <span class="session-icon-body"></span>
+        </span>
+        <div class="session-details">
+          <strong>{{ authService.getStoredProfile()?.displayName }}</strong>
+          <span>{{ authService.getStoredProfile()?.email }}</span>
+        </div>
+      </div>
       <button type="button" (click)="logout()">{{ commonStrings.actions.logout }}</button>
     </div>
   </aside>

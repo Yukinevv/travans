@@ -148,6 +148,50 @@ h1 {
   }
 }
 
+.session-profile {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.session-details {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.session-icon {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(204, 92, 42, 0.18) 0%, rgba(204, 92, 42, 0.08) 100%);
+  border: 1px solid rgba(204, 92, 42, 0.12);
+}
+
+.session-icon-head,
+.session-icon-body {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-dark);
+}
+
+.session-icon-head {
+  top: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+}
+
+.session-icon-body {
+  bottom: 10px;
+  width: 20px;
+  height: 11px;
+  border-radius: 999px 999px 8px 8px;
+}
+
 @media (max-width: 960px) {
   .shell {
     grid-template-columns: 88px minmax(0, 1fr);
