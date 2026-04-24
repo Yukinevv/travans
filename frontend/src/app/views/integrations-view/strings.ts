@@ -10,6 +10,11 @@ export const strings = {
       label: 'Bez dopasowania'
     }
   },
+  confirmation: {
+    description: 'Czy na pewno chcesz uruchomić synchronizację danych ze Stravy?',
+    kicker: 'Potwierdzenie',
+    title: 'Synchronizować konto Strava?'
+  },
   connection: {
     authorizationRequired: 'Połączenie ze Strava wymaga ponownej autoryzacji. Kliknij przycisk powyżej, aby odnowić dostęp.',
     connect: 'Połącz ze Strava',

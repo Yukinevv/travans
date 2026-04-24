@@ -31,7 +31,7 @@
       <ng-template #retryButton>
         <button type="button" *ngIf="!status?.connected || reconnectRequired" (click)="retryLoadStatus()">{{ commonStrings.actions.retry }}</button>
       </ng-template>
-      <button *ngIf="status?.connected && status?.athleteId && !reconnectRequired" type="button" (click)="sync(status!.athleteId!)" [disabled]="syncInProgress">
+      <button *ngIf="status?.connected && status?.athleteId && !reconnectRequired" type="button" (click)="openSyncConfirmation()" [disabled]="syncInProgress">
         {{ syncInProgress ? moduleStrings.connection.syncInProgress : commonStrings.actions.sync }}
       </button>
     </div>
@@ -110,3 +110,25 @@
     </p>
   </article>
 </section>
+
+<div
+  class="confirmation-backdrop"
+  *ngIf="syncConfirmationOpen"
+  (click)="closeSyncConfirmation()"
+  (keydown.escape)="closeSyncConfirmation()"
+  tabindex="0">
+  <article class="confirmation-modal" (click)="$event.stopPropagation()">
+    <p class="kicker">{{ moduleStrings.confirmation.kicker }}</p>
+    <h3>{{ moduleStrings.confirmation.title }}</h3>
+    <p class="muted">{{ moduleStrings.confirmation.description }}</p>
+
+    <div class="confirmation-actions">
+      <button type="button" class="secondary-button" (click)="closeSyncConfirmation()">
+        {{ commonStrings.actions.cancel }}
+      </button>
+      <button type="button" (click)="confirmSync()">
+        {{ commonStrings.actions.sync }}
+      </button>
+    </div>
+  </article>
+</div>

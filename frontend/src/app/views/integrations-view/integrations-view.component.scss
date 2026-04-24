@@ -101,6 +101,11 @@ button {
   cursor: pointer;
 }
 
+.secondary-button {
+  background: rgba(45, 33, 23, 0.08);
+  color: var(--text-secondary);
+}
+
 .activity-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -203,6 +208,42 @@ button {
   color: var(--text-secondary);
 }
 
+.confirmation-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(31, 28, 23, 0.22);
+  backdrop-filter: blur(6px);
+}
+
+.confirmation-modal {
+  width: min(100%, 420px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px;
+  background: rgba(255, 250, 244, 0.94);
+  box-shadow: 0 24px 56px rgba(45, 33, 23, 0.22);
+}
+
+.confirmation-modal h3 {
+  margin: 8px 0 12px;
+  font-size: 1.6rem;
+}
+
+.confirmation-modal p {
+  margin-top: 0;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
 @media (max-width: 720px) {
   .page > .header:first-child {
     padding-left: 60px;
@@ -215,5 +256,13 @@ button {
 
   .activity-list {
     grid-template-columns: 1fr;
+  }
+
+  .confirmation-actions {
+    flex-direction: column-reverse;
+  }
+
+  .confirmation-actions button {
+    width: 100%;
   }
 }

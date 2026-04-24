@@ -25,6 +25,7 @@ export class IntegrationsViewComponent implements OnInit {
   loading = true;
   activitiesLoading = false;
   syncInProgress = false;
+  syncConfirmationOpen = false;
   selectedActivityType: ActivityType | '' = '';
   readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
   readonly moduleStrings: ModuleStrings = strings;
@@ -84,6 +85,28 @@ export class IntegrationsViewComponent implements OnInit {
     });
   }
 
+  openSyncConfirmation(): void {
+    if (!this.status?.connected || !this.status.athleteId || this.reconnectRequired || this.syncInProgress) {
+      return;
+    }
+
+    this.syncConfirmationOpen = true;
+  }
+
+  closeSyncConfirmation(): void {
+    this.syncConfirmationOpen = false;
+  }
+
+  confirmSync(): void {
+    if (!this.status?.athleteId) {
+      this.syncConfirmationOpen = false;
+      return;
+    }
+
+    this.syncConfirmationOpen = false;
+    this.sync(this.status.athleteId);
+  }
+
   onActivityTypeChange(value: string): void {
     this.selectedActivityType = value as ActivityType | '';
     this.loadActivities();
@@ -92,6 +115,7 @@ export class IntegrationsViewComponent implements OnInit {
   retryLoadStatus(): void {
     this.errorMessage = '';
     this.reconnectRequired = false;
+    this.syncConfirmationOpen = false;
     this.loadStatus();
   }
 
@@ -104,6 +128,7 @@ export class IntegrationsViewComponent implements OnInit {
   }
 
   openActivityDetails(activity: StravaActivity): void {
+    this.syncConfirmationOpen = false;
     this.router.navigate(['/integrations/activities', activity.id]);
   }
 
