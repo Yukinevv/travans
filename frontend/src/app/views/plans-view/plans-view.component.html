@@ -116,7 +116,11 @@
       <span class="file-picker-button">{{ moduleStrings.import.fileButton }}</span>
       <span class="file-picker-name">{{ importedFileName || moduleStrings.import.fileNotSelected }}</span>
     </label>
+    <button type="button" class="secondary preview-toggle" (click)="toggleJsonPreview()">
+      {{ isJsonPreviewExpanded ? moduleStrings.import.hidePreview : moduleStrings.import.showPreview }}
+    </button>
     <textarea
+      *ngIf="isJsonPreviewExpanded"
       [(ngModel)]="jsonInput"
       (ngModelChange)="onJsonInputChange($event)"
       [ngModelOptions]="{ standalone: true }"

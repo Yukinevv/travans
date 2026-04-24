@@ -64,6 +64,8 @@ export const strings = {
     fileButton: 'Wczytaj plik',
     fileNotSelected: 'Nie wybrano pliku',
     kicker: 'Import JSON',
+    hidePreview: 'Ukryj podgląd JSON',
+    showPreview: 'Pokaż podgląd JSON',
     title: 'Wklej plan lub wczytaj plik JSON'
   }
 };

@@ -16,6 +16,7 @@ import { ModuleStrings, strings } from './strings';
 })
 export class PlansViewComponent implements OnInit {
   importedFileName = '';
+  isJsonPreviewExpanded = false;
   jsonErrorMessage = '';
   submitErrorMessage = '';
   loadingPlan = false;
@@ -51,6 +52,10 @@ export class PlansViewComponent implements OnInit {
 
   getTrainingDayTitle(index: number): string {
     return this.moduleStrings.day.title.replace('%d', String(index + 1));
+  }
+
+  toggleJsonPreview(): void {
+    this.isJsonPreviewExpanded = !this.isJsonPreviewExpanded;
   }
 
   ngOnInit(): void {
