@@ -1,120 +1,120 @@
 <section class="page">
   <article class="panel">
-    <p class="kicker">Nowy plan</p>
-    <h2>{{ isEditMode ? 'Edytuj plan' : 'Dodaj plan recznie' }}</h2>
-    <p class="muted" *ngIf="loadingPlan">Ladowanie planu do edycji...</p>
+    <p class="kicker">{{ moduleStrings.header.kicker }}</p>
+    <h2>{{ isEditMode ? moduleStrings.header.editTitle : moduleStrings.header.newTitle }}</h2>
+    <p class="muted" *ngIf="loadingPlan">{{ moduleStrings.header.loadingEdit }}</p>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <p class="error-banner" *ngIf="submitErrorMessage">{{ submitErrorMessage }}</p>
 
       <div class="grid">
         <label>
-          <span>Nazwa</span>
+          <span>{{ moduleStrings.form.name }}</span>
           <input formControlName="name" type="text">
-          <small class="field-error" *ngIf="hasControlError('name')">{{ getControlErrorMessage('name', 'Nazwa') }}</small>
+          <small class="field-error" *ngIf="hasControlError('name')">{{ getControlErrorMessage('name', moduleStrings.form.name) }}</small>
         </label>
         <label>
-          <span>Data startu</span>
+          <span>{{ moduleStrings.form.startDate }}</span>
           <input formControlName="startDate" type="date">
-          <small class="field-error" *ngIf="hasControlError('startDate')">{{ getControlErrorMessage('startDate', 'Data startu') }}</small>
+          <small class="field-error" *ngIf="hasControlError('startDate')">{{ getControlErrorMessage('startDate', moduleStrings.form.startDate) }}</small>
         </label>
         <label>
-          <span>Uwzgledniaj Strave od</span>
+          <span>{{ moduleStrings.form.stravaEvaluationStartDate }}</span>
           <input formControlName="stravaEvaluationStartDate" type="date">
         </label>
         <label>
-          <span>Typ planu</span>
+          <span>{{ moduleStrings.form.planType }}</span>
           <select formControlName="planType">
-            <option value="RUN">Bieg</option>
-            <option value="RIDE">Rower</option>
-            <option value="SWIM">Plywanie</option>
-            <option value="WALK">Marsz</option>
-            <option value="WORKOUT">Trening</option>
-            <option value="STRENGTH">Sila</option>
-            <option value="OTHER">Inne</option>
+            <option value="RUN">{{ commonStrings.training.activityTypes.RUN }}</option>
+            <option value="RIDE">{{ commonStrings.training.activityTypes.RIDE }}</option>
+            <option value="SWIM">{{ commonStrings.training.activityTypes.SWIM }}</option>
+            <option value="WALK">{{ commonStrings.training.activityTypes.WALK }}</option>
+            <option value="WORKOUT">{{ commonStrings.training.activityTypes.WORKOUT }}</option>
+            <option value="STRENGTH">{{ commonStrings.training.activityTypes.STRENGTH }}</option>
+            <option value="OTHER">{{ commonStrings.training.activityTypes.OTHER }}</option>
           </select>
-          <small class="field-error" *ngIf="hasControlError('planType')">{{ getControlErrorMessage('planType', 'Typ planu') }}</small>
+          <small class="field-error" *ngIf="hasControlError('planType')">{{ getControlErrorMessage('planType', moduleStrings.form.planType) }}</small>
         </label>
       </div>
 
       <label>
-        <span>Opis</span>
+        <span>{{ moduleStrings.form.description }}</span>
         <textarea formControlName="description" rows="3"></textarea>
       </label>
 
       <div formArrayName="trainingDays" class="day-list">
         <div class="day-card" *ngFor="let day of trainingDays.controls; let i = index" [formGroupName]="i">
           <div class="day-card-header">
-            <p class="day-card-title">Dzien treningowy {{ i + 1 }}</p>
+            <p class="day-card-title">{{ getTrainingDayTitle(i) }}</p>
 
             <div class="day-card-actions">
-              <button type="button" class="secondary icon-button" (click)="moveTrainingDay(i, -1)" [disabled]="i === 0" aria-label="Przenies wyzej">
-                ↑
+              <button type="button" class="secondary icon-button" (click)="moveTrainingDay(i, -1)" [disabled]="i === 0" [attr.aria-label]="moduleStrings.day.upAriaLabel">
+                ^
               </button>
-              <button type="button" class="secondary icon-button" (click)="moveTrainingDay(i, 1)" [disabled]="i === trainingDays.length - 1" aria-label="Przenies nizej">
-                ↓
+              <button type="button" class="secondary icon-button" (click)="moveTrainingDay(i, 1)" [disabled]="i === trainingDays.length - 1" [attr.aria-label]="moduleStrings.day.downAriaLabel">
+                v
               </button>
-              <button type="button" class="danger-button" (click)="removeTrainingDay(i)">Usun dzien</button>
+              <button type="button" class="danger-button" (click)="removeTrainingDay(i)">{{ moduleStrings.actions.removeDay }}</button>
             </div>
           </div>
 
           <div class="grid">
             <label>
-              <span>Dzien</span>
+              <span>{{ moduleStrings.day.dayLabel }}</span>
               <input formControlName="scheduledDate" type="date">
-              <small class="field-error" *ngIf="hasControlError('trainingDays.' + i + '.scheduledDate')">{{ getControlErrorMessage('trainingDays.' + i + '.scheduledDate', 'Dzien') }}</small>
+              <small class="field-error" *ngIf="hasControlError('trainingDays.' + i + '.scheduledDate')">{{ getControlErrorMessage('trainingDays.' + i + '.scheduledDate', moduleStrings.day.dayLabel) }}</small>
             </label>
             <label>
-              <span>Tytul</span>
+              <span>{{ moduleStrings.form.title }}</span>
               <input formControlName="title" type="text">
-              <small class="field-error" *ngIf="hasControlError('trainingDays.' + i + '.title')">{{ getControlErrorMessage('trainingDays.' + i + '.title', 'Tytul') }}</small>
+              <small class="field-error" *ngIf="hasControlError('trainingDays.' + i + '.title')">{{ getControlErrorMessage('trainingDays.' + i + '.title', moduleStrings.form.title) }}</small>
             </label>
             <label>
-              <span>Typ</span>
+              <span>{{ commonStrings.labels.type }}</span>
               <select formControlName="activityType">
-                <option value="RUN">Bieg</option>
-                <option value="RIDE">Rower</option>
-                <option value="SWIM">Plywanie</option>
-                <option value="WALK">Marsz</option>
-                <option value="WORKOUT">Trening</option>
-                <option value="STRENGTH">Sila</option>
-                <option value="OTHER">Inne</option>
+                <option value="RUN">{{ commonStrings.training.activityTypes.RUN }}</option>
+                <option value="RIDE">{{ commonStrings.training.activityTypes.RIDE }}</option>
+                <option value="SWIM">{{ commonStrings.training.activityTypes.SWIM }}</option>
+                <option value="WALK">{{ commonStrings.training.activityTypes.WALK }}</option>
+                <option value="WORKOUT">{{ commonStrings.training.activityTypes.WORKOUT }}</option>
+                <option value="STRENGTH">{{ commonStrings.training.activityTypes.STRENGTH }}</option>
+                <option value="OTHER">{{ commonStrings.training.activityTypes.OTHER }}</option>
               </select>
-              <small class="field-error" *ngIf="hasControlError('trainingDays.' + i + '.activityType')">{{ getControlErrorMessage('trainingDays.' + i + '.activityType', 'Typ') }}</small>
+              <small class="field-error" *ngIf="hasControlError('trainingDays.' + i + '.activityType')">{{ getControlErrorMessage('trainingDays.' + i + '.activityType', commonStrings.labels.type) }}</small>
             </label>
             <label>
-              <span>Dystans planowany (m)</span>
+              <span>{{ moduleStrings.day.plannedDistance }}</span>
               <input formControlName="plannedDistanceMeters" type="number" min="0" step="100">
             </label>
             <label>
-              <span>Czas planowany (s)</span>
+              <span>{{ moduleStrings.day.plannedDuration }}</span>
               <input formControlName="plannedDurationSeconds" type="number" min="0" step="60">
             </label>
           </div>
 
           <label>
-            <span>Notatki</span>
+            <span>{{ moduleStrings.day.notes }}</span>
             <textarea formControlName="notes" rows="3"></textarea>
           </label>
         </div>
       </div>
 
       <div class="actions">
-        <button type="button" class="secondary" (click)="addTrainingDay()">Dodaj dzien</button>
-        <button type="button" class="secondary" *ngIf="isEditMode" (click)="router.navigate(['/plans/list'])">Anuluj</button>
-        <button type="submit">{{ isEditMode ? 'Zapisz zmiany' : 'Zapisz plan' }}</button>
+        <button type="button" class="secondary" (click)="addTrainingDay()">{{ moduleStrings.actions.addDay }}</button>
+        <button type="button" class="secondary" *ngIf="isEditMode" (click)="router.navigate(['/plans/list'])">{{ commonStrings.actions.cancel }}</button>
+        <button type="submit">{{ isEditMode ? moduleStrings.actions.saveChanges : moduleStrings.actions.savePlan }}</button>
       </div>
     </form>
   </article>
 
   <article class="panel" *ngIf="!isEditMode">
-    <p class="kicker">Import JSON</p>
-    <h2>Wklej plan lub wczytaj plik JSON</h2>
-    <p class="muted">Wybranie pliku lub wklejenie poprawnego JSON-a automatycznie uzupelni formularz planu.</p>
+    <p class="kicker">{{ moduleStrings.import.kicker }}</p>
+    <h2>{{ moduleStrings.import.title }}</h2>
+    <p class="muted">{{ moduleStrings.import.description }}</p>
     <label class="file-picker">
       <input type="file" accept=".json,application/json" (change)="onJsonFileSelected($event)">
-      <span class="file-picker-button">Wczytaj plik</span>
-      <span class="file-picker-name">{{ importedFileName || 'Nie wybrano pliku' }}</span>
+      <span class="file-picker-button">{{ moduleStrings.import.fileButton }}</span>
+      <span class="file-picker-name">{{ importedFileName || moduleStrings.import.fileNotSelected }}</span>
     </label>
     <textarea
       [(ngModel)]="jsonInput"

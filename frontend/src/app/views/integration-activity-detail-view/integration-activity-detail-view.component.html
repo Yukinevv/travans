@@ -1,14 +1,14 @@
 <section class="page">
   <header class="header">
     <div>
-      <p class="kicker">Integracje</p>
-      <h2>Szczegoly aktywnosci</h2>
+      <p class="kicker">{{ moduleStrings.header.kicker }}</p>
+      <h2>{{ moduleStrings.header.title }}</h2>
     </div>
-    <button type="button" class="back-button" (click)="backToIntegrations()">Wroc do listy</button>
+    <button type="button" class="back-button" (click)="backToIntegrations()">{{ moduleStrings.header.back }}</button>
   </header>
 
   <article class="panel" *ngIf="loading">
-    <p class="muted">Ladowanie szczegolow aktywnosci...</p>
+    <p class="muted">{{ moduleStrings.header.loading }}</p>
   </article>
 
   <article class="panel error-panel" *ngIf="errorMessage">
@@ -18,67 +18,67 @@
   <article class="panel" *ngIf="activity">
     <div class="hero">
       <div>
-        <p class="kicker">Strava</p>
+        <p class="kicker">{{ moduleStrings.section.kicker }}</p>
         <h3>{{ activity.name }}</h3>
-        <p class="meta">{{ activity.activityDate | date:'dd.MM.yyyy' }} · {{ getActivityTypeLabel(activity.activityType) }}</p>
+        <p class="meta">{{ activity.activityDate | date:'dd.MM.yyyy' }} | {{ getActivityTypeLabel(activity.activityType) }}</p>
       </div>
       <span class="badge" [class.matched]="activity.matchedToPlan">
-        {{ activity.matchedToPlan ? 'Dopasowano do planu' : 'Bez dopasowania' }}
+        {{ activity.matchedToPlan ? moduleStrings.match.matched : commonStrings.states.unmatched }}
       </span>
     </div>
 
     <div class="stats">
       <article class="stat-card">
-        <span>Dystans</span>
+        <span>{{ moduleStrings.details.distance }}</span>
         <strong>{{ formatDistance(activity.distanceMeters) }}</strong>
       </article>
       <article class="stat-card">
-        <span>Czas</span>
+        <span>{{ moduleStrings.details.duration }}</span>
         <strong>{{ formatDuration(activity.movingTimeSeconds) }}</strong>
       </article>
       <article class="stat-card">
-        <span>Data startu</span>
+        <span>{{ moduleStrings.details.startDate }}</span>
         <strong>{{ activity.startedAt | date:'dd.MM.yyyy HH:mm' }}</strong>
       </article>
       <article class="stat-card" *ngIf="activity.averageSpeedMetersPerSecond">
-        <span>Srednia predkosc</span>
+        <span>{{ moduleStrings.details.averageSpeed }}</span>
         <strong>{{ formatSpeed(activity.averageSpeedMetersPerSecond) }}</strong>
       </article>
       <article class="stat-card" *ngIf="activity.maxSpeedMetersPerSecond">
-        <span>Maksymalna predkosc</span>
+        <span>{{ moduleStrings.details.maxSpeed }}</span>
         <strong>{{ formatSpeed(activity.maxSpeedMetersPerSecond) }}</strong>
       </article>
       <article class="stat-card" *ngIf="activity.activityType === 'RUN' || activity.activityType === 'WALK'">
-        <span>Srednie tempo</span>
+        <span>{{ moduleStrings.details.averagePace }}</span>
         <strong>{{ formatPace(activity.averageSpeedMetersPerSecond) }}</strong>
       </article>
       <article class="stat-card" *ngIf="activity.elevationGainMeters">
-        <span>Przewyzszenie</span>
+        <span>{{ moduleStrings.details.elevationGain }}</span>
         <strong>{{ activity.elevationGainMeters }} m</strong>
       </article>
       <article class="stat-card" *ngIf="activity.averageHeartrateBpm">
-        <span>Srednie tetno</span>
+        <span>{{ moduleStrings.details.averageHeartrate }}</span>
         <strong>{{ activity.averageHeartrateBpm | number:'1.0-0' }} bpm</strong>
       </article>
       <article class="stat-card" *ngIf="activity.maxHeartrateBpm">
-        <span>Maksymalne tetno</span>
+        <span>{{ moduleStrings.details.maxHeartrate }}</span>
         <strong>{{ activity.maxHeartrateBpm }} bpm</strong>
       </article>
       <article class="stat-card" *ngIf="activity.averageCadenceRpm">
-        <span>Srednia kadencja</span>
+        <span>{{ moduleStrings.details.averageCadence }}</span>
         <strong>{{ activity.averageCadenceRpm | number:'1.0-0' }}</strong>
       </article>
     </div>
 
     <article class="match-panel">
-      <p class="kicker">Powiazanie z planem</p>
+      <p class="kicker">{{ moduleStrings.match.kicker }}</p>
       <ng-container *ngIf="activity.matchedToPlan; else unmatchedInfo">
         <h4>{{ activity.matchedTrainingDayTitle }}</h4>
         <p>{{ activity.matchedPlanName }}</p>
       </ng-container>
       <ng-template #unmatchedInfo>
-        <h4>Brak dopasowania</h4>
-        <p>Ta aktywnosc nie zostala jeszcze przypisana do zadnego dnia planu treningowego.</p>
+        <h4>{{ moduleStrings.match.unmatchedTitle }}</h4>
+        <p>{{ moduleStrings.match.unmatchedDescription }}</p>
       </ng-template>
     </article>
   </article>

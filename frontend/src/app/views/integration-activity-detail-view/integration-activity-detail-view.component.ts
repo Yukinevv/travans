@@ -1,9 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { CommonStrings, CommonStringsLoader } from '../../core/misc';
 import { StravaService } from '../../core/services/strava.service';
 import { StravaActivity } from '../../core/types/strava.model';
 import { getActivityTypeLabel } from '../../core/utils/training-labels';
+import { ModuleStrings, strings } from './strings';
 
 @Component({
   selector: 'app-integration-activity-detail-view',
@@ -15,6 +17,8 @@ export class IntegrationActivityDetailViewComponent implements OnInit {
   activity?: StravaActivity;
   loading = true;
   errorMessage = '';
+  readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
+  readonly moduleStrings: ModuleStrings = strings;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -26,7 +30,7 @@ export class IntegrationActivityDetailViewComponent implements OnInit {
   ngOnInit(): void {
     const activityId = Number(this.route.snapshot.paramMap.get('activityId'));
     if (!activityId) {
-      this.errorMessage = 'Nie znaleziono identyfikatora aktywnosci';
+      this.errorMessage = this.moduleStrings.errors.invalidId;
       this.loading = false;
       return;
     }
@@ -39,7 +43,7 @@ export class IntegrationActivityDetailViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'Nie udalo sie pobrac szczegolow aktywnosci';
+        this.errorMessage = this.moduleStrings.errors.loadActivity;
         this.loading = false;
         this.changeDetectorRef.detectChanges();
       }
@@ -52,7 +56,7 @@ export class IntegrationActivityDetailViewComponent implements OnInit {
 
   formatDistance(distanceMeters: number | null): string {
     if (!distanceMeters) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
 
     return `${(distanceMeters / 1000).toFixed(1)} km`;
@@ -60,7 +64,7 @@ export class IntegrationActivityDetailViewComponent implements OnInit {
 
   formatDuration(movingTimeSeconds: number | null): string {
     if (!movingTimeSeconds) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
 
     const totalMinutes = Math.round(movingTimeSeconds / 60);
@@ -75,7 +79,7 @@ export class IntegrationActivityDetailViewComponent implements OnInit {
 
   formatSpeed(speedMetersPerSecond: number | null): string {
     if (!speedMetersPerSecond) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
 
     return `${(speedMetersPerSecond * 3.6).toFixed(1)} km/h`;
@@ -83,7 +87,7 @@ export class IntegrationActivityDetailViewComponent implements OnInit {
 
   formatPace(speedMetersPerSecond: number | null): string {
     if (!speedMetersPerSecond || speedMetersPerSecond <= 0) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
 
     const secondsPerKm = 1000 / speedMetersPerSecond;

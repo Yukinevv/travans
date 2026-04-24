@@ -3,8 +3,10 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { CommonStrings, CommonStringsLoader } from '../../core/misc';
 import { TrainingPlanService } from '../../core/services/training-plan.service';
 import { ActivityType, TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
+import { ModuleStrings, strings } from './strings';
 
 @Component({
   selector: 'app-plans-view',
@@ -19,23 +21,9 @@ export class PlansViewComponent implements OnInit {
   loadingPlan = false;
   isEditMode = false;
   editingPlanId: number | null = null;
-  jsonInput = `{
-  "name": "Przykladowy plan 10 km",
-  "description": "4 tygodnie pracy nad tempem",
-  "startDate": "2026-04-13",
-  "stravaEvaluationStartDate": "2026-04-13",
-  "planType": "RUN",
-  "trainingDays": [
-    {
-      "scheduledDate": "2026-04-13",
-      "title": "Easy run",
-      "activityType": "RUN",
-      "plannedDistanceMeters": 6000,
-      "plannedDurationSeconds": 2100,
-      "notes": "Lekko"
-    }
-  ]
-}`;
+  jsonInput = strings.defaults.jsonInput;
+  readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
+  readonly moduleStrings: ModuleStrings = strings;
 
   readonly form = this.fb.group({
     name: ['', Validators.required],
@@ -59,6 +47,10 @@ export class PlansViewComponent implements OnInit {
 
   get trainingDays(): FormArray<FormGroup> {
     return this.form.get('trainingDays') as FormArray<FormGroup>;
+  }
+
+  getTrainingDayTitle(index: number): string {
+    return this.moduleStrings.day.title.replace('%d', String(index + 1));
   }
 
   ngOnInit(): void {
@@ -121,7 +113,7 @@ export class PlansViewComponent implements OnInit {
   }
 
   removeTrainingDay(index: number): void {
-    const confirmed = window.confirm(`Czy na pewno chcesz usunac dzien treningowy ${index + 1}?`);
+    const confirmed = window.confirm(this.moduleStrings.day.removeConfirmation.replace('%d', String(index + 1)));
     if (!confirmed) {
       return;
     }
@@ -141,7 +133,7 @@ export class PlansViewComponent implements OnInit {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.submitErrorMessage = 'Uzupelnij wymagane pola planu przed zapisem.';
+      this.submitErrorMessage = this.moduleStrings.errors.submitRequired;
       this.changeDetectorRef.detectChanges();
       return;
     }
@@ -156,7 +148,7 @@ export class PlansViewComponent implements OnInit {
       this.submitErrorMessage = '';
       this.router.navigate(['/plans/list']);
     }, (error) => {
-      this.submitErrorMessage = this.resolveApiErrorMessage(error, 'Nie udalo sie zapisac planu');
+      this.submitErrorMessage = this.resolveApiErrorMessage(error, this.moduleStrings.errors.savePlan);
       this.changeDetectorRef.detectChanges();
     });
   }
@@ -192,7 +184,7 @@ export class PlansViewComponent implements OnInit {
     const isJsonFile = file.type === 'application/json' || file.name.toLowerCase().endsWith('.json');
     if (!isJsonFile) {
       this.importedFileName = '';
-      this.jsonErrorMessage = 'Wybierz plik JSON z rozszerzeniem .json.';
+      this.jsonErrorMessage = this.moduleStrings.errors.invalidJsonFile;
       if (input) {
         input.value = '';
       }
@@ -209,7 +201,7 @@ export class PlansViewComponent implements OnInit {
     };
     reader.onerror = () => {
       this.importedFileName = '';
-      this.jsonErrorMessage = 'Nie udalo sie odczytac pliku JSON.';
+      this.jsonErrorMessage = this.moduleStrings.errors.readJsonFile;
       this.changeDetectorRef.detectChanges();
     };
 
@@ -228,10 +220,10 @@ export class PlansViewComponent implements OnInit {
     }
 
     if (control.errors['required']) {
-      return `${label} jest wymagane.`;
+      return this.moduleStrings.errors.requiredField.replace('%s', label);
     }
 
-    return `${label} jest niepoprawne.`;
+    return this.moduleStrings.errors.invalidField.replace('%s', label);
   }
 
   private resolveApiErrorMessage(error: unknown, fallbackMessage: string): string {
@@ -285,7 +277,7 @@ export class PlansViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       },
       error: (error) => {
-        this.submitErrorMessage = this.resolveApiErrorMessage(error, 'Nie udalo sie pobrac planu do edycji');
+        this.submitErrorMessage = this.resolveApiErrorMessage(error, this.moduleStrings.errors.loadPlan);
         this.loadingPlan = false;
         this.changeDetectorRef.detectChanges();
       }
@@ -322,7 +314,7 @@ export class PlansViewComponent implements OnInit {
       return this.normalizePlan(parsed);
     } catch {
       if (showError || value.trim()) {
-        this.jsonErrorMessage = 'JSON jest niepoprawny. Sprawdz skladnie i przecinki.';
+        this.jsonErrorMessage = this.moduleStrings.errors.invalidJson;
       }
       return null;
     }

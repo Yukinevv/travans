@@ -1,24 +1,24 @@
 <section class="page">
   <header class="header">
     <div>
-      <p class="kicker">Integracje</p>
-      <h2>Polaczenie ze Strava</h2>
+      <p class="kicker">{{ moduleStrings.header.kicker }}</p>
+      <h2>{{ moduleStrings.header.title }}</h2>
     </div>
   </header>
 
   <article class="panel" *ngIf="loading">
-    <p class="muted">Ladowanie statusu integracji...</p>
+    <p class="muted">{{ moduleStrings.connection.loading }}</p>
   </article>
 
   <article class="panel">
-    <p class="kicker">Strava</p>
-    <h2>Polaczenie konta</h2>
+    <p class="kicker">{{ moduleStrings.connection.kicker }}</p>
+    <h2>{{ moduleStrings.connection.connectedAccount }}</h2>
 
     <div class="status-row">
       <strong [class.connected]="status?.connected">
-        {{ status?.connected ? 'Polaczono' : 'Nie polaczono' }}
+        {{ status?.connected ? commonStrings.states.connected : commonStrings.states.disconnected }}
       </strong>
-      <span *ngIf="status?.athleteId">ID atleta: {{ status?.athleteId }}</span>
+      <span *ngIf="status?.athleteId">{{ moduleStrings.labels.athleteId }} {{ status?.athleteId }}</span>
     </div>
 
     <div class="actions">
@@ -26,22 +26,22 @@
         class="button"
         *ngIf="(!status?.connected || reconnectRequired) && canConnectToStrava(); else retryButton"
         [href]="status?.authorizationUrl">
-        {{ reconnectRequired ? 'Polacz ponownie ze Strava' : 'Polacz ze Strava' }}
+        {{ reconnectRequired ? moduleStrings.connection.reconnect : moduleStrings.connection.connect }}
       </a>
       <ng-template #retryButton>
-        <button type="button" *ngIf="!status?.connected || reconnectRequired" (click)="retryLoadStatus()">Sprobuj ponownie</button>
+        <button type="button" *ngIf="!status?.connected || reconnectRequired" (click)="retryLoadStatus()">{{ commonStrings.actions.retry }}</button>
       </ng-template>
       <button *ngIf="status?.connected && status?.athleteId && !reconnectRequired" type="button" (click)="sync(status!.athleteId!)" [disabled]="syncInProgress">
-        {{ syncInProgress ? 'Synchronizacja...' : 'Synchronizuj' }}
+        {{ syncInProgress ? moduleStrings.connection.syncInProgress : commonStrings.actions.sync }}
       </button>
     </div>
 
-    <p class="muted" *ngIf="status?.lastSyncAt">Ostatnia synchronizacja: {{ status?.lastSyncAt }}</p>
+    <p class="muted" *ngIf="status?.lastSyncAt">{{ commonStrings.labels.lastSync }}: {{ status?.lastSyncAt }}</p>
     <p class="muted" *ngIf="!status?.connected && !errorMessage">
-      Polacz konto Strava, aby pobrac swoje aktywnosci i dopasowac je do planu treningowego.
+      {{ moduleStrings.connection.connectIntro }}
     </p>
     <p class="muted reconnect-text" *ngIf="reconnectRequired">
-      Polaczenie ze Strava wymaga ponownej autoryzacji. Kliknij przycisk powyzej, aby odnowic dostep.
+      {{ moduleStrings.connection.authorizationRequired }}
     </p>
     <p class="muted error-text" *ngIf="errorMessage">
       {{ errorMessage }}
@@ -49,28 +49,28 @@
   </article>
 
   <article class="panel" *ngIf="syncResult">
-    <p class="kicker">Wynik</p>
-    <h2>Ostatnia synchronizacja</h2>
-    <p>Zaimportowane aktywnosci: <strong>{{ syncResult.importedActivities }}</strong></p>
-    <p>Dopasowane dni planu: <strong>{{ syncResult.matchedTrainingDays }}</strong></p>
+    <p class="kicker">{{ moduleStrings.labels.resultKicker }}</p>
+    <h2>{{ moduleStrings.labels.resultTitle }}</h2>
+    <p>{{ moduleStrings.labels.importedActivities }} <strong>{{ syncResult.importedActivities }}</strong></p>
+    <p>{{ moduleStrings.labels.matchedTrainingDays }} <strong>{{ syncResult.matchedTrainingDays }}</strong></p>
   </article>
 
   <article class="panel" *ngIf="status?.connected && !reconnectRequired">
     <div class="panel-header">
       <div>
-        <p class="kicker">Aktywnosci</p>
-        <h2>Treningi pobrane ze Stravy</h2>
+        <p class="kicker">{{ moduleStrings.activities.kicker }}</p>
+        <h2>{{ moduleStrings.activities.title }}</h2>
       </div>
 
       <label class="filter">
-        <span>Kategoria</span>
+        <span>{{ moduleStrings.labels.category }}</span>
         <select [ngModel]="selectedActivityType" (ngModelChange)="onActivityTypeChange($event)">
           <option *ngFor="let option of activityTypes" [ngValue]="option.value">{{ option.label }}</option>
         </select>
       </label>
     </div>
 
-    <p class="muted" *ngIf="activitiesLoading">Ladowanie aktywnosci...</p>
+    <p class="muted" *ngIf="activitiesLoading">{{ moduleStrings.activities.loading }}</p>
 
     <div class="activity-list" *ngIf="!activitiesLoading">
       <article class="activity-card" *ngFor="let activity of activities; trackBy: trackByActivity" (click)="openActivityDetails(activity)" tabindex="0">
@@ -89,7 +89,7 @@
         </div>
 
         <div class="activity-match matched" *ngIf="activity.matchedToPlan; else unmatchedBlock">
-          <span class="match-label">Dopasowano</span>
+          <span class="match-label">{{ moduleStrings.activities.matched }}</span>
           <p>
             {{ activity.matchedTrainingDayTitle }}<br>
             <span>{{ activity.matchedPlanName }}</span>
@@ -98,15 +98,15 @@
 
         <ng-template #unmatchedBlock>
           <div class="activity-match">
-            <span class="match-label pending">Bez dopasowania</span>
-            <p>Ta aktywnosc nie zostala jeszcze powiazana z zadnym dniem planu.</p>
+            <span class="match-label pending">{{ moduleStrings.activities.unmatched.label }}</span>
+            <p>{{ moduleStrings.activities.unmatched.description }}</p>
           </div>
         </ng-template>
       </article>
     </div>
 
     <p class="muted" *ngIf="!activitiesLoading && activities.length === 0">
-      Brak pobranych aktywnosci. Kliknij Synchronizuj, aby pobrac treningi z konta Strava.
+      {{ moduleStrings.activities.empty }}
     </p>
   </article>
 </section>

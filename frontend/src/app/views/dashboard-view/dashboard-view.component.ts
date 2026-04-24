@@ -1,11 +1,13 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
+import { CommonStrings, CommonStringsLoader } from '../../core/misc';
 import { CurrentPlanService } from '../../core/services/current-plan.service';
 import { DashboardSummary } from '../../core/types/dashboard.model';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { ActivityType, TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
 import { TrainingPlanService } from '../../core/services/training-plan.service';
 import { getActivityTypeLabel, getTrainingDayStatusLabel } from '../../core/utils/training-labels';
+import { ModuleStrings, strings } from './strings';
 
 @Component({
   selector: 'app-dashboard-view',
@@ -21,6 +23,8 @@ export class DashboardViewComponent implements OnInit {
   errorMessage = '';
   loading = true;
   loadingPlans = true;
+  readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
+  readonly moduleStrings: ModuleStrings = strings;
 
   constructor(
     private readonly dashboardService: DashboardService,
@@ -46,7 +50,7 @@ export class DashboardViewComponent implements OnInit {
         this.loadSummary(this.selectedPlanId);
       },
       error: () => {
-        this.errorMessage = 'Nie udalo sie pobrac listy planow';
+        this.errorMessage = this.moduleStrings.errors.loadPlans;
         this.loading = false;
         this.loadingPlans = false;
         this.changeDetectorRef.detectChanges();
@@ -93,14 +97,14 @@ export class DashboardViewComponent implements OnInit {
 
   formatDistance(distanceMeters: number | null | undefined): string {
     if (!distanceMeters) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
     return `${(distanceMeters / 1000).toFixed(1)} km`;
   }
 
   formatDuration(seconds: number | null | undefined): string {
     if (!seconds) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
 
     const hours = Math.floor(seconds / 3600);
@@ -115,7 +119,7 @@ export class DashboardViewComponent implements OnInit {
 
   formatSpeed(speedKph: number | null | undefined): string {
     if (!speedKph) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
 
     return `${speedKph.toFixed(1)} km/h`;
@@ -123,7 +127,7 @@ export class DashboardViewComponent implements OnInit {
 
   formatPace(secondsPerKm: number | null | undefined): string {
     if (!secondsPerKm) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
 
     const minutes = Math.floor(secondsPerKm / 60);
@@ -133,10 +137,10 @@ export class DashboardViewComponent implements OnInit {
 
   getStatusLabel(value: boolean | null | undefined): string {
     if (value === null || value === undefined) {
-      return 'Brak kryterium';
+      return this.commonStrings.metrics.noCriteria;
     }
 
-    return value ? 'Osiagniete' : 'Nieosigniete';
+    return value ? this.commonStrings.states.achieved : this.commonStrings.states.notAchieved;
   }
 
   private loadSummary(planId: number | null): void {
@@ -156,7 +160,7 @@ export class DashboardViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'Nie udalo sie pobrac danych dashboardu';
+        this.errorMessage = this.moduleStrings.errors.loadSummary;
         this.loading = false;
         this.changeDetectorRef.detectChanges();
       }

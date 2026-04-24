@@ -1,10 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { CommonStrings, CommonStringsLoader } from '../../core/misc';
 import { CurrentPlanService } from '../../core/services/current-plan.service';
 import { TrainingPlanService } from '../../core/services/training-plan.service';
 import { TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
-import { getActivityTypeLabel } from '../../core/utils/training-labels';
+import { getActivityTypeLabel, getTrainingDayStatusLabel } from '../../core/utils/training-labels';
+import { ModuleStrings, strings } from './strings';
 
 @Component({
   selector: 'app-plan-list-view',
@@ -18,6 +20,8 @@ export class PlanListViewComponent implements OnInit {
   selectedDashboardPlanId: number | null = null;
   errorMessage = '';
   loading = true;
+  readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
+  readonly moduleStrings: ModuleStrings = strings;
 
   constructor(
     private readonly trainingPlanService: TrainingPlanService,
@@ -42,7 +46,7 @@ export class PlanListViewComponent implements OnInit {
 
   formatDistance(distanceMeters?: number | null): string {
     if (!distanceMeters) {
-      return 'Brak dystansu';
+      return this.commonStrings.metrics.noDistance;
     }
 
     return `${(distanceMeters / 1000).toFixed(distanceMeters % 1000 === 0 ? 0 : 1)} km`;
@@ -50,7 +54,7 @@ export class PlanListViewComponent implements OnInit {
 
   formatDuration(durationSeconds?: number | null): string {
     if (!durationSeconds) {
-      return 'Brak czasu';
+      return this.commonStrings.metrics.noDuration;
     }
 
     const minutes = Math.round(durationSeconds / 60);
@@ -58,16 +62,7 @@ export class PlanListViewComponent implements OnInit {
   }
 
   getStatusLabel(day: TrainingDay): string {
-    switch (day.status) {
-      case 'COMPLETED':
-        return 'Wykonany';
-      case 'PARTIALLY_COMPLETED':
-        return 'Czesciowo wykonany';
-      case 'MISSED':
-        return 'Pominiety';
-      default:
-        return 'Zaplanowany';
-    }
+    return getTrainingDayStatusLabel(day.status);
   }
 
   getActivityTypeLabel(activityType: TrainingDay['activityType']): string {
@@ -89,7 +84,7 @@ export class PlanListViewComponent implements OnInit {
       return;
     }
 
-    const confirmed = window.confirm(`Czy na pewno chcesz usunac plan "${plan.name}"?`);
+    const confirmed = window.confirm(this.moduleStrings.plan.deleteConfirmation.replace('%s', plan.name));
     if (!confirmed) {
       return;
     }
@@ -108,7 +103,7 @@ export class PlanListViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'Nie udalo sie usunac planu';
+        this.errorMessage = this.moduleStrings.errors.deletePlan;
         this.changeDetectorRef.detectChanges();
       }
     });
@@ -139,7 +134,7 @@ export class PlanListViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       },
       error: () => {
-        this.errorMessage = 'Nie udalo sie pobrac planow';
+        this.errorMessage = this.moduleStrings.errors.loadPlans;
         this.loading = false;
         this.changeDetectorRef.detectChanges();
       }

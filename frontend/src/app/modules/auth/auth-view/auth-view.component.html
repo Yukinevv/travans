@@ -1,59 +1,59 @@
 <section class="auth-page">
   <article class="auth-panel">
-    <p class="kicker">Auth</p>
-    <h2>{{ mode === 'login' ? 'Logowanie' : 'Rejestracja' }}</h2>
-    <p class="intro">Zaloguj sie, aby zarzadzac planem treningowym i synchronizacja Stravy.</p>
+    <p class="kicker">{{ moduleStrings.kicker }}</p>
+    <h2>{{ mode === 'login' ? moduleStrings.modes.login.title : moduleStrings.modes.register.title }}</h2>
+    <p class="intro">{{ moduleStrings.intro }}</p>
 
     <div class="switcher">
-      <button type="button" [class.active]="mode === 'login'" (click)="setMode('login')">Login</button>
-      <button type="button" [class.active]="mode === 'register'" (click)="setMode('register')">Register</button>
+      <button type="button" [class.active]="mode === 'login'" (click)="setMode('login')">{{ moduleStrings.modes.login.button }}</button>
+      <button type="button" [class.active]="mode === 'register'" (click)="setMode('register')">{{ moduleStrings.modes.register.button }}</button>
     </div>
 
     <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
       <label>
-        <span>Email</span>
+        <span>{{ moduleStrings.form.email }}</span>
         <input type="email" formControlName="email">
         <small class="field-error" *ngIf="getFieldError('login', 'email')">{{ getFieldError('login', 'email') }}</small>
       </label>
       <label>
-        <span>Haslo</span>
+        <span>{{ moduleStrings.form.password }}</span>
         <input type="password" formControlName="password">
         <small class="field-error" *ngIf="getFieldError('login', 'password')">{{ getFieldError('login', 'password') }}</small>
       </label>
       <label class="checkbox">
         <input type="checkbox" formControlName="rememberMe">
-        <span>Zapamietaj mnie</span>
+        <span>{{ moduleStrings.form.rememberMe }}</span>
       </label>
       <div class="error-box" *ngIf="errorMessage">
         {{ errorMessage }}
       </div>
-      <button type="submit">Zaloguj</button>
+      <button type="submit">{{ moduleStrings.modes.login.submit }}</button>
     </form>
 
     <form *ngIf="mode === 'register'" [formGroup]="registerForm" (ngSubmit)="submitRegister()">
       <label>
-        <span>Nazwa</span>
+        <span>{{ moduleStrings.form.displayName }}</span>
         <input type="text" formControlName="displayName">
         <small class="field-error" *ngIf="getFieldError('register', 'displayName')">{{ getFieldError('register', 'displayName') }}</small>
       </label>
       <label>
-        <span>Email</span>
+        <span>{{ moduleStrings.form.email }}</span>
         <input type="email" formControlName="email">
         <small class="field-error" *ngIf="getFieldError('register', 'email')">{{ getFieldError('register', 'email') }}</small>
       </label>
       <label>
-        <span>Haslo</span>
+        <span>{{ moduleStrings.form.password }}</span>
         <input type="password" formControlName="password">
         <small class="field-error" *ngIf="getFieldError('register', 'password')">{{ getFieldError('register', 'password') }}</small>
       </label>
       <label class="checkbox">
         <input type="checkbox" formControlName="rememberMe">
-        <span>Zapamietaj mnie</span>
+        <span>{{ moduleStrings.form.rememberMe }}</span>
       </label>
       <div class="error-box" *ngIf="errorMessage">
         {{ errorMessage }}
       </div>
-      <button type="submit">Utworz konto</button>
+      <button type="submit">{{ moduleStrings.modes.register.submit }}</button>
     </form>
   </article>
 </section>

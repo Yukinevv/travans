@@ -1,25 +1,13 @@
+import { strings as commonStrings } from '../misc/common-strings';
 import { ActivityType, TrainingDayStatus } from '../types/training-plan.model';
 
-const activityTypeLabels: Record<ActivityType, string> = {
-  RUN: 'Bieg',
-  RIDE: 'Rower',
-  SWIM: 'Plywanie',
-  WALK: 'Marsz',
-  WORKOUT: 'Trening',
-  STRENGTH: 'Silownia',
-  OTHER: 'Inna aktywnosc'
-};
+const activityTypeLabels: Record<ActivityType, string> = commonStrings.training.activityTypes;
 
-const trainingDayStatusLabels: Record<TrainingDayStatus, string> = {
-  PLANNED: 'Zaplanowany',
-  COMPLETED: 'Wykonany',
-  PARTIALLY_COMPLETED: 'Czesciowo wykonany',
-  MISSED: 'Pominiety'
-};
+const trainingDayStatusLabels: Record<TrainingDayStatus, string> = commonStrings.training.dayStatuses;
 
 export function getActivityTypeLabel(activityType: ActivityType | null | undefined): string {
   if (!activityType) {
-    return '-';
+    return commonStrings.metrics.none;
   }
 
   return activityTypeLabels[activityType] ?? activityType;
@@ -27,7 +15,7 @@ export function getActivityTypeLabel(activityType: ActivityType | null | undefin
 
 export function getTrainingDayStatusLabel(status: TrainingDayStatus | null | undefined): string {
   if (!status) {
-    return '-';
+    return commonStrings.metrics.none;
   }
 
   return trainingDayStatusLabels[status] ?? status;

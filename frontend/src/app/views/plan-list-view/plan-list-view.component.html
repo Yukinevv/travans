@@ -1,16 +1,16 @@
 <section class="page">
   <article class="panel" *ngIf="loading">
-    <p class="muted">Ladowanie planow...</p>
+    <p class="muted">{{ moduleStrings.loading }}</p>
   </article>
 
   <article class="panel">
-    <p class="kicker">Lista</p>
-    <h2>Zapisane plany</h2>
+    <p class="kicker">{{ moduleStrings.header.kicker }}</p>
+    <h2>{{ moduleStrings.header.title }}</h2>
     <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
 
     <div class="empty-state" *ngIf="!loading && !errorMessage && plans.length === 0">
-      <strong>Nie masz jeszcze zapisanych planow.</strong>
-      <span>Dodaj pierwszy plan w widoku "Nowy plan".</span>
+      <strong>{{ moduleStrings.emptyState.title }}</strong>
+      <span>{{ moduleStrings.emptyState.description }}</span>
     </div>
 
     <article
@@ -22,30 +22,30 @@
       tabindex="0">
       <div class="plan-card-summary">
         <strong>{{ plan.name }}</strong>
-        <span>Typ planu: {{ getActivityTypeLabel(plan.planType) }}</span>
-        <span>{{ plan.trainingDays.length }} dni</span>
-        <span>Strava od: {{ plan.stravaEvaluationStartDate || plan.startDate }}</span>
+        <span>{{ moduleStrings.plan.typePrefix }} {{ getActivityTypeLabel(plan.planType) }}</span>
+        <span>{{ plan.trainingDays.length }} {{ moduleStrings.units.days }}</span>
+        <span>{{ moduleStrings.plan.stravaFrom }} {{ plan.stravaEvaluationStartDate || plan.startDate }}</span>
       </div>
 
       <div class="plan-card-toolbar">
-        <span class="plan-card-toggle">{{ isExpanded(plan) ? 'Ukryj szczegoly' : 'Pokaz szczegoly' }}</span>
+        <span class="plan-card-toggle">{{ isExpanded(plan) ? moduleStrings.toggle.hideDetails : moduleStrings.toggle.showDetails }}</span>
         <div class="plan-card-actions">
           <button
             type="button"
             class="primary-button"
             [class.active]="isSelectedForDashboard(plan)"
             (click)="showOnDashboard(plan, $event)">
-            {{ isSelectedForDashboard(plan) ? 'Widoczny na dashboardzie' : 'Pokaz na dashboardzie' }}
+            {{ isSelectedForDashboard(plan) ? moduleStrings.plan.visibleOnDashboard : moduleStrings.plan.showOnDashboard }}
           </button>
-          <button type="button" class="secondary-button" (click)="editPlan(plan, $event)">Edytuj</button>
-          <button type="button" class="danger-button" (click)="deletePlan(plan, $event)">Usun</button>
+          <button type="button" class="secondary-button" (click)="editPlan(plan, $event)">{{ commonStrings.actions.edit }}</button>
+          <button type="button" class="danger-button" (click)="deletePlan(plan, $event)">{{ commonStrings.actions.delete }}</button>
         </div>
       </div>
 
       <div class="plan-card-details" *ngIf="isExpanded(plan)">
         <div class="plan-meta">
-          <span>Start planu: {{ plan.startDate }}</span>
-          <span *ngIf="plan.createdAt">Utworzono: {{ plan.createdAt | date:'yyyy-MM-dd HH:mm' }}</span>
+          <span>{{ moduleStrings.plan.startDate }} {{ plan.startDate }}</span>
+          <span *ngIf="plan.createdAt">{{ moduleStrings.plan.createdAt }} {{ plan.createdAt | date:'yyyy-MM-dd HH:mm' }}</span>
         </div>
 
         <p class="plan-description" *ngIf="plan.description">{{ plan.description }}</p>
@@ -53,7 +53,7 @@
         <div class="day-list">
           <article class="day-card" *ngFor="let day of plan.trainingDays; let i = index">
             <div class="day-card-header">
-              <strong>Dzien {{ i + 1 }}: {{ day.title }}</strong>
+              <strong>{{ moduleStrings.plan.dayPrefix }} {{ i + 1 }}: {{ day.title }}</strong>
               <span
                 class="status-badge"
                 [class.completed]="day.status === 'COMPLETED'"
@@ -65,15 +65,15 @@
             </div>
 
             <div class="day-grid">
-              <span>Data: {{ day.scheduledDate }}</span>
-              <span>Typ: {{ getActivityTypeLabel(day.activityType) }}</span>
-              <span>Dystans: {{ formatDistance(day.plannedDistanceMeters) }}</span>
-              <span>Czas: {{ formatDuration(day.plannedDurationSeconds) }}</span>
+              <span>{{ commonStrings.labels.date }}: {{ day.scheduledDate }}</span>
+              <span>{{ commonStrings.labels.type }}: {{ getActivityTypeLabel(day.activityType) }}</span>
+              <span>{{ commonStrings.labels.distance }}: {{ formatDistance(day.plannedDistanceMeters) }}</span>
+              <span>{{ commonStrings.labels.duration }}: {{ formatDuration(day.plannedDurationSeconds) }}</span>
             </div>
 
             <p class="day-notes" *ngIf="day.notes">{{ day.notes }}</p>
             <p class="matched-activity" *ngIf="day.matchedActivityName">
-              Dopasowano: {{ day.matchedActivityName }} ({{ day.matchedActivityDate }})
+              {{ moduleStrings.plan.matched }} {{ day.matchedActivityName }} ({{ day.matchedActivityDate }})
             </p>
           </article>
         </div>

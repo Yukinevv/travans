@@ -1,12 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
+import { CommonStrings, CommonStringsLoader } from '../../core/misc';
 import { StravaService } from '../../core/services/strava.service';
 import { ActivityType } from '../../core/types/training-plan.model';
 import { StravaActivity, StravaConnectionStatus, StravaSyncResult } from '../../core/types/strava.model';
 import { getActivityTypeLabel } from '../../core/utils/training-labels';
+import { ModuleStrings, strings } from './strings';
 
 @Component({
   selector: 'app-integrations-view',
@@ -24,15 +26,17 @@ export class IntegrationsViewComponent implements OnInit {
   activitiesLoading = false;
   syncInProgress = false;
   selectedActivityType: ActivityType | '' = '';
+  readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
+  readonly moduleStrings: ModuleStrings = strings;
   readonly activityTypes: Array<{ value: ActivityType | ''; label: string }> = [
-    { value: '', label: 'Wszystkie' },
-    { value: 'RUN', label: 'Bieganie' },
-    { value: 'RIDE', label: 'Rower' },
-    { value: 'SWIM', label: 'Plywanie' },
-    { value: 'WALK', label: 'Marsz' },
-    { value: 'WORKOUT', label: 'Trening' },
-    { value: 'STRENGTH', label: 'Silownia' },
-    { value: 'OTHER', label: 'Inne' }
+    { value: '', label: strings.filters.all },
+    { value: 'RUN', label: CommonStringsLoader.strings.training.activityTypes.RUN },
+    { value: 'RIDE', label: CommonStringsLoader.strings.training.activityTypes.RIDE },
+    { value: 'SWIM', label: CommonStringsLoader.strings.training.activityTypes.SWIM },
+    { value: 'WALK', label: CommonStringsLoader.strings.training.activityTypes.WALK },
+    { value: 'WORKOUT', label: CommonStringsLoader.strings.training.activityTypes.WORKOUT },
+    { value: 'STRENGTH', label: strings.filters.strength },
+    { value: 'OTHER', label: CommonStringsLoader.strings.training.activityTypes.OTHER }
   ];
 
   constructor(
@@ -69,7 +73,7 @@ export class IntegrationsViewComponent implements OnInit {
         this.loadActivities(true);
       },
       error: (error: HttpErrorResponse) => {
-        this.errorMessage = this.resolveErrorMessage(error, 'Nie udalo sie zsynchronizowac danych ze Strava');
+        this.errorMessage = this.resolveErrorMessage(error, this.moduleStrings.errors.sync);
         this.reconnectRequired = error.error?.code === 'STRAVA_RECONNECT_REQUIRED';
         if (this.reconnectRequired) {
           this.activities = [];
@@ -105,7 +109,7 @@ export class IntegrationsViewComponent implements OnInit {
 
   formatDistance(distanceMeters: number | null): string {
     if (!distanceMeters) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
 
     return `${(distanceMeters / 1000).toFixed(1)} km`;
@@ -113,7 +117,7 @@ export class IntegrationsViewComponent implements OnInit {
 
   formatDuration(movingTimeSeconds: number | null): string {
     if (!movingTimeSeconds) {
-      return '-';
+      return this.commonStrings.metrics.none;
     }
 
     const totalMinutes = Math.round(movingTimeSeconds / 60);
@@ -156,7 +160,7 @@ export class IntegrationsViewComponent implements OnInit {
           authorizationUrl: ''
         };
         this.activities = [];
-        this.errorMessage = 'Nie udalo sie pobrac statusu integracji';
+        this.errorMessage = this.moduleStrings.errors.loadStatus;
         this.loading = false;
         this.changeDetectorRef.detectChanges();
       }
@@ -177,7 +181,7 @@ export class IntegrationsViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       },
       error: (error: HttpErrorResponse) => {
-        this.errorMessage = this.resolveErrorMessage(error, 'Nie udalo sie pobrac aktywnosci ze Stravy');
+        this.errorMessage = this.resolveErrorMessage(error, this.moduleStrings.errors.loadActivities);
         this.reconnectRequired = error.error?.code === 'STRAVA_RECONNECT_REQUIRED';
         if (this.reconnectRequired) {
           this.activities = [];

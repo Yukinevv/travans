@@ -5,35 +5,33 @@
         type="button"
         class="menu-toggle"
         [attr.aria-expanded]="sidebarOpen"
-        [attr.aria-label]="sidebarOpen ? 'Zwin menu boczne' : 'Rozwin menu boczne'"
+        [attr.aria-label]="sidebarOpen ? moduleStrings.sidebar.collapseAriaLabel : moduleStrings.sidebar.expandAriaLabel"
         (click)="toggleSidebar()">
         <span></span>
         <span></span>
         <span></span>
       </button>
 
-      <p class="eyebrow sidebar-brand" [class.hidden]="!sidebarOpen">Travans</p>
+      <p class="eyebrow sidebar-brand" [class.hidden]="!sidebarOpen">{{ moduleStrings.brand }}</p>
     </div>
 
     <div class="sidebar-copy" [class.hidden]="!sidebarOpen">
-      <h1>Plan treningowy zsynchronizowany ze Strava</h1>
-      <p class="lead">
-        Tworz plany treningowe, synchronizuj aktywnosci ze Stravy i analizuj realizacje swoich celów.
-      </p>
+      <h1>{{ moduleStrings.sidebar.headline }}</h1>
+      <p class="lead">{{ moduleStrings.sidebar.lead }}</p>
     </div>
 
     <nav class="nav" [class.hidden]="!sidebarOpen">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebarAfterNavigation()">Pulpit</a>
-      <a routerLink="/plans" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebarAfterNavigation()">Nowy plan</a>
-      <a routerLink="/plans/list" routerLinkActive="active" (click)="closeSidebarAfterNavigation()">Lista planow</a>
-      <a routerLink="/integrations" routerLinkActive="active" (click)="closeSidebarAfterNavigation()">Integracje</a>
-      <a routerLink="/auth" routerLinkActive="active" *ngIf="!authService.isAuthenticated()" (click)="closeSidebarAfterNavigation()">Logowanie</a>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.dashboard }}</a>
+      <a routerLink="/plans" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.newPlan }}</a>
+      <a routerLink="/plans/list" routerLinkActive="active" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.planList }}</a>
+      <a routerLink="/integrations" routerLinkActive="active" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.integrations }}</a>
+      <a routerLink="/auth" routerLinkActive="active" *ngIf="!authService.isAuthenticated()" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.auth }}</a>
     </nav>
 
     <div class="session" *ngIf="authService.isAuthenticated()" [class.hidden]="!sidebarOpen">
       <strong>{{ authService.getStoredProfile()?.displayName }}</strong>
       <span>{{ authService.getStoredProfile()?.email }}</span>
-      <button type="button" (click)="logout()">Wyloguj</button>
+      <button type="button" (click)="logout()">{{ commonStrings.actions.logout }}</button>
     </div>
   </aside>
 

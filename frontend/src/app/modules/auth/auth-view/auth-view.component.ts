@@ -5,8 +5,10 @@ import { AbstractControl } from '@angular/forms';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { CommonStrings, CommonStringsLoader } from '../../../core/misc';
 import { AuthService } from '../services/auth.service';
 import { AuthErrorResponse } from '../types/auth.model';
+import { ModuleStrings, strings } from './strings';
 
 @Component({
   selector: 'app-auth-view',
@@ -18,6 +20,8 @@ export class AuthViewComponent implements OnInit {
   mode: 'login' | 'register' = 'login';
   errorMessage = '';
   fieldErrors: Record<string, string> = {};
+  readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
+  readonly moduleStrings: ModuleStrings = strings;
 
   readonly loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -102,13 +106,13 @@ export class AuthViewComponent implements OnInit {
     }
 
     if (control.hasError('required')) {
-      return 'Pole jest wymagane';
+      return this.commonStrings.auth.validation.required;
     }
     if (control.hasError('email')) {
-      return 'Podaj poprawny adres email';
+      return this.commonStrings.auth.validation.email;
     }
     if (control.hasError('minlength')) {
-      return 'Minimalna dlugosc to 8 znakow';
+      return this.commonStrings.auth.validation.minlength;
     }
 
     return null;
@@ -146,15 +150,15 @@ export class AuthViewComponent implements OnInit {
       return error.error;
     }
     if (status === 401) {
-      return 'Nieprawidlowy email lub haslo';
+      return this.commonStrings.auth.errors.badCredentials;
     }
     if (status === 409) {
-      return 'Nie mozna wykonac operacji z powodu konfliktu danych';
+      return this.commonStrings.auth.errors.conflict;
     }
     if (status === 400) {
-      return 'Popraw dane formularza';
+      return this.commonStrings.auth.errors.invalidForm;
     }
-    return 'Wystapil blad podczas autoryzacji';
+    return this.commonStrings.auth.errors.default;
   }
 
   private normalizeApiErrorPayload(error: HttpErrorResponse | undefined): AuthErrorResponse {

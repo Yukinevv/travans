@@ -1,7 +1,9 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { CommonStrings, CommonStringsLoader } from './core/misc';
 import { AuthService } from './modules/auth/services/auth.service';
+import { ModuleStrings, strings } from './strings';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +14,8 @@ import { AuthService } from './modules/auth/services/auth.service';
 export class AppComponent implements OnInit {
   sidebarOpen = true;
   isMobileViewport = false;
+  readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
+  readonly moduleStrings: ModuleStrings = strings;
 
   constructor(
     public readonly authService: AuthService,
