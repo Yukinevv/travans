@@ -19,11 +19,13 @@ import { ModuleStrings, strings } from './strings';
 export class PlansViewComponent implements OnInit, OnDestroy {
   importedFileName = '';
   isJsonPreviewExpanded = false;
+  removeDayConfirmationOpen = false;
   jsonErrorMessage = '';
   submitErrorMessage = '';
   loadingPlan = false;
   isEditMode = false;
   editingPlanId: number | null = null;
+  pendingRemoveDayIndex: number | null = null;
   jsonInput = strings.defaults.jsonInput;
   readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
   readonly moduleStrings: ModuleStrings = strings;
@@ -57,6 +59,11 @@ export class PlansViewComponent implements OnInit, OnDestroy {
 
   getTrainingDayTitle(index: number): string {
     return this.moduleStrings.day.title.replace('%d', String(index + 1));
+  }
+
+  getRemoveTrainingDayConfirmationMessage(): string {
+    const dayIndex = (this.pendingRemoveDayIndex ?? 0) + 1;
+    return this.moduleStrings.day.removeConfirmation.replace('%d', `${dayIndex}`);
   }
 
   toggleJsonPreview(): void {
@@ -136,18 +143,29 @@ export class PlansViewComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.detectChanges();
   }
 
-  removeTrainingDay(index: number): void {
-    const confirmed = window.confirm(this.moduleStrings.day.removeConfirmation.replace('%d', String(index + 1)));
-    if (!confirmed) {
+  openRemoveTrainingDayConfirmation(index: number): void {
+    this.pendingRemoveDayIndex = index;
+    this.removeDayConfirmationOpen = true;
+  }
+
+  closeRemoveTrainingDayConfirmation(): void {
+    this.pendingRemoveDayIndex = null;
+    this.removeDayConfirmationOpen = false;
+  }
+
+  confirmRemoveTrainingDay(): void {
+    if (this.pendingRemoveDayIndex === null) {
+      this.closeRemoveTrainingDayConfirmation();
       return;
     }
 
-    this.trainingDays.removeAt(index);
+    this.trainingDays.removeAt(this.pendingRemoveDayIndex);
 
     if (this.trainingDays.length === 0) {
       this.trainingDays.push(this.createTrainingDayGroup());
     }
 
+    this.closeRemoveTrainingDayConfirmation();
     this.syncJsonFromForm();
     this.changeDetectorRef.detectChanges();
   }

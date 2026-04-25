@@ -54,7 +54,7 @@
               <button type="button" class="secondary icon-button" (click)="moveTrainingDay(i, 1)" [disabled]="i === trainingDays.length - 1" [attr.aria-label]="moduleStrings.day.downAriaLabel">
                 v
               </button>
-              <button type="button" class="danger-button" (click)="removeTrainingDay(i)">{{ moduleStrings.actions.removeDay }}</button>
+              <button type="button" class="danger-button" (click)="openRemoveTrainingDayConfirmation(i)">{{ moduleStrings.actions.removeDay }}</button>
             </div>
           </div>
 
@@ -129,3 +129,28 @@
     <p class="error-message" *ngIf="jsonErrorMessage">{{ jsonErrorMessage }}</p>
   </article>
 </section>
+
+<div
+  class="confirmation-backdrop"
+  *ngIf="removeDayConfirmationOpen"
+  (click)="closeRemoveTrainingDayConfirmation()"
+  (keydown.escape)="closeRemoveTrainingDayConfirmation()"
+  tabindex="0">
+  <article class="confirmation-modal" (click)="$event.stopPropagation()">
+    <p class="kicker">{{ moduleStrings.confirmation.kicker }}</p>
+    <h3>{{ moduleStrings.confirmation.removeDayTitle }}</h3>
+    <p class="muted">
+      {{ getRemoveTrainingDayConfirmationMessage() }}
+    </p>
+    <p class="muted">{{ moduleStrings.confirmation.removeDayDescription }}</p>
+
+    <div class="confirmation-actions">
+      <button type="button" class="secondary" (click)="closeRemoveTrainingDayConfirmation()">
+        {{ commonStrings.actions.cancel }}
+      </button>
+      <button type="button" class="danger-button" (click)="confirmRemoveTrainingDay()">
+        {{ moduleStrings.actions.removeDay }}
+      </button>
+    </div>
+  </article>
+</div>

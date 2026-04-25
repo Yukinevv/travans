@@ -9,6 +9,11 @@ const localizedStrings = {
       saveChanges: 'Zapisz zmiany',
       savePlan: 'Zapisz plan'
     },
+    confirmation: {
+      kicker: 'Potwierdzenie',
+      removeDayTitle: 'Usun\u0105\u0107 dzie\u0144 treningowy?',
+      removeDayDescription: 'Ta operacja usunie wybrany dzie\u0144 z planu.'
+    },
     day: {
       dayLabel: 'Dzie\u0144',
       downAriaLabel: 'Przenie\u015b ni\u017cej',
@@ -79,6 +84,11 @@ const localizedStrings = {
       removeDay: 'Remove day',
       saveChanges: 'Save changes',
       savePlan: 'Save plan'
+    },
+    confirmation: {
+      kicker: 'Confirmation',
+      removeDayTitle: 'Remove this training day?',
+      removeDayDescription: 'This action will remove the selected day from the plan.'
     },
     day: {
       dayLabel: 'Day',
