@@ -33,6 +33,18 @@
       <p class="lead">{{ moduleStrings.sidebar.lead }}</p>
     </div>
 
+    <div class="language-switcher" [class.hidden]="!sidebarOpen">
+      <label for="app-language">{{ moduleStrings.sidebar.languageLabel }}</label>
+      <select
+        id="app-language"
+        [ngModel]="currentLanguage"
+        (ngModelChange)="setLanguage($event)">
+        <option *ngFor="let language of availableLanguages" [ngValue]="language.code">
+          {{ language.label }}
+        </option>
+      </select>
+    </div>
+
     <nav class="nav" [class.hidden]="!sidebarOpen">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.dashboard }}</a>
       <a routerLink="/plans" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.newPlan }}</a>
@@ -61,7 +73,7 @@
     class="sidebar-backdrop"
     *ngIf="sidebarOpen"
     (click)="closeSidebar()"
-    aria-label="Zamknij menu boczne"></button>
+    [attr.aria-label]="moduleStrings.sidebar.closeAriaLabel"></button>
 
   <main class="content">
     <router-outlet></router-outlet>

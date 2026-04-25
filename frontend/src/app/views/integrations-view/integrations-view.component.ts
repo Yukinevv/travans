@@ -29,16 +29,6 @@ export class IntegrationsViewComponent implements OnInit {
   selectedActivityType: ActivityType | '' = '';
   readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
   readonly moduleStrings: ModuleStrings = strings;
-  readonly activityTypes: Array<{ value: ActivityType | ''; label: string }> = [
-    { value: '', label: strings.filters.all },
-    { value: 'RUN', label: CommonStringsLoader.strings.training.activityTypes.RUN },
-    { value: 'RIDE', label: CommonStringsLoader.strings.training.activityTypes.RIDE },
-    { value: 'SWIM', label: CommonStringsLoader.strings.training.activityTypes.SWIM },
-    { value: 'WALK', label: CommonStringsLoader.strings.training.activityTypes.WALK },
-    { value: 'WORKOUT', label: CommonStringsLoader.strings.training.activityTypes.WORKOUT },
-    { value: 'STRENGTH', label: strings.filters.strength },
-    { value: 'OTHER', label: CommonStringsLoader.strings.training.activityTypes.OTHER }
-  ];
 
   constructor(
     private readonly stravaService: StravaService,
@@ -46,6 +36,19 @@ export class IntegrationsViewComponent implements OnInit {
     private readonly router: Router,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {}
+
+  get activityTypes(): Array<{ value: ActivityType | ''; label: string }> {
+    return [
+      { value: '', label: this.moduleStrings.filters.all },
+      { value: 'RUN', label: this.commonStrings.training.activityTypes.RUN },
+      { value: 'RIDE', label: this.commonStrings.training.activityTypes.RIDE },
+      { value: 'SWIM', label: this.commonStrings.training.activityTypes.SWIM },
+      { value: 'WALK', label: this.commonStrings.training.activityTypes.WALK },
+      { value: 'WORKOUT', label: this.commonStrings.training.activityTypes.WORKOUT },
+      { value: 'STRENGTH', label: this.moduleStrings.filters.strength },
+      { value: 'OTHER', label: this.commonStrings.training.activityTypes.OTHER }
+    ];
+  }
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {

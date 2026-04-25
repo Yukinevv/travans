@@ -2,6 +2,8 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
+import { AppLanguage } from './core/i18n/app-language';
+import { LanguageService } from './core/i18n/language.service';
 import { CommonStrings, CommonStringsLoader } from './core/misc';
 import { AuthService } from './modules/auth/services/auth.service';
 import { ModuleStrings, strings } from './strings';
@@ -18,11 +20,17 @@ export class AppComponent implements OnInit {
   suppressHoverOpen = false;
   readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
   readonly moduleStrings: ModuleStrings = strings;
+  readonly availableLanguages = this.languageService.availableLanguages;
 
   constructor(
     public readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly languageService: LanguageService
   ) {}
+
+  get currentLanguage(): AppLanguage {
+    return this.languageService.currentLanguage;
+  }
 
   ngOnInit(): void {
     this.updateSidebarForViewport();
@@ -77,6 +85,12 @@ export class AppComponent implements OnInit {
     this.authService.logout();
     this.sidebarOpen = !this.isMobileViewport;
     this.router.navigate(['/auth']);
+  }
+
+  setLanguage(language: string): void {
+    if (language === 'pl' || language === 'en') {
+      this.languageService.setLanguage(language);
+    }
   }
 
   private updateSidebarForViewport(): void {

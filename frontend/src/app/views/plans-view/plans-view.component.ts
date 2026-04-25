@@ -1,8 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
+import { LanguageService } from '../../core/i18n/language.service';
 import { CommonStrings, CommonStringsLoader } from '../../core/misc';
 import { TrainingPlanService } from '../../core/services/training-plan.service';
 import { ActivityType, TrainingDay, TrainingPlan } from '../../core/types/training-plan.model';
@@ -14,7 +16,7 @@ import { ModuleStrings, strings } from './strings';
   templateUrl: './plans-view.component.html',
   styleUrls: ['./plans-view.component.scss']
 })
-export class PlansViewComponent implements OnInit {
+export class PlansViewComponent implements OnInit, OnDestroy {
   importedFileName = '';
   isJsonPreviewExpanded = false;
   jsonErrorMessage = '';
@@ -37,13 +39,16 @@ export class PlansViewComponent implements OnInit {
 
   private syncingFormToJson = false;
   private syncingJsonToForm = false;
+  private readonly subscriptions = new Subscription();
+  private lastLocalizedDefaultJsonInput = strings.defaults.jsonInput;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly trainingPlanService: TrainingPlanService,
     private readonly changeDetectorRef: ChangeDetectorRef,
     private readonly route: ActivatedRoute,
-    public readonly router: Router
+    public readonly router: Router,
+    private readonly languageService: LanguageService
   ) {}
 
   get trainingDays(): FormArray<FormGroup> {
@@ -59,6 +64,16 @@ export class PlansViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.languageService.languageChanges$.subscribe(() => {
+      const nextDefaultJsonInput = this.moduleStrings.defaults.jsonInput;
+      if (this.jsonInput === this.lastLocalizedDefaultJsonInput) {
+        this.onJsonInputChange(nextDefaultJsonInput);
+      }
+
+      this.lastLocalizedDefaultJsonInput = nextDefaultJsonInput;
+      this.changeDetectorRef.detectChanges();
+    }));
+
     this.form.controls.startDate.valueChanges.subscribe((startDate) => {
       if (!this.form.controls.stravaEvaluationStartDate.value) {
         this.form.controls.stravaEvaluationStartDate.setValue(startDate ?? '', { emitEvent: false });
@@ -94,6 +109,10 @@ export class PlansViewComponent implements OnInit {
       }
       this.changeDetectorRef.detectChanges();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   addTrainingDay(): void {
