@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
 import { API_BASE_URL } from '../../../core/services/api-base';
-import { AuthResponse, ChangePasswordPayload, LoginPayload, RegisterPayload, UpdateProfilePayload, UserProfile } from '../types/auth.model';
+import { AuthResponse, ChangePasswordPayload, GoogleLoginPayload, LoginPayload, RegisterPayload, UpdateProfilePayload, UserProfile } from '../types/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -18,6 +18,12 @@ export class AuthService {
   login(payload: LoginPayload, rememberMe: boolean): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/login`, payload).pipe(
       tap((response) => this.persistSession(response, payload.email, rememberMe))
+    );
+  }
+
+  loginWithGoogle(payload: GoogleLoginPayload, rememberMe: boolean): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/google`, payload).pipe(
+      tap((response) => this.persistSession(response, response.user.email, rememberMe))
     );
   }
 

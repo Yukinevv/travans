@@ -24,6 +24,13 @@ public class AppUser {
     @Column(nullable = false, length = 120)
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 32)
+    private AuthProvider authProvider;
+
+    @Column(unique = true, length = 160)
+    private String googleSubject;
+
     @Column(nullable = false, length = 120)
     private String displayName;
 
@@ -68,6 +75,22 @@ public class AppUser {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public AuthProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
+    }
+
+    public String getGoogleSubject() {
+        return googleSubject;
+    }
+
+    public void setGoogleSubject(String googleSubject) {
+        this.googleSubject = googleSubject;
     }
 
     public Instant getCreatedAt() {

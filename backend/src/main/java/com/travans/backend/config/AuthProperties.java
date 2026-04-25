@@ -8,6 +8,7 @@ public class AuthProperties {
     private String jwtSecret;
     private long accessTokenTtlMinutes;
     private long refreshTokenTtlDays;
+    private String googleClientId;
 
     public String getJwtSecret() {
         return jwtSecret;
@@ -31,5 +32,13 @@ public class AuthProperties {
 
     public void setRefreshTokenTtlDays(long refreshTokenTtlDays) {
         this.refreshTokenTtlDays = refreshTokenTtlDays;
+    }
+
+    public String getGoogleClientId() {
+        return googleClientId;
+    }
+
+    public void setGoogleClientId(String googleClientId) {
+        this.googleClientId = googleClientId;
     }
 }

@@ -38,7 +38,7 @@
       </form>
     </article>
 
-    <article class="panel">
+    <article class="panel" *ngIf="isPasswordManagedLocally()">
       <p class="panel-label">{{ moduleStrings.password.title }}</p>
       <p class="muted">{{ moduleStrings.password.description }}</p>
 
@@ -68,6 +68,11 @@
           {{ moduleStrings.actions.changePassword }}
         </button>
       </form>
+    </article>
+
+    <article class="panel" *ngIf="!isPasswordManagedLocally()">
+      <p class="panel-label">{{ moduleStrings.password.title }}</p>
+      <p class="muted">{{ moduleStrings.password.googleManaged }}</p>
     </article>
   </div>
 </section>

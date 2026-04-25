@@ -3,6 +3,7 @@ export interface UserProfile {
   email: string;
   displayName: string;
   role: 'USER' | 'ADMIN';
+  authProvider: 'LOCAL' | 'GOOGLE';
 }
 
 export interface AuthResponse {
@@ -14,6 +15,10 @@ export interface AuthResponse {
 export interface LoginPayload {
   email: string;
   password: string;
+}
+
+export interface GoogleLoginPayload {
+  idToken: string;
 }
 
 export interface RegisterPayload {

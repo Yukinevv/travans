@@ -2,6 +2,7 @@ package com.travans.backend.api;
 
 import com.travans.backend.api.dto.AuthTokenResponse;
 import com.travans.backend.api.dto.ChangePasswordRequest;
+import com.travans.backend.api.dto.GoogleAuthRequest;
 import com.travans.backend.api.dto.LoginRequest;
 import com.travans.backend.api.dto.RefreshTokenRequest;
 import com.travans.backend.api.dto.RegisterRequest;
@@ -37,6 +38,11 @@ public class AuthController {
     @PostMapping("/login")
     public AuthTokenResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PostMapping("/google")
+    public AuthTokenResponse loginWithGoogle(@Valid @RequestBody GoogleAuthRequest request) {
+        return authService.loginWithGoogle(request);
     }
 
     @PostMapping("/refresh")

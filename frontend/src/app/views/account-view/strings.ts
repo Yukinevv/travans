@@ -25,6 +25,7 @@ const localizedStrings = {
     },
     password: {
       description: 'Po zmianie hasła Twoja sesja zostanie odświeżona automatycznie.',
+      googleManaged: 'To konto korzysta z logowania Google, więc hasło jest zarządzane po stronie Google.',
       mismatch: 'Nowe hasła muszą być takie same.',
       success: 'Hasło zostało zmienione.',
       title: 'Bezpieczeństwo'
@@ -57,6 +58,7 @@ const localizedStrings = {
     },
     password: {
       description: 'After changing the password, your session will be refreshed automatically.',
+      googleManaged: 'This account uses Google sign-in, so the password is managed by Google.',
       mismatch: 'The new passwords must match.',
       success: 'Your password has been changed.',
       title: 'Security'

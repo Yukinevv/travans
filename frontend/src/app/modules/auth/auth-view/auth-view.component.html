@@ -9,6 +9,11 @@
       <button type="button" [class.active]="mode === 'register'" (click)="setMode('register')">{{ moduleStrings.modes.register.button }}</button>
     </div>
 
+    <div class="social-login" *ngIf="googleClientId">
+      <div id="google-signin-button"></div>
+      <p class="separator">{{ moduleStrings.separator }}</p>
+    </div>
+
     <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
       <label>
         <span>{{ moduleStrings.form.email }}</span>

@@ -4,7 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 
 import { CommonStrings, CommonStringsLoader } from '../../core/misc';
 import { AuthService } from '../../modules/auth/services/auth.service';
-import { AuthErrorResponse } from '../../modules/auth/types/auth.model';
+import { AuthErrorResponse, UserProfile } from '../../modules/auth/types/auth.model';
 import { ModuleStrings, strings } from './strings';
 
 @Component({
@@ -21,6 +21,7 @@ export class AccountViewComponent implements OnInit {
   profileSuccessMessage = '';
   passwordErrorMessage = '';
   passwordSuccessMessage = '';
+  profile: UserProfile | null = null;
   readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
   readonly moduleStrings: ModuleStrings = strings;
 
@@ -44,6 +45,7 @@ export class AccountViewComponent implements OnInit {
   ngOnInit(): void {
     this.authService.me().subscribe({
       next: (profile) => {
+        this.profile = profile;
         this.profileForm.patchValue({
           displayName: profile.displayName,
           email: profile.email
@@ -57,6 +59,10 @@ export class AccountViewComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       }
     });
+  }
+
+  isPasswordManagedLocally(): boolean {
+    return this.profile?.authProvider === 'LOCAL';
   }
 
   submitProfile(): void {

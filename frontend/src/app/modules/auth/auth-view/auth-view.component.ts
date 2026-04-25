@@ -1,12 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
+import { AppLanguage } from '../../../core/i18n/app-language';
+import { LanguageService } from '../../../core/i18n/language.service';
 import { CommonStrings, CommonStringsLoader } from '../../../core/misc';
+import { environment } from '../../../../environments/environment';
 import { AuthService } from '../services/auth.service';
+import { GoogleCredentialResponse } from '../services/google-identity.types';
 import { AuthErrorResponse } from '../types/auth.model';
 import { ModuleStrings, strings } from './strings';
 
@@ -16,12 +21,15 @@ import { ModuleStrings, strings } from './strings';
   templateUrl: './auth-view.component.html',
   styleUrls: ['./auth-view.component.scss']
 })
-export class AuthViewComponent implements OnInit {
+export class AuthViewComponent implements OnInit, AfterViewInit, OnDestroy {
   mode: 'login' | 'register' = 'login';
   errorMessage = '';
   fieldErrors: Record<string, string> = {};
+  googleReady = false;
   readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
   readonly moduleStrings: ModuleStrings = strings;
+  readonly googleClientId = environment.googleClientId;
+  private readonly subscriptions = new Subscription();
 
   readonly loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -40,7 +48,8 @@ export class AuthViewComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -48,11 +57,33 @@ export class AuthViewComponent implements OnInit {
     if (rememberedEmail) {
       this.loginForm.patchValue({ email: rememberedEmail, rememberMe: true });
     }
+
+    this.subscriptions.add(this.languageService.languageChanges$.subscribe(() => {
+      if (this.googleClientId) {
+        queueMicrotask(() => this.loadGoogleIdentityScript(this.languageService.currentLanguage));
+      }
+      this.changeDetectorRef.detectChanges();
+    }));
+
+    this.initializeGoogleSignIn();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.googleClientId) {
+      queueMicrotask(() => this.renderGoogleButton());
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   setMode(mode: 'login' | 'register'): void {
     this.mode = mode;
     this.clearErrors();
+    if (this.googleClientId) {
+      queueMicrotask(() => this.renderGoogleButton());
+    }
   }
 
   submitLogin(): void {
@@ -128,6 +159,89 @@ export class AuthViewComponent implements OnInit {
   private clearErrors(): void {
     this.errorMessage = '';
     this.fieldErrors = {};
+  }
+
+  private initializeGoogleSignIn(): void {
+    if (!this.googleClientId) {
+      return;
+    }
+
+    this.loadGoogleIdentityScript(this.languageService.currentLanguage);
+  }
+
+  private loadGoogleIdentityScript(language: AppLanguage): void {
+    const scriptSrc = this.getGoogleIdentityScriptUrl(language);
+    const existingScript = document.getElementById('google-identity-script') as HTMLScriptElement | null;
+
+    if (existingScript?.src === scriptSrc && window.google?.accounts?.id) {
+      this.renderGoogleButton();
+      return;
+    }
+
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    delete window.google;
+
+    const script = document.createElement('script');
+    script.id = 'google-identity-script';
+    script.src = scriptSrc;
+    script.async = true;
+    script.defer = true;
+    script.addEventListener('load', () => this.renderGoogleButton(), { once: true });
+    script.addEventListener('error', () => {
+      this.errorMessage = this.moduleStrings.google.unavailable;
+      this.changeDetectorRef.detectChanges();
+    }, { once: true });
+    document.head.appendChild(script);
+  }
+
+  private getGoogleIdentityScriptUrl(language: AppLanguage): string {
+    return `https://accounts.google.com/gsi/client?hl=${language}`;
+  }
+
+  private renderGoogleButton(): void {
+    const container = document.getElementById('google-signin-button');
+    const googleApi = window.google?.accounts?.id;
+    if (!container || !googleApi) {
+      return;
+    }
+
+    container.innerHTML = '';
+    googleApi.initialize({
+      client_id: this.googleClientId,
+      callback: (response) => this.handleGoogleCredential(response)
+    });
+    googleApi.renderButton(container, {
+      theme: 'outline',
+      size: 'large',
+      shape: 'pill',
+      text: this.mode === 'register' ? 'signup_with' : 'signin_with',
+      locale: this.languageService.currentLanguage,
+      width: '320'
+    });
+
+    this.googleReady = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  private handleGoogleCredential(response: GoogleCredentialResponse): void {
+    if (!response.credential) {
+      this.errorMessage = this.commonStrings.auth.errors.default;
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
+    const rememberMe = !!(this.mode === 'register'
+      ? this.registerForm.getRawValue().rememberMe
+      : this.loginForm.getRawValue().rememberMe);
+
+    this.clearErrors();
+    this.authService.loginWithGoogle({ idToken: response.credential }, rememberMe).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: (error: unknown) => this.applyApiError(error)
+    });
   }
 
   private applyApiError(error: unknown): void {
