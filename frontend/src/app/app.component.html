@@ -50,6 +50,7 @@
       <a routerLink="/plans" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.newPlan }}</a>
       <a routerLink="/plans/list" routerLinkActive="active" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.planList }}</a>
       <a routerLink="/integrations" routerLinkActive="active" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.integrations }}</a>
+      <a routerLink="/account" routerLinkActive="active" *ngIf="authService.isAuthenticated()" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.account }}</a>
       <a routerLink="/auth" routerLinkActive="active" *ngIf="!authService.isAuthenticated()" (click)="closeSidebarAfterNavigation()">{{ moduleStrings.navigation.auth }}</a>
     </nav>
 

@@ -22,6 +22,16 @@ export interface RegisterPayload {
   displayName: string;
 }
 
+export interface UpdateProfilePayload {
+  email: string;
+  displayName: string;
+}
+
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface AuthErrorResponse {
   code?: string;
   message?: string;

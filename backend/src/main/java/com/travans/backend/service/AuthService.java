@@ -1,9 +1,11 @@
 package com.travans.backend.service;
 
 import com.travans.backend.api.dto.AuthTokenResponse;
+import com.travans.backend.api.dto.ChangePasswordRequest;
 import com.travans.backend.api.dto.LoginRequest;
 import com.travans.backend.api.dto.RefreshTokenRequest;
 import com.travans.backend.api.dto.RegisterRequest;
+import com.travans.backend.api.dto.UpdateProfileRequest;
 import com.travans.backend.api.dto.UserProfileResponse;
 import com.travans.backend.config.AuthProperties;
 import com.travans.backend.domain.AppUser;
@@ -104,6 +106,42 @@ public class AuthService {
     public UserProfileResponse me() {
         AppUser user = currentUserService.requireCurrentUserEntity();
         return toProfile(user);
+    }
+
+    @Transactional
+    public AuthTokenResponse updateProfile(UpdateProfileRequest request) {
+        AppUser user = currentUserService.requireCurrentUserEntity();
+        String normalizedEmail = request.email().toLowerCase();
+
+        appUserRepository.findByEmail(normalizedEmail)
+                .filter(existingUser -> !existingUser.getId().equals(user.getId()))
+                .ifPresent(existingUser -> {
+                    throw new IllegalStateException("Uzytkownik z takim adresem email juz istnieje");
+                });
+
+        user.setEmail(normalizedEmail);
+        user.setDisplayName(request.displayName());
+        AppUser updatedUser = appUserRepository.save(user);
+
+        return issueTokens(new AuthenticatedUser(updatedUser));
+    }
+
+    @Transactional
+    public AuthTokenResponse changePassword(ChangePasswordRequest request) {
+        AppUser user = currentUserService.requireCurrentUserEntity();
+
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
+            throw new AuthException("INVALID_CURRENT_PASSWORD", "Aktualne haslo jest nieprawidlowe");
+        }
+
+        if (request.currentPassword().equals(request.newPassword())) {
+            throw new IllegalArgumentException("Nowe haslo musi byc inne niz aktualne");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        AppUser updatedUser = appUserRepository.save(user);
+
+        return issueTokens(new AuthenticatedUser(updatedUser));
     }
 
     private AuthTokenResponse issueTokens(AuthenticatedUser user) {

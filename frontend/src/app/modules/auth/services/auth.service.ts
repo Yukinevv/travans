@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
 import { API_BASE_URL } from '../../../core/services/api-base';
-import { AuthResponse, LoginPayload, RegisterPayload, UserProfile } from '../types/auth.model';
+import { AuthResponse, ChangePasswordPayload, LoginPayload, RegisterPayload, UpdateProfilePayload, UserProfile } from '../types/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -29,6 +29,18 @@ export class AuthService {
 
   me(): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${API_BASE_URL}/auth/me`);
+  }
+
+  updateProfile(payload: UpdateProfilePayload): Observable<AuthResponse> {
+    return this.http.put<AuthResponse>(`${API_BASE_URL}/auth/me`, payload).pipe(
+      tap((response) => this.persistSession(response, response.user.email, this.shouldRememberMe()))
+    );
+  }
+
+  changePassword(payload: ChangePasswordPayload): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/change-password`, payload).pipe(
+      tap((response) => this.persistSession(response, response.user.email, this.shouldRememberMe()))
+    );
   }
 
   refresh(): Observable<AuthResponse> {

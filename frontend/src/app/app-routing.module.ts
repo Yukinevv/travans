@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from './modules/auth/services/auth.guard';
 import { AuthViewComponent } from './modules/auth/auth-view/auth-view.component';
+import { AccountViewComponent } from './views/account-view/account-view.component';
 import { DashboardViewComponent } from './views/dashboard-view/dashboard-view.component';
 import { PlanListViewComponent } from './views/plan-list-view/plan-list-view.component';
 import { PlansViewComponent } from './views/plans-view/plans-view.component';
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'plans/list', component: PlanListViewComponent, canActivate: [AuthGuard] },
   { path: 'plans/:planId/edit', component: PlansViewComponent, canActivate: [AuthGuard] },
   { path: 'integrations', component: IntegrationsViewComponent, canActivate: [AuthGuard] },
+  { path: 'account', component: AccountViewComponent, canActivate: [AuthGuard] },
   { path: 'integrations/activities/:activityId', component: IntegrationActivityDetailViewComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];

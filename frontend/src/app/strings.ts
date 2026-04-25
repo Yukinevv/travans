@@ -4,6 +4,7 @@ const localizedStrings = {
   pl: {
     brand: 'Travans',
     navigation: {
+      account: 'Konto',
       auth: 'Logowanie',
       dashboard: 'Pulpit',
       integrations: 'Integracje',
@@ -25,6 +26,7 @@ const localizedStrings = {
   en: {
     brand: 'Travans',
     navigation: {
+      account: 'Account',
       auth: 'Sign in',
       dashboard: 'Dashboard',
       integrations: 'Integrations',

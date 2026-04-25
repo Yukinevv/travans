@@ -1,0 +1,73 @@
+<section class="page">
+  <header class="header">
+    <div>
+      <p class="kicker">{{ moduleStrings.header.kicker }}</p>
+      <h2>{{ moduleStrings.header.title }}</h2>
+      <p class="intro">{{ moduleStrings.header.intro }}</p>
+    </div>
+  </header>
+
+  <article class="panel" *ngIf="loading">
+    <p class="muted">{{ moduleStrings.status.loading }}</p>
+  </article>
+
+  <div class="account-grid" *ngIf="!loading">
+    <article class="panel">
+      <p class="panel-label">{{ moduleStrings.profile.title }}</p>
+      <p class="muted">{{ moduleStrings.profile.description }}</p>
+
+      <form [formGroup]="profileForm" (ngSubmit)="submitProfile()">
+        <label>
+          <span>{{ moduleStrings.form.displayName }}</span>
+          <input type="text" formControlName="displayName">
+          <small class="field-error" *ngIf="getProfileFieldError('displayName')">{{ getProfileFieldError('displayName') }}</small>
+        </label>
+
+        <label>
+          <span>{{ moduleStrings.form.email }}</span>
+          <input type="email" formControlName="email">
+          <small class="field-error" *ngIf="getProfileFieldError('email')">{{ getProfileFieldError('email') }}</small>
+        </label>
+
+        <div class="message error-box" *ngIf="profileErrorMessage">{{ profileErrorMessage }}</div>
+        <div class="message success-box" *ngIf="profileSuccessMessage">{{ profileSuccessMessage }}</div>
+
+        <button type="submit" [disabled]="profileSubmitting">
+          {{ moduleStrings.actions.saveProfile }}
+        </button>
+      </form>
+    </article>
+
+    <article class="panel">
+      <p class="panel-label">{{ moduleStrings.password.title }}</p>
+      <p class="muted">{{ moduleStrings.password.description }}</p>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="submitPassword()">
+        <label>
+          <span>{{ moduleStrings.form.currentPassword }}</span>
+          <input type="password" formControlName="currentPassword">
+          <small class="field-error" *ngIf="getPasswordFieldError('currentPassword')">{{ getPasswordFieldError('currentPassword') }}</small>
+        </label>
+
+        <label>
+          <span>{{ moduleStrings.form.newPassword }}</span>
+          <input type="password" formControlName="newPassword">
+          <small class="field-error" *ngIf="getPasswordFieldError('newPassword')">{{ getPasswordFieldError('newPassword') }}</small>
+        </label>
+
+        <label>
+          <span>{{ moduleStrings.form.repeatPassword }}</span>
+          <input type="password" formControlName="repeatPassword">
+          <small class="field-error" *ngIf="getPasswordFieldError('repeatPassword')">{{ getPasswordFieldError('repeatPassword') }}</small>
+        </label>
+
+        <div class="message error-box" *ngIf="passwordErrorMessage">{{ passwordErrorMessage }}</div>
+        <div class="message success-box" *ngIf="passwordSuccessMessage">{{ passwordSuccessMessage }}</div>
+
+        <button type="submit" [disabled]="passwordSubmitting">
+          {{ moduleStrings.actions.changePassword }}
+        </button>
+      </form>
+    </article>
+  </div>
+</section>
