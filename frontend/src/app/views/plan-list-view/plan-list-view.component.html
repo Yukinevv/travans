@@ -73,8 +73,20 @@
               (click)="openShowOnDashboardConfirmation(plan, $event)">
               {{ isSelectedForDashboard(plan) ? moduleStrings.plan.visibleOnDashboard : moduleStrings.plan.showOnDashboard }}
             </button>
-            <button type="button" class="secondary-button" (click)="editPlan(plan, $event)">{{ commonStrings.actions.edit }}</button>
-            <button type="button" class="danger-button" (click)="deletePlan(plan, $event)">{{ commonStrings.actions.delete }}</button>
+            <button
+              type="button"
+              class="secondary-button icon-button edit-button"
+              (click)="editPlan(plan, $event)"
+              [attr.aria-label]="commonStrings.actions.edit">
+              <span class="edit-icon" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="danger-button icon-button trash-button"
+              (click)="deletePlan(plan, $event)"
+              [attr.aria-label]="commonStrings.actions.delete">
+              <span class="trash-icon" aria-hidden="true"></span>
+            </button>
           </div>
         </div>
       </div>
@@ -164,6 +176,29 @@
       </button>
       <button type="button" (click)="confirmShowOnDashboard()">
         {{ moduleStrings.plan.showOnDashboard }}
+      </button>
+    </div>
+  </article>
+</div>
+
+<div
+  class="confirmation-backdrop"
+  *ngIf="deleteConfirmationOpen"
+  (click)="closeDeletePlanConfirmation()"
+  (keydown.escape)="closeDeletePlanConfirmation()"
+  tabindex="0">
+  <article class="confirmation-modal" (click)="$event.stopPropagation()">
+    <p class="kicker">{{ moduleStrings.confirmation.kicker }}</p>
+    <h3>{{ moduleStrings.confirmation.deleteTitle }}</h3>
+    <p class="muted">{{ getDeletePlanConfirmationMessage() }}</p>
+    <p class="muted">{{ moduleStrings.confirmation.deleteDescription }}</p>
+
+    <div class="confirmation-actions">
+      <button type="button" class="secondary-button" (click)="closeDeletePlanConfirmation()">
+        {{ commonStrings.actions.cancel }}
+      </button>
+      <button type="button" class="danger-button" (click)="confirmDeletePlan()">
+        {{ commonStrings.actions.delete }}
       </button>
     </div>
   </article>

@@ -19,7 +19,9 @@ export class PlanListViewComponent implements OnInit {
   expandedPlanId: number | null = null;
   selectedDashboardPlanId: number | null = null;
   dashboardConfirmationOpen = false;
+  deleteConfirmationOpen = false;
   pendingDashboardPlan: TrainingPlan | null = null;
+  pendingDeletePlan: TrainingPlan | null = null;
   errorMessage = '';
   loading = true;
   readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
@@ -86,8 +88,19 @@ export class PlanListViewComponent implements OnInit {
       return;
     }
 
-    const confirmed = window.confirm(this.moduleStrings.plan.deleteConfirmation.replace('%s', plan.name));
-    if (!confirmed) {
+    this.pendingDeletePlan = plan;
+    this.deleteConfirmationOpen = true;
+  }
+
+  closeDeletePlanConfirmation(): void {
+    this.deleteConfirmationOpen = false;
+    this.pendingDeletePlan = null;
+  }
+
+  confirmDeletePlan(): void {
+    const plan = this.pendingDeletePlan;
+    if (!plan?.id) {
+      this.closeDeletePlanConfirmation();
       return;
     }
 
@@ -102,10 +115,12 @@ export class PlanListViewComponent implements OnInit {
           this.currentPlanService.setSelectedPlanId(null);
         }
         this.errorMessage = '';
+        this.closeDeletePlanConfirmation();
         this.changeDetectorRef.detectChanges();
       },
       error: () => {
         this.errorMessage = this.moduleStrings.errors.deletePlan;
+        this.closeDeletePlanConfirmation();
         this.changeDetectorRef.detectChanges();
       }
     });
@@ -136,6 +151,11 @@ export class PlanListViewComponent implements OnInit {
     this.currentPlanService.setSelectedPlanId(this.pendingDashboardPlan.id);
     this.closeShowOnDashboardConfirmation();
     this.router.navigate(['/']);
+  }
+
+  getDeletePlanConfirmationMessage(): string {
+    const planName = this.pendingDeletePlan?.name ?? '';
+    return this.moduleStrings.plan.deleteConfirmation.replace('%s', planName);
   }
 
   isSelectedForDashboard(plan: TrainingPlan): boolean {

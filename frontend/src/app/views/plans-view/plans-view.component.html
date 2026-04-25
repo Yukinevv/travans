@@ -54,7 +54,13 @@
               <button type="button" class="secondary icon-button" (click)="moveTrainingDay(i, 1)" [disabled]="i === trainingDays.length - 1" [attr.aria-label]="moduleStrings.day.downAriaLabel">
                 v
               </button>
-              <button type="button" class="danger-button" (click)="openRemoveTrainingDayConfirmation(i)">{{ moduleStrings.actions.removeDay }}</button>
+              <button
+                type="button"
+                class="danger-button icon-button trash-button"
+                (click)="openRemoveTrainingDayConfirmation(i)"
+                [attr.aria-label]="moduleStrings.actions.removeDay">
+                <span class="trash-icon" aria-hidden="true"></span>
+              </button>
             </div>
           </div>
 
@@ -100,9 +106,13 @@
       </div>
 
       <div class="actions">
-        <button type="button" class="secondary" (click)="addTrainingDay()">{{ moduleStrings.actions.addDay }}</button>
-        <button type="button" class="secondary" *ngIf="isEditMode" (click)="router.navigate(['/plans/list'])">{{ commonStrings.actions.cancel }}</button>
-        <button type="submit">{{ isEditMode ? moduleStrings.actions.saveChanges : moduleStrings.actions.savePlan }}</button>
+        <div class="actions-left">
+          <button type="button" class="secondary" (click)="addTrainingDay()">{{ moduleStrings.actions.addDay }}</button>
+        </div>
+        <div class="actions-right">
+          <button type="button" class="secondary" *ngIf="isEditMode" (click)="router.navigate(['/plans/list'])">{{ commonStrings.actions.cancel }}</button>
+          <button type="submit">{{ isEditMode ? moduleStrings.actions.saveChanges : moduleStrings.actions.savePlan }}</button>
+        </div>
       </div>
     </form>
   </article>
