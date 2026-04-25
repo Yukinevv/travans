@@ -178,7 +178,8 @@
           </p>
         </div>
 
-        <div class="evaluation-details" *ngIf="isDayExpanded(day)">
+        <div class="evaluation-details" [class.open]="isDayExpanded(day)">
+          <div class="evaluation-details-inner">
           <div class="detail-block" *ngIf="day.notes">
             <span class="detail-block-label">{{ moduleStrings.details.notes }}</span>
             <div class="detail-notes-card">
@@ -200,6 +201,7 @@
             <span class="detail-item icon-distance-over" *ngIf="day.distanceOverMeters">{{ moduleStrings.details.overDistance }}: {{ formatDistance(day.distanceOverMeters) }}</span>
             <span class="detail-item icon-time-over" *ngIf="day.durationOverSeconds">{{ moduleStrings.details.overDuration }}: {{ formatDuration(day.durationOverSeconds) }}</span>
             <span class="detail-item icon-time-saved" *ngIf="day.timeSavedSeconds">{{ moduleStrings.details.savedTime }}: {{ formatDuration(day.timeSavedSeconds) }}</span>
+        </div>
           </div>
         </div>
       </article>

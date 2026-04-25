@@ -79,66 +79,68 @@
         </div>
       </div>
 
-      <div class="plan-card-details" *ngIf="isExpanded(plan)">
-        <div class="plan-meta" *ngIf="plan.createdAt">
-          <span class="overview-card" *ngIf="plan.createdAt">
-            <span class="overview-label">{{ commonStrings.labels.createdAt }}</span>
-            <strong>{{ plan.createdAt | date:'dd.MM.yyyy HH:mm' }}</strong>
-          </span>
-        </div>
+      <div class="plan-card-details" [class.open]="isExpanded(plan)">
+        <div class="plan-card-details-inner">
+          <div class="plan-meta" *ngIf="plan.createdAt">
+            <span class="overview-card" *ngIf="plan.createdAt">
+              <span class="overview-label">{{ commonStrings.labels.createdAt }}</span>
+              <strong>{{ plan.createdAt | date:'dd.MM.yyyy HH:mm' }}</strong>
+            </span>
+          </div>
 
-        <p class="plan-description" *ngIf="plan.description">{{ plan.description }}</p>
+          <p class="plan-description" *ngIf="plan.description">{{ plan.description }}</p>
 
-        <div class="day-list">
-          <article class="day-card" *ngFor="let day of plan.trainingDays; let i = index">
-            <div class="day-header">
-              <div class="day-heading">
-                <div class="day-title-text">
-                  <strong>{{ moduleStrings.plan.dayPrefix }} {{ i + 1 }}: {{ day.title }}</strong>
-                  <span class="day-subtitle">{{ day.scheduledDate | date:'dd.MM.yyyy' }} | {{ getActivityTypeLabel(day.activityType) }}</span>
+          <div class="day-list">
+            <article class="day-card" *ngFor="let day of plan.trainingDays; let i = index">
+              <div class="day-header">
+                <div class="day-heading">
+                  <div class="day-title-text">
+                    <strong>{{ moduleStrings.plan.dayPrefix }} {{ i + 1 }}: {{ day.title }}</strong>
+                    <span class="day-subtitle">{{ day.scheduledDate | date:'dd.MM.yyyy' }} | {{ getActivityTypeLabel(day.activityType) }}</span>
+                  </div>
+                </div>
+                <span
+                  class="status-chip"
+                  [class.completed]="day.status === 'COMPLETED'"
+                  [class.partial]="day.status === 'PARTIALLY_COMPLETED'"
+                  [class.missed]="day.status === 'MISSED'"
+                  [class.planned]="day.status === 'PLANNED' || !day.status">
+                  {{ getStatusLabel(day) }}
+                </span>
+              </div>
+
+              <div class="day-grid">
+                <article class="overview-card">
+                  <span class="overview-label">{{ commonStrings.labels.date }}</span>
+                  <strong>{{ day.scheduledDate | date:'EEEE, dd.MM.yyyy' }}</strong>
+                </article>
+                <article class="overview-card">
+                  <span class="overview-label">{{ commonStrings.labels.type }}</span>
+                  <strong>{{ getActivityTypeLabel(day.activityType) }}</strong>
+                </article>
+                <article class="overview-card">
+                  <span class="overview-label">{{ commonStrings.labels.distance }}</span>
+                  <strong>{{ formatDistance(day.plannedDistanceMeters) }}</strong>
+                </article>
+                <article class="overview-card">
+                  <span class="overview-label">{{ commonStrings.labels.duration }}</span>
+                  <strong>{{ formatDuration(day.plannedDurationSeconds) }}</strong>
+                </article>
+              </div>
+
+              <div class="day-detail-block" *ngIf="day.notes">
+                <span class="detail-block-label">{{ commonStrings.labels.notes }}</span>
+                <div class="detail-notes-card">
+                  <p class="day-notes">{{ day.notes }}</p>
                 </div>
               </div>
-              <span
-                class="status-chip"
-                [class.completed]="day.status === 'COMPLETED'"
-                [class.partial]="day.status === 'PARTIALLY_COMPLETED'"
-                [class.missed]="day.status === 'MISSED'"
-                [class.planned]="day.status === 'PLANNED' || !day.status">
-                {{ getStatusLabel(day) }}
-              </span>
-            </div>
 
-            <div class="day-grid">
-              <article class="overview-card">
-                <span class="overview-label">{{ commonStrings.labels.date }}</span>
-                <strong>{{ day.scheduledDate | date:'EEEE, dd.MM.yyyy' }}</strong>
-              </article>
-              <article class="overview-card">
-                <span class="overview-label">{{ commonStrings.labels.type }}</span>
-                <strong>{{ getActivityTypeLabel(day.activityType) }}</strong>
-              </article>
-              <article class="overview-card">
-                <span class="overview-label">{{ commonStrings.labels.distance }}</span>
-                <strong>{{ formatDistance(day.plannedDistanceMeters) }}</strong>
-              </article>
-              <article class="overview-card">
-                <span class="overview-label">{{ commonStrings.labels.duration }}</span>
-                <strong>{{ formatDuration(day.plannedDurationSeconds) }}</strong>
-              </article>
-            </div>
-
-            <div class="day-detail-block" *ngIf="day.notes">
-              <span class="detail-block-label">{{ commonStrings.labels.notes }}</span>
-              <div class="detail-notes-card">
-                <p class="day-notes">{{ day.notes }}</p>
-              </div>
-            </div>
-
-            <p class="matched-activity" *ngIf="day.matchedActivityName">
-              {{ moduleStrings.plan.matched }} <strong>{{ day.matchedActivityName }}</strong>
-              <span *ngIf="day.matchedActivityDate">({{ day.matchedActivityDate | date:'dd.MM.yyyy' }})</span>
-            </p>
-          </article>
+              <p class="matched-activity" *ngIf="day.matchedActivityName">
+                {{ moduleStrings.plan.matched }} <strong>{{ day.matchedActivityName }}</strong>
+                <span *ngIf="day.matchedActivityDate">({{ day.matchedActivityDate | date:'dd.MM.yyyy' }})</span>
+              </p>
+            </article>
+          </div>
         </div>
       </div>
     </article>
