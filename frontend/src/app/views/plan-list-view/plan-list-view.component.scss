@@ -3,9 +3,9 @@
   gap: 24px;
 }
 
-.page > .panel:first-child > .kicker,
-.page > .panel:first-child > h2 {
-  padding-left: 50px;
+.header {
+  padding-left: 72px;
+  margin-bottom: 20px;
 }
 
 .panel {
@@ -26,7 +26,7 @@
 }
 
 h2 {
-  margin: 8px 0 20px;
+  margin: 8px 0 0;
 }
 
 .empty-state {
@@ -42,32 +42,131 @@ h2 {
 .plan-card {
   width: 100%;
   margin-top: 12px;
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.76);
+  padding: 22px;
+  border: 1px solid rgba(198, 99, 16, 0.16);
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 248, 239, 0.72) 100%);
   display: grid;
-  gap: 14px;
+  gap: 18px;
   text-align: left;
   cursor: pointer;
-  transition: 180ms ease;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.76),
+    0 16px 32px rgba(31, 28, 23, 0.05);
 }
 
 .plan-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow);
+  border-color: rgba(198, 99, 16, 0.26);
 }
 
-.plan-card-summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) auto auto;
+.plan-card:focus-visible {
+  outline: 2px solid rgba(198, 99, 16, 0.3);
+  outline-offset: 3px;
+}
+
+.plan-card.expanded {
+  border-color: rgba(198, 99, 16, 0.24);
+}
+
+.plan-card-header {
+  display: flex;
+  justify-content: space-between;
   gap: 16px;
-  align-items: center;
+  align-items: flex-start;
 }
 
-.plan-card-summary strong {
-  font-size: 1.05rem;
+.plan-card-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.plan-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.plan-title-row strong {
+  font-size: 1.24rem;
+  line-height: 1.2;
   color: var(--text);
+}
+
+.plan-card-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.meta-chip {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(31, 28, 23, 0.08);
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--muted);
+}
+
+.meta-label,
+.overview-label,
+.detail-block-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-dark);
+}
+
+.meta-chip strong,
+.overview-card strong {
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.plan-card-header-actions {
+  display: grid;
+  justify-items: end;
+  gap: 14px;
+}
+
+.plan-card-toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.day-expand-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: 1px solid rgba(31, 28, 23, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--accent-dark);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.day-expand-icon {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(135deg);
+  transition: transform 0.2s ease;
+}
+
+.day-expand-icon.expanded {
+  transform: rotate(-45deg);
 }
 
 .plan-card-toggle {
@@ -76,30 +175,26 @@ h2 {
   font-size: 0.92rem;
 }
 
-.plan-card-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
 .plan-card-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .primary-button,
 .secondary-button,
 .danger-button {
+  border: 1px solid transparent;
   border-radius: 999px;
-  padding: 10px 14px;
+  padding: 10px 16px;
   cursor: pointer;
+  transition: 180ms ease;
 }
 
 .primary-button {
   border: 1px solid rgba(183, 103, 29, 0.18);
-  background: rgba(183, 103, 29, 0.12);
+  background: rgba(183, 103, 29, 0.1);
   color: var(--accent-dark);
   font-weight: 700;
 }
@@ -112,28 +207,42 @@ h2 {
 
 .secondary-button {
   border: 1px solid var(--border);
-  background: var(--surface-strong);
+  background: rgba(255, 255, 255, 0.82);
   color: var(--text);
 }
 
 .danger-button {
-  background: rgba(183, 55, 31, 0.12);
+  background: rgba(183, 55, 31, 0.08);
   color: var(--danger);
   border: 1px solid rgba(183, 55, 31, 0.22);
 }
 
 .plan-card-details {
   display: grid;
-  gap: 16px;
-  padding-top: 4px;
+  gap: 18px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(31, 28, 23, 0.08);
 }
 
-.plan-meta,
+.plan-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .day-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 16px;
-  color: var(--muted);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.overview-card {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(31, 28, 23, 0.08);
 }
 
 .plan-description,
@@ -142,62 +251,163 @@ h2 {
   margin: 0;
 }
 
+.plan-description {
+  color: var(--text);
+  line-height: 1.65;
+}
+
 .day-list {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .day-card {
   display: grid;
-  gap: 12px;
-  padding: 16px;
+  gap: 16px;
+  padding: 20px;
   border-radius: 18px;
-  border: 1px solid var(--border);
-  background: rgba(255, 248, 239, 0.65);
+  border: 1px solid rgba(198, 99, 16, 0.12);
+  background: linear-gradient(135deg, rgba(255, 248, 238, 0.82) 0%, rgba(255, 255, 255, 0.96) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.day-card-header {
+.day-header {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  align-items: center;
+  gap: 16px;
+  align-items: flex-start;
 }
 
-.status-badge {
-  padding: 6px 10px;
+.day-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.day-title-text {
+  display: grid;
+  gap: 8px;
+}
+
+.day-subtitle {
+  color: var(--muted);
+}
+
+.status-chip {
+  align-self: flex-start;
+  padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid transparent;
   font-size: 0.8rem;
   font-weight: 700;
 }
 
-.status-badge.completed {
+.status-chip.completed {
   background: rgba(87, 126, 98, 0.16);
   border-color: rgba(87, 126, 98, 0.24);
   color: #355c44;
 }
 
-.status-badge.partial {
+.status-chip.partial {
   background: rgba(214, 155, 62, 0.18);
   border-color: rgba(214, 155, 62, 0.28);
   color: #8b5a12;
 }
 
-.status-badge.missed {
+.status-chip.missed {
   background: rgba(191, 98, 71, 0.16);
   border-color: rgba(191, 98, 71, 0.26);
   color: #9a3f2a;
 }
 
-.status-badge.planned {
+.status-chip.planned {
   background: rgba(125, 108, 90, 0.12);
   border-color: rgba(125, 108, 90, 0.18);
   color: #6d5a49;
 }
 
+.dashboard-chip {
+  background: rgba(87, 126, 98, 0.12);
+  border-color: rgba(87, 126, 98, 0.22);
+  color: #355c44;
+}
+
+.day-detail-block {
+  display: grid;
+  gap: 8px;
+}
+
+.detail-notes-card {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(198, 99, 16, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.day-notes {
+  line-height: 1.65;
+}
+
 .matched-activity {
   color: var(--accent-dark);
   font-weight: 600;
+  line-height: 1.6;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.confirmation-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(31, 28, 23, 0.22);
+  backdrop-filter: blur(6px);
+}
+
+.confirmation-modal {
+  width: min(100%, 420px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px;
+  background: rgba(255, 250, 244, 0.94);
+  box-shadow: 0 24px 56px rgba(45, 33, 23, 0.22);
+}
+
+.confirmation-modal h3 {
+  margin: 8px 0 12px;
+  font-size: 1.6rem;
+}
+
+.confirmation-modal p {
+  margin-top: 0;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.confirmation-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.confirmation-actions .secondary-button {
+  background: rgba(45, 33, 23, 0.08);
+  color: var(--text-secondary);
 }
 
 .error-message {
@@ -205,19 +415,68 @@ h2 {
 }
 
 @media (max-width: 900px) {
-  .page > .panel:first-child > .kicker,
-  .page > .panel:first-child > h2 {
-    padding-left: 44px;
+  .header {
+    padding-left: 60px;
   }
 
-  .plan-card-summary,
+  .plan-card-header,
+  .day-header,
+  .plan-card-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .plan-card-header-actions {
+    justify-items: stretch;
+  }
+
+  .plan-card-toggle-wrap {
+    justify-content: space-between;
+  }
+
+  .plan-card-actions {
+    justify-content: flex-start;
+  }
+
+  .plan-card-meta,
+  .plan-meta,
+  .day-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .confirmation-actions {
+    flex-direction: column-reverse;
+  }
+
+  .confirmation-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .plan-card-meta,
   .plan-meta,
   .day-grid {
     grid-template-columns: 1fr;
   }
+}
 
-  .plan-card-toolbar {
-    flex-direction: column;
-    align-items: stretch;
+@media (max-width: 480px) {
+  .page {
+    gap: 20px;
+  }
+
+  .header {
+    padding-left: 52px;
+  }
+
+  .panel,
+  .plan-card,
+  .day-card {
+    padding: 18px;
+  }
+
+  .plan-title-row strong {
+    font-size: 1.08rem;
   }
 }

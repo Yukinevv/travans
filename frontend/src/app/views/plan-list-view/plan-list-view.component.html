@@ -4,8 +4,13 @@
   </article>
 
   <article class="panel">
-    <p class="kicker">{{ moduleStrings.header.kicker }}</p>
-    <h2>{{ moduleStrings.header.title }}</h2>
+    <header class="header">
+      <div>
+        <p class="kicker">{{ moduleStrings.header.kicker }}</p>
+        <h2>{{ moduleStrings.header.title }}</h2>
+      </div>
+    </header>
+
     <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
 
     <div class="empty-state" *ngIf="!loading && !errorMessage && plans.length === 0">
@@ -19,43 +24,82 @@
       (click)="togglePlan(plan)"
       (keydown.enter)="togglePlan(plan)"
       (keydown.space)="togglePlan(plan); $event.preventDefault()"
-      tabindex="0">
-      <div class="plan-card-summary">
-        <strong>{{ plan.name }}</strong>
-        <span>{{ moduleStrings.plan.typePrefix }} {{ getActivityTypeLabel(plan.planType) }}</span>
-        <span>{{ plan.trainingDays.length }} {{ moduleStrings.units.days }}</span>
-        <span>{{ moduleStrings.plan.stravaFrom }} {{ plan.stravaEvaluationStartDate || plan.startDate }}</span>
-      </div>
+      tabindex="0"
+      [class.expanded]="isExpanded(plan)">
+      <div class="plan-card-header">
+        <div class="plan-card-heading">
+          <div class="plan-title-row">
+            <strong>{{ plan.name }}</strong>
+            <span
+              class="status-chip dashboard-chip"
+              *ngIf="isSelectedForDashboard(plan)">
+              {{ moduleStrings.plan.visibleOnDashboard }}
+            </span>
+          </div>
 
-      <div class="plan-card-toolbar">
-        <span class="plan-card-toggle">{{ isExpanded(plan) ? moduleStrings.toggle.hideDetails : moduleStrings.toggle.showDetails }}</span>
-        <div class="plan-card-actions">
-          <button
-            type="button"
-            class="primary-button"
-            [class.active]="isSelectedForDashboard(plan)"
-            (click)="showOnDashboard(plan, $event)">
-            {{ isSelectedForDashboard(plan) ? moduleStrings.plan.visibleOnDashboard : moduleStrings.plan.showOnDashboard }}
-          </button>
-          <button type="button" class="secondary-button" (click)="editPlan(plan, $event)">{{ commonStrings.actions.edit }}</button>
-          <button type="button" class="danger-button" (click)="deletePlan(plan, $event)">{{ commonStrings.actions.delete }}</button>
+          <div class="plan-card-meta">
+            <span class="meta-chip">
+              <span class="meta-label">{{ commonStrings.labels.type }}</span>
+              <strong>{{ getActivityTypeLabel(plan.planType) }}</strong>
+            </span>
+            <span class="meta-chip">
+              <span class="meta-label">{{ moduleStrings.units.days }}</span>
+              <strong>{{ plan.trainingDays.length }}</strong>
+            </span>
+            <span class="meta-chip">
+              <span class="meta-label">{{ commonStrings.labels.startDate }}</span>
+              <strong>{{ plan.startDate | date:'dd.MM.yyyy' }}</strong>
+            </span>
+            <span class="meta-chip">
+              <span class="meta-label">Strava</span>
+              <strong>{{ (plan.stravaEvaluationStartDate || plan.startDate) | date:'dd.MM.yyyy' }}</strong>
+            </span>
+          </div>
+        </div>
+
+        <div class="plan-card-header-actions">
+          <div class="plan-card-toggle-wrap">
+            <div class="day-expand-button" aria-hidden="true">
+              <span class="day-expand-icon" [class.expanded]="isExpanded(plan)" aria-hidden="true"></span>
+            </div>
+            <span class="plan-card-toggle">{{ isExpanded(plan) ? moduleStrings.toggle.hideDetails : moduleStrings.toggle.showDetails }}</span>
+          </div>
+
+          <div class="plan-card-actions">
+            <button
+              type="button"
+              class="primary-button"
+              [class.active]="isSelectedForDashboard(plan)"
+              (click)="openShowOnDashboardConfirmation(plan, $event)">
+              {{ isSelectedForDashboard(plan) ? moduleStrings.plan.visibleOnDashboard : moduleStrings.plan.showOnDashboard }}
+            </button>
+            <button type="button" class="secondary-button" (click)="editPlan(plan, $event)">{{ commonStrings.actions.edit }}</button>
+            <button type="button" class="danger-button" (click)="deletePlan(plan, $event)">{{ commonStrings.actions.delete }}</button>
+          </div>
         </div>
       </div>
 
       <div class="plan-card-details" *ngIf="isExpanded(plan)">
-        <div class="plan-meta">
-          <span>{{ moduleStrings.plan.startDate }} {{ plan.startDate }}</span>
-          <span *ngIf="plan.createdAt">{{ moduleStrings.plan.createdAt }} {{ plan.createdAt | date:'yyyy-MM-dd HH:mm' }}</span>
+        <div class="plan-meta" *ngIf="plan.createdAt">
+          <span class="overview-card" *ngIf="plan.createdAt">
+            <span class="overview-label">{{ commonStrings.labels.createdAt }}</span>
+            <strong>{{ plan.createdAt | date:'dd.MM.yyyy HH:mm' }}</strong>
+          </span>
         </div>
 
         <p class="plan-description" *ngIf="plan.description">{{ plan.description }}</p>
 
         <div class="day-list">
           <article class="day-card" *ngFor="let day of plan.trainingDays; let i = index">
-            <div class="day-card-header">
-              <strong>{{ moduleStrings.plan.dayPrefix }} {{ i + 1 }}: {{ day.title }}</strong>
+            <div class="day-header">
+              <div class="day-heading">
+                <div class="day-title-text">
+                  <strong>{{ moduleStrings.plan.dayPrefix }} {{ i + 1 }}: {{ day.title }}</strong>
+                  <span class="day-subtitle">{{ day.scheduledDate | date:'dd.MM.yyyy' }} | {{ getActivityTypeLabel(day.activityType) }}</span>
+                </div>
+              </div>
               <span
-                class="status-badge"
+                class="status-chip"
                 [class.completed]="day.status === 'COMPLETED'"
                 [class.partial]="day.status === 'PARTIALLY_COMPLETED'"
                 [class.missed]="day.status === 'MISSED'"
@@ -65,15 +109,34 @@
             </div>
 
             <div class="day-grid">
-              <span>{{ commonStrings.labels.date }}: {{ day.scheduledDate }}</span>
-              <span>{{ commonStrings.labels.type }}: {{ getActivityTypeLabel(day.activityType) }}</span>
-              <span>{{ commonStrings.labels.distance }}: {{ formatDistance(day.plannedDistanceMeters) }}</span>
-              <span>{{ commonStrings.labels.duration }}: {{ formatDuration(day.plannedDurationSeconds) }}</span>
+              <article class="overview-card">
+                <span class="overview-label">{{ commonStrings.labels.date }}</span>
+                <strong>{{ day.scheduledDate | date:'EEEE, dd.MM.yyyy' }}</strong>
+              </article>
+              <article class="overview-card">
+                <span class="overview-label">{{ commonStrings.labels.type }}</span>
+                <strong>{{ getActivityTypeLabel(day.activityType) }}</strong>
+              </article>
+              <article class="overview-card">
+                <span class="overview-label">{{ commonStrings.labels.distance }}</span>
+                <strong>{{ formatDistance(day.plannedDistanceMeters) }}</strong>
+              </article>
+              <article class="overview-card">
+                <span class="overview-label">{{ commonStrings.labels.duration }}</span>
+                <strong>{{ formatDuration(day.plannedDurationSeconds) }}</strong>
+              </article>
             </div>
 
-            <p class="day-notes" *ngIf="day.notes">{{ day.notes }}</p>
+            <div class="day-detail-block" *ngIf="day.notes">
+              <span class="detail-block-label">{{ commonStrings.labels.notes }}</span>
+              <div class="detail-notes-card">
+                <p class="day-notes">{{ day.notes }}</p>
+              </div>
+            </div>
+
             <p class="matched-activity" *ngIf="day.matchedActivityName">
-              {{ moduleStrings.plan.matched }} {{ day.matchedActivityName }} ({{ day.matchedActivityDate }})
+              {{ moduleStrings.plan.matched }} <strong>{{ day.matchedActivityName }}</strong>
+              <span *ngIf="day.matchedActivityDate">({{ day.matchedActivityDate | date:'dd.MM.yyyy' }})</span>
             </p>
           </article>
         </div>
@@ -81,3 +144,25 @@
     </article>
   </article>
 </section>
+
+<div
+  class="confirmation-backdrop"
+  *ngIf="dashboardConfirmationOpen"
+  (click)="closeShowOnDashboardConfirmation()"
+  (keydown.escape)="closeShowOnDashboardConfirmation()"
+  tabindex="0">
+  <article class="confirmation-modal" (click)="$event.stopPropagation()">
+    <p class="kicker">{{ moduleStrings.confirmation.kicker }}</p>
+    <h3>{{ moduleStrings.confirmation.title }}</h3>
+    <p class="muted">{{ moduleStrings.confirmation.description }}</p>
+
+    <div class="confirmation-actions">
+      <button type="button" class="secondary-button" (click)="closeShowOnDashboardConfirmation()">
+        {{ commonStrings.actions.cancel }}
+      </button>
+      <button type="button" (click)="confirmShowOnDashboard()">
+        {{ moduleStrings.plan.showOnDashboard }}
+      </button>
+    </div>
+  </article>
+</div>

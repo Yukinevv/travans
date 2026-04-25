@@ -2,6 +2,11 @@ import { createLocalizedStrings } from '../../core/i18n/localized-strings';
 
 const localizedStrings = {
   pl: {
+    confirmation: {
+      description: 'Czy na pewno chcesz ustawić ten plan jako widoczny na dashboardzie?',
+      kicker: 'Potwierdzenie',
+      title: 'Pokazać plan na dashboardzie?'
+    },
     emptyState: {
       description: 'Dodaj pierwszy plan w widoku "Nowy plan".',
       title: 'Nie masz jeszcze zapisanych plan\u00f3w.'
@@ -36,6 +41,11 @@ const localizedStrings = {
     }
   },
   en: {
+    confirmation: {
+      description: 'Are you sure you want to set this plan as visible on the dashboard?',
+      kicker: 'Confirmation',
+      title: 'Show this plan on the dashboard?'
+    },
     emptyState: {
       description: 'Add your first plan in the "New plan" view.',
       title: 'You do not have any saved plans yet.'

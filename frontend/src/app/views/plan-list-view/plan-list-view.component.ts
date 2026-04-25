@@ -18,6 +18,8 @@ export class PlanListViewComponent implements OnInit {
   plans: TrainingPlan[] = [];
   expandedPlanId: number | null = null;
   selectedDashboardPlanId: number | null = null;
+  dashboardConfirmationOpen = false;
+  pendingDashboardPlan: TrainingPlan | null = null;
   errorMessage = '';
   loading = true;
   readonly commonStrings: CommonStrings = CommonStringsLoader.strings;
@@ -109,14 +111,30 @@ export class PlanListViewComponent implements OnInit {
     });
   }
 
-  showOnDashboard(plan: TrainingPlan, event: Event): void {
+  openShowOnDashboardConfirmation(plan: TrainingPlan, event: Event): void {
     event.stopPropagation();
-    if (!plan.id) {
+    if (!plan.id || this.isSelectedForDashboard(plan)) {
       return;
     }
 
-    this.selectedDashboardPlanId = plan.id;
-    this.currentPlanService.setSelectedPlanId(plan.id);
+    this.pendingDashboardPlan = plan;
+    this.dashboardConfirmationOpen = true;
+  }
+
+  closeShowOnDashboardConfirmation(): void {
+    this.dashboardConfirmationOpen = false;
+    this.pendingDashboardPlan = null;
+  }
+
+  confirmShowOnDashboard(): void {
+    if (!this.pendingDashboardPlan?.id) {
+      this.closeShowOnDashboardConfirmation();
+      return;
+    }
+
+    this.selectedDashboardPlanId = this.pendingDashboardPlan.id;
+    this.currentPlanService.setSelectedPlanId(this.pendingDashboardPlan.id);
+    this.closeShowOnDashboardConfirmation();
     this.router.navigate(['/']);
   }
 
