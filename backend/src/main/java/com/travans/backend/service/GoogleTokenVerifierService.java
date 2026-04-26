@@ -48,6 +48,7 @@ public class GoogleTokenVerifierService {
         String subject = jwt.getSubject();
         String email = jwt.getClaimAsString("email");
         String displayName = jwt.getClaimAsString("name");
+        String pictureUrl = jwt.getClaimAsString("picture");
         Boolean emailVerified = jwt.getClaimAsBoolean("email_verified");
 
         if (subject == null || subject.isBlank() || email == null || email.isBlank()) {
@@ -59,13 +60,14 @@ public class GoogleTokenVerifierService {
         }
 
         String resolvedDisplayName = (displayName == null || displayName.isBlank()) ? email : displayName;
-        return new GoogleUserProfile(subject, email.toLowerCase(), resolvedDisplayName);
+        return new GoogleUserProfile(subject, email.toLowerCase(), resolvedDisplayName, pictureUrl);
     }
 
     public record GoogleUserProfile(
             String subject,
             String email,
-            String displayName
+            String displayName,
+            String pictureUrl
     ) {
     }
 }

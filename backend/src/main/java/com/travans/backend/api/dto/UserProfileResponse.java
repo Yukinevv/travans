@@ -7,6 +7,7 @@ public record UserProfileResponse(
         Long id,
         String email,
         String displayName,
+        String avatarUrl,
         UserRole role,
         AuthProvider authProvider
 ) {

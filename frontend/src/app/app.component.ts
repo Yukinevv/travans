@@ -32,6 +32,10 @@ export class AppComponent implements OnInit {
     return this.languageService.currentLanguage;
   }
 
+  get userProfile() {
+    return this.authService.getStoredProfile();
+  }
+
   ngOnInit(): void {
     this.updateSidebarForViewport();
     this.router.events
@@ -91,6 +95,21 @@ export class AppComponent implements OnInit {
     if (language === 'pl' || language === 'en') {
       this.languageService.setLanguage(language);
     }
+  }
+
+  getUserInitials(displayName: string | null | undefined): string {
+    if (!displayName) {
+      return '?';
+    }
+
+    const initials = displayName
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part.charAt(0).toUpperCase())
+      .join('');
+
+    return initials || '?';
   }
 
   private updateSidebarForViewport(): void {

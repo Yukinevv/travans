@@ -65,6 +65,21 @@ export class AccountViewComponent implements OnInit {
     return this.profile?.authProvider === 'LOCAL';
   }
 
+  getProfileInitials(): string {
+    if (!this.profile?.displayName) {
+      return '?';
+    }
+
+    const initials = this.profile.displayName
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part.charAt(0).toUpperCase())
+      .join('');
+
+    return initials || '?';
+  }
+
   submitProfile(): void {
     this.profileSuccessMessage = '';
     this.profileErrorMessage = '';

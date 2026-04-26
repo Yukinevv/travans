@@ -13,6 +13,21 @@
 
   <div class="account-grid" *ngIf="!loading">
     <article class="panel">
+      <div class="profile-hero" *ngIf="profile">
+        <img
+          *ngIf="profile.avatarUrl; else profileFallbackAvatar"
+          class="profile-avatar"
+          [src]="profile.avatarUrl"
+          [alt]="profile.displayName">
+        <ng-template #profileFallbackAvatar>
+          <span class="profile-avatar fallback">{{ getProfileInitials() }}</span>
+        </ng-template>
+        <div class="profile-hero-copy">
+          <strong>{{ profile.displayName }}</strong>
+          <span>{{ profile.email }}</span>
+        </div>
+      </div>
+
       <p class="panel-label">{{ moduleStrings.profile.title }}</p>
       <p class="muted">{{ moduleStrings.profile.description }}</p>
 

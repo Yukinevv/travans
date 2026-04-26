@@ -56,13 +56,19 @@
 
     <div class="session" *ngIf="authService.isAuthenticated()" [class.hidden]="!sidebarOpen">
       <div class="session-profile">
-        <span class="session-icon" aria-hidden="true">
-          <span class="session-icon-head"></span>
-          <span class="session-icon-body"></span>
-        </span>
+        <img
+          *ngIf="userProfile?.avatarUrl; else sessionFallbackAvatar"
+          class="session-avatar"
+          [src]="userProfile?.avatarUrl ?? ''"
+          [alt]="userProfile?.displayName ?? 'User avatar'">
+        <ng-template #sessionFallbackAvatar>
+          <span class="session-icon" aria-hidden="true">
+            <span class="session-initials">{{ getUserInitials(userProfile?.displayName) }}</span>
+          </span>
+        </ng-template>
         <div class="session-details">
-          <strong>{{ authService.getStoredProfile()?.displayName }}</strong>
-          <span>{{ authService.getStoredProfile()?.email }}</span>
+          <strong>{{ userProfile?.displayName }}</strong>
+          <span>{{ userProfile?.email }}</span>
         </div>
       </div>
       <button type="button" (click)="logout()">{{ commonStrings.actions.logout }}</button>

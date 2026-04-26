@@ -2,6 +2,7 @@ export interface UserProfile {
   id: number;
   email: string;
   displayName: string;
+  avatarUrl: string | null;
   role: 'USER' | 'ADMIN';
   authProvider: 'LOCAL' | 'GOOGLE';
 }

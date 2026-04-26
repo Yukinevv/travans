@@ -75,6 +75,7 @@ public class AuthService {
         user.setDisplayName(request.displayName());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setAuthProvider(AuthProvider.LOCAL);
+        user.setAvatarUrl(null);
         user.setRole(UserRole.USER);
         user.setCreatedAt(clock.instant());
         user = appUserRepository.save(user);
@@ -107,6 +108,7 @@ public class AuthService {
         GoogleTokenVerifierService.GoogleUserProfile googleProfile = googleTokenVerifierService.verify(request.idToken());
 
         AppUser user = appUserRepository.findByGoogleSubject(googleProfile.subject())
+                .map(existingUser -> refreshGoogleUserProfile(existingUser, googleProfile))
                 .orElseGet(() -> createGoogleUser(googleProfile));
 
         return issueTokens(new AuthenticatedUser(user));
@@ -194,7 +196,14 @@ public class AuthService {
     }
 
     private UserProfileResponse toProfile(AppUser user) {
-        return new UserProfileResponse(user.getId(), user.getEmail(), user.getDisplayName(), user.getRole(), resolveAuthProvider(user));
+        return new UserProfileResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getDisplayName(),
+                user.getAvatarUrl(),
+                user.getRole(),
+                resolveAuthProvider(user)
+        );
     }
 
     private AppUser createGoogleUser(GoogleTokenVerifierService.GoogleUserProfile googleProfile) {
@@ -206,12 +215,35 @@ public class AuthService {
         AppUser user = new AppUser();
         user.setEmail(googleProfile.email());
         user.setDisplayName(googleProfile.displayName());
+        user.setAvatarUrl(googleProfile.pictureUrl());
         user.setPasswordHash(passwordEncoder.encode(UUID.randomUUID().toString()));
         user.setAuthProvider(AuthProvider.GOOGLE);
         user.setGoogleSubject(googleProfile.subject());
         user.setRole(UserRole.USER);
         user.setCreatedAt(clock.instant());
         return appUserRepository.save(user);
+    }
+
+    private AppUser refreshGoogleUserProfile(AppUser user, GoogleTokenVerifierService.GoogleUserProfile googleProfile) {
+        boolean changed = false;
+
+        if (!googleProfile.email().equals(user.getEmail())) {
+            user.setEmail(googleProfile.email());
+            changed = true;
+        }
+
+        if (!googleProfile.displayName().equals(user.getDisplayName())) {
+            user.setDisplayName(googleProfile.displayName());
+            changed = true;
+        }
+
+        String pictureUrl = googleProfile.pictureUrl();
+        if (pictureUrl == null ? user.getAvatarUrl() != null : !pictureUrl.equals(user.getAvatarUrl())) {
+            user.setAvatarUrl(pictureUrl);
+            changed = true;
+        }
+
+        return changed ? appUserRepository.save(user) : user;
     }
 
     private AuthProvider resolveAuthProvider(AppUser user) {
