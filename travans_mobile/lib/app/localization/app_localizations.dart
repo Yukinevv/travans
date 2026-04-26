@@ -7,10 +7,7 @@ class AppLocalizations {
 
   final Locale locale;
 
-  static const List<Locale> supportedLocales = [
-    Locale('pl'),
-    Locale('en'),
-  ];
+  static const List<Locale> supportedLocales = [Locale('pl'), Locale('en')];
 
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = [
     _AppLocalizationsDelegate(),
@@ -31,16 +28,22 @@ class AppLocalizations {
   static const Map<String, Map<String, String>> _strings = {
     'pl': {
       'appTitle': 'Travans',
+      'authKicker': 'Witaj w Travans',
       'loginTitle': 'Zaloguj się',
-      'loginSubtitle': 'Wejdź do mobilnej wersji Travans.',
+      'loginSubtitle':
+          'Zaloguj się, aby zarządzać planem treningowym i synchronizacją Stravy.',
       'registerTitle': 'Utwórz konto',
-      'registerSubtitle': 'Załóż konto i zacznij budować plan treningowy.',
+      'registerSubtitle':
+          'Załóż konto, aby budować plan treningowy i rozwijać mobilną wersję Travans.',
       'email': 'Email',
       'password': 'Hasło',
       'displayName': 'Nazwa użytkownika',
       'rememberMe': 'Zapamiętaj mnie',
       'signIn': 'Zaloguj',
       'signUp': 'Załóż konto',
+      'orSeparator': 'LUB',
+      'googleSignIn': 'Zaloguj się przez Google',
+      'googleSignUp': 'Zarejestruj się przez Google',
       'goToRegister': 'Nie masz konta? Utwórz je',
       'goToLogin': 'Masz już konto? Zaloguj się',
       'dashboard': 'Dashboard',
@@ -67,17 +70,22 @@ class AppLocalizations {
     },
     'en': {
       'appTitle': 'Travans',
+      'authKicker': 'Welcome to Travans',
       'loginTitle': 'Sign in',
-      'loginSubtitle': 'Access the mobile version of Travans.',
+      'loginSubtitle':
+          'Sign in to manage your training plan and Strava synchronization.',
       'registerTitle': 'Create account',
       'registerSubtitle':
-          'Create an account and start building your training plan.',
+          'Create an account to build your training plan and continue the mobile Travans experience.',
       'email': 'Email',
       'password': 'Password',
       'displayName': 'Display name',
       'rememberMe': 'Remember me',
       'signIn': 'Sign in',
       'signUp': 'Create account',
+      'orSeparator': 'OR',
+      'googleSignIn': 'Sign in with Google',
+      'googleSignUp': 'Sign up with Google',
       'goToRegister': 'No account yet? Create one',
       'goToLogin': 'Already have an account? Sign in',
       'dashboard': 'Dashboard',
@@ -109,6 +117,7 @@ class AppLocalizations {
   }
 
   String get appTitle => _string('appTitle');
+  String get authKicker => _string('authKicker');
   String get loginTitle => _string('loginTitle');
   String get loginSubtitle => _string('loginSubtitle');
   String get registerTitle => _string('registerTitle');
@@ -119,6 +128,9 @@ class AppLocalizations {
   String get rememberMe => _string('rememberMe');
   String get signIn => _string('signIn');
   String get signUp => _string('signUp');
+  String get orSeparator => _string('orSeparator');
+  String get googleSignIn => _string('googleSignIn');
+  String get googleSignUp => _string('googleSignUp');
   String get goToRegister => _string('goToRegister');
   String get goToLogin => _string('goToLogin');
   String get dashboard => _string('dashboard');

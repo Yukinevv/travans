@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const sand = Color(0xFFF3EBDD);
-  static const clay = Color(0xFFD5B98C);
-  static const pine = Color(0xFF1F4B3F);
-  static const forest = Color(0xFF2F6B57);
-  static const ink = Color(0xFF16211D);
-  static const mist = Color(0xFFF7F8F6);
-  static const border = Color(0xFFE2E4DE);
-  static const danger = Color(0xFFB44C3F);
+  static const background = Color(0xFFF4F1EA);
+  static const surface = Color(0xFFD1FFFFFF);
+  static const surfaceStrong = Color(0xFFFFFDF9);
+  static const border = Color(0x1F59422C);
+  static const text = Color(0xFF1F1C17);
+  static const muted = Color(0xFF6B6258);
+  static const accent = Color(0xFFCC5C2A);
+  static const accentDark = Color(0xFF8C3411);
+  static const success = Color(0xFF2E7D32);
+  static const warn = Color(0xFFA65E00);
+  static const danger = Color(0xFFAF2F2F);
+  static const white = Color(0xFFFFFFFF);
 }

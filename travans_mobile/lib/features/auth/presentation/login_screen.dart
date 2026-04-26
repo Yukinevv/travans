@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/localization/app_localizations.dart';
+import '../../../app/theme/app_colors.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../application/auth_controller.dart';
 import '../application/auth_state.dart';
+import 'widgets/auth_screen_frame.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -34,101 +36,86 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final isSubmitting = authState.status == AuthStatus.loading;
 
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 440),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          l10n.loginTitle,
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          l10n.loginSubtitle,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 24),
-                        TextFormField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(labelText: l10n.email),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return l10n.requiredField;
-                            }
-                            final emailRegex = RegExp(
-                              r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-                            );
-                            if (!emailRegex.hasMatch(value.trim())) {
-                              return l10n.invalidEmail;
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(labelText: l10n.password),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return l10n.requiredField;
-                            }
-                            if (value.length < 8) {
-                              return l10n.passwordTooShort;
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        CheckboxListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(l10n.rememberMe),
-                          value: _rememberMe,
-                          onChanged: (value) {
-                            setState(() {
-                              _rememberMe = value ?? true;
-                            });
-                          },
-                        ),
-                        if (authState.errorMessage != null) ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            authState.errorMessage!,
-                            style: const TextStyle(color: Colors.redAccent),
-                          ),
-                        ],
-                        const SizedBox(height: 20),
-                        PrimaryButton(
-                          label: l10n.signIn,
-                          isLoading: isSubmitting,
-                          onPressed: _submit,
-                        ),
-                        const SizedBox(height: 12),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () => context.go('/register'),
-                            child: Text(l10n.goToRegister),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+      body: AuthScreenFrame(
+        title: l10n.loginTitle,
+        subtitle: l10n.loginSubtitle,
+        isLogin: true,
+        googleLabel: l10n.googleSignIn,
+        footer: TextButton(
+          onPressed: () => context.go('/register'),
+          child: Text(l10n.goToRegister),
+        ),
+        form: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AuthFieldLabel(label: l10n.email),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(hintText: 'janek@gmail.com'),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return l10n.requiredField;
+                  }
+                  final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+                  if (!emailRegex.hasMatch(value.trim())) {
+                    return l10n.invalidEmail;
+                  }
+                  return null;
+                },
               ),
-            ),
+              const SizedBox(height: 18),
+              AuthFieldLabel(label: l10n.password),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(hintText: '********'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return l10n.requiredField;
+                  }
+                  if (value.length < 8) {
+                    return l10n.passwordTooShort;
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Checkbox(
+                    value: _rememberMe,
+                    onChanged: (value) {
+                      setState(() {
+                        _rememberMe = value ?? true;
+                      });
+                    },
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    l10n.rememberMe,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+              if (authState.errorMessage != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  authState.errorMessage!,
+                  style: const TextStyle(color: AppColors.danger, fontSize: 15),
+                ),
+              ],
+              const SizedBox(height: 18),
+              PrimaryButton(
+                label: l10n.signIn,
+                isLoading: isSubmitting,
+                onPressed: _submit,
+              ),
+            ],
           ),
         ),
       ),

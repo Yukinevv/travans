@@ -5,45 +5,72 @@ import 'app_colors.dart';
 class AppTheme {
   static ThemeData light() {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.pine,
+      seedColor: AppColors.accent,
       brightness: Brightness.light,
-      primary: AppColors.pine,
-      secondary: AppColors.clay,
-      surface: Colors.white,
+      primary: AppColors.accent,
+      secondary: AppColors.accentDark,
+      surface: AppColors.white,
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: AppColors.mist,
+      scaffoldBackgroundColor: AppColors.background,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
-        foregroundColor: AppColors.ink,
+        foregroundColor: AppColors.text,
         elevation: 0,
         centerTitle: false,
       ),
+      textTheme: const TextTheme(
+        headlineMedium: TextStyle(
+          fontSize: 30,
+          fontWeight: FontWeight.w700,
+          color: AppColors.text,
+        ),
+        titleLarge: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: AppColors.text,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: 16,
+          height: 1.45,
+          color: AppColors.muted,
+        ),
+        bodyMedium: TextStyle(fontSize: 15, color: AppColors.text),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: AppColors.surfaceStrong,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
+          horizontal: 18,
+          vertical: 16,
         ),
+        hintStyle: const TextStyle(color: AppColors.muted, fontSize: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.pine, width: 1.4),
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: AppColors.accent, width: 1.4),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: AppColors.danger),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: AppColors.danger, width: 1.4),
         ),
       ),
       cardTheme: CardThemeData(
-        color: Colors.white,
+        color: AppColors.surface,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
@@ -53,16 +80,30 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.pine,
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.accent,
+          foregroundColor: AppColors.white,
           minimumSize: const Size.fromHeight(54),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(999),
           ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: AppColors.pine),
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.accentDark,
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.accent;
+          }
+          return AppColors.surfaceStrong;
+        }),
+        side: const BorderSide(color: AppColors.border),
       ),
     );
   }
