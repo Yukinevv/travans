@@ -7,10 +7,13 @@ public class StravaProperties {
 
     private String baseUrl;
     private String oauthUrl;
+    private String mobileOauthUrl;
     private String tokenUrl;
     private String clientId;
     private String clientSecret;
-    private String redirectUri;
+    private String backendCallbackUri;
+    private String webRedirectUri;
+    private String mobileRedirectUri;
     private String webhookVerifyToken;
 
     public String getBaseUrl() {
@@ -27,6 +30,14 @@ public class StravaProperties {
 
     public void setOauthUrl(String oauthUrl) {
         this.oauthUrl = oauthUrl;
+    }
+
+    public String getMobileOauthUrl() {
+        return mobileOauthUrl;
+    }
+
+    public void setMobileOauthUrl(String mobileOauthUrl) {
+        this.mobileOauthUrl = mobileOauthUrl;
     }
 
     public String getTokenUrl() {
@@ -53,12 +64,28 @@ public class StravaProperties {
         this.clientSecret = clientSecret;
     }
 
-    public String getRedirectUri() {
-        return redirectUri;
+    public String getBackendCallbackUri() {
+        return backendCallbackUri;
     }
 
-    public void setRedirectUri(String redirectUri) {
-        this.redirectUri = redirectUri;
+    public void setBackendCallbackUri(String backendCallbackUri) {
+        this.backendCallbackUri = backendCallbackUri;
+    }
+
+    public String getWebRedirectUri() {
+        return webRedirectUri;
+    }
+
+    public void setWebRedirectUri(String webRedirectUri) {
+        this.webRedirectUri = webRedirectUri;
+    }
+
+    public String getMobileRedirectUri() {
+        return mobileRedirectUri;
+    }
+
+    public void setMobileRedirectUri(String mobileRedirectUri) {
+        this.mobileRedirectUri = mobileRedirectUri;
     }
 
     public String getWebhookVerifyToken() {

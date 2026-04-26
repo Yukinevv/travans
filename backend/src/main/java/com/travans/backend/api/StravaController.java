@@ -8,6 +8,7 @@ import com.travans.backend.service.StravaService;
 import java.util.Map;
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -29,8 +30,18 @@ public class StravaController {
     }
 
     @GetMapping("/status")
-    public StravaConnectionStatusResponse getStatus() {
-        return stravaService.getConnectionStatus();
+    public StravaConnectionStatusResponse getStatus(@RequestParam(defaultValue = "web") String platform) {
+        return stravaService.getConnectionStatus(platform);
+    }
+
+    @GetMapping("/callback")
+    public ResponseEntity<Void> callback(
+            @RequestParam(required = false) String code,
+            @RequestParam(required = false) String error,
+            @RequestParam(defaultValue = "web") String state) {
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", stravaService.buildPostAuthorizationRedirect(state, code, error))
+                .build();
     }
 
     @GetMapping("/activities")

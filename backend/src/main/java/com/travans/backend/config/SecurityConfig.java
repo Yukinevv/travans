@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/google").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/integrations/strava/callback").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/integrations/strava/webhook").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/integrations/strava/webhook").permitAll()
                         .anyRequest().authenticated()

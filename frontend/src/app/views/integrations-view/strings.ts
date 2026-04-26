@@ -31,6 +31,7 @@ const localizedStrings = {
       title: 'Po\u0142\u0105czenie ze Strava'
     },
     errors: {
+      connect: 'Autoryzacja Strava zostala anulowana lub odrzucona',
       loadActivities: 'Nie uda\u0142o si\u0119 pobra\u0107 aktywno\u015bci ze Stravy',
       loadStatus: 'Nie uda\u0142o si\u0119 pobra\u0107 statusu integracji',
       sync: 'Nie uda\u0142o si\u0119 zsynchronizowa\u0107 danych ze Strava'
@@ -82,6 +83,7 @@ const localizedStrings = {
       title: 'Strava connection'
     },
     errors: {
+      connect: 'Strava authorization was cancelled or rejected',
       loadActivities: 'Could not load activities from Strava',
       loadStatus: 'Could not load integration status',
       sync: 'Could not sync data from Strava'

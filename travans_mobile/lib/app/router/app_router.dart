@@ -7,6 +7,7 @@ import '../../features/auth/application/auth_controller.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
+import '../../features/integrations/presentation/activity_detail_screen.dart';
 import '../../features/integrations/presentation/integrations_screen.dart';
 import '../../features/plans/presentation/plans_screen.dart';
 import '../../shared/widgets/app_scaffold.dart';
@@ -50,6 +51,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/integrations',
             builder: (context, state) => const IntegrationsScreen(),
+          ),
+          GoRoute(
+            path: '/integrations/activities/:activityId',
+            builder: (context, state) {
+              final activityId = int.tryParse(
+                state.pathParameters['activityId'] ?? '',
+              );
+
+              if (activityId == null) {
+                return const Scaffold(
+                  body: SafeArea(
+                    child: Center(child: Text('Invalid activity id')),
+                  ),
+                );
+              }
+
+              return ActivityDetailScreen(activityId: activityId);
+            },
           ),
           GoRoute(
             path: '/account',

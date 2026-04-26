@@ -31,4 +31,5 @@ travans:
   strava:
     base-url: https://www.strava.com/api/v3
     oauth-url: https://www.strava.com/oauth/authorize
+    mobile-oauth-url: https://www.strava.com/oauth/mobile/authorize
     token-url: https://www.strava.com/oauth/token

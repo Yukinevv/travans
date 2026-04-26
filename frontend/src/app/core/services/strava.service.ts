@@ -16,7 +16,7 @@ export class StravaService {
   constructor(private readonly http: HttpClient) {}
 
   getStatus(): Observable<StravaConnectionStatus> {
-    return this.http.get<StravaConnectionStatus>(`${API_BASE_URL}/integrations/strava/status`);
+    return this.http.get<StravaConnectionStatus>(`${API_BASE_URL}/integrations/strava/status?platform=web`);
   }
 
   getActivities(activityType?: ActivityType | '', forceRefresh = false): Observable<StravaActivity[]> {

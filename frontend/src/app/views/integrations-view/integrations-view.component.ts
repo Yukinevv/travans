@@ -53,6 +53,14 @@ export class IntegrationsViewComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       const code = params.get('code');
+      const error = params.get('error');
+
+      if (error) {
+        this.errorMessage = this.moduleStrings.errors.connect;
+        this.loading = false;
+        this.changeDetectorRef.detectChanges();
+        return;
+      }
 
       if (code) {
         this.stravaService.exchangeToken(code).subscribe(() => {

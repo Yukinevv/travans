@@ -49,6 +49,46 @@ class AppLocalizations {
       'dashboard': 'Dashboard',
       'plans': 'Plany',
       'integrations': 'Integracje',
+      'integrationsTitle': 'Połączenie ze Stravą',
+      'integrationsSubtitle':
+          'Połącz konto, synchronizuj aktywności i sprawdzaj dopasowane treningi.',
+      'integrationsConnectionTitle': 'Połączenie konta',
+      'integrationsConnected': 'Połączono',
+      'integrationsDisconnected': 'Nie połączono',
+      'integrationsConnectAction': 'Połącz ze Stravą',
+      'integrationsSyncAction': 'Synchronizuj',
+      'integrationsSyncing': 'Synchronizacja...',
+      'integrationsLastSync': 'Ostatnia synchronizacja',
+      'integrationsAthleteId': 'ID atleta',
+      'integrationsActivitiesTitle': 'Treningi pobrane ze Stravy',
+      'integrationsFilterAll': 'Wszystkie',
+      'integrationsActivitiesEmpty':
+          'Brak pobranych aktywności dla tego filtra.',
+      'integrationsMatched': 'DOPASOWANO',
+      'integrationsUnmatched': 'BEZ DOPASOWANIA',
+      'integrationsUnmatchedDescription':
+          'Ta aktywność nie została jeszcze powiązana z żadnym dniem planu.',
+      'integrationsResultTitle': 'Wynik synchronizacji',
+      'integrationsImportedActivities': 'Zaimportowane aktywności',
+      'integrationsMatchedDays': 'Dopasowane dni treningowe',
+      'integrationsRedirectHint':
+          'Aby domknąć połączenie w aplikacji mobilnej, backend Stravy musi używać redirect-uri wskazującego na deep link aplikacji.',
+      'integrationsDistance': 'Dystans',
+      'integrationsDuration': 'Czas',
+      'integrationsAverageSpeed': 'Średnia prędkość',
+      'integrationsAveragePace': 'Średnie tempo',
+      'integrationsElevation': 'Przewyższenie',
+      'integrationsHeartRate': 'Tętno',
+      'integrationsMatchSection': 'Dopasowanie do planu',
+      'integrationsActivityLoadError':
+          'Nie udało się pobrać szczegółów aktywności.',
+      'activityRun': 'Bieg',
+      'activityRide': 'Rower',
+      'activitySwim': 'Pływanie',
+      'activityWalk': 'Marsz',
+      'activityWorkout': 'Trening',
+      'activityStrength': 'Siłownia',
+      'activityOther': 'Inna aktywność',
       'account': 'Konto',
       'logout': 'Wyloguj',
       'language': 'Język',
@@ -91,6 +131,44 @@ class AppLocalizations {
       'dashboard': 'Dashboard',
       'plans': 'Plans',
       'integrations': 'Integrations',
+      'integrationsTitle': 'Strava connection',
+      'integrationsSubtitle':
+          'Connect your account, sync activities, and inspect matched workouts.',
+      'integrationsConnectionTitle': 'Account connection',
+      'integrationsConnected': 'Connected',
+      'integrationsDisconnected': 'Disconnected',
+      'integrationsConnectAction': 'Connect Strava',
+      'integrationsSyncAction': 'Sync',
+      'integrationsSyncing': 'Syncing...',
+      'integrationsLastSync': 'Last sync',
+      'integrationsAthleteId': 'Athlete ID',
+      'integrationsActivitiesTitle': 'Activities imported from Strava',
+      'integrationsFilterAll': 'All',
+      'integrationsActivitiesEmpty': 'No imported activities for this filter.',
+      'integrationsMatched': 'MATCHED',
+      'integrationsUnmatched': 'UNMATCHED',
+      'integrationsUnmatchedDescription':
+          'This activity has not been linked to any training day yet.',
+      'integrationsResultTitle': 'Sync result',
+      'integrationsImportedActivities': 'Imported activities',
+      'integrationsMatchedDays': 'Matched training days',
+      'integrationsRedirectHint':
+          'To complete mobile linking, the backend Strava redirect-uri must point to the app deep link.',
+      'integrationsDistance': 'Distance',
+      'integrationsDuration': 'Duration',
+      'integrationsAverageSpeed': 'Average speed',
+      'integrationsAveragePace': 'Average pace',
+      'integrationsElevation': 'Elevation',
+      'integrationsHeartRate': 'Heart rate',
+      'integrationsMatchSection': 'Plan match',
+      'integrationsActivityLoadError': 'Failed to load activity details.',
+      'activityRun': 'Run',
+      'activityRide': 'Ride',
+      'activitySwim': 'Swim',
+      'activityWalk': 'Walk',
+      'activityWorkout': 'Workout',
+      'activityStrength': 'Strength',
+      'activityOther': 'Other activity',
       'account': 'Account',
       'logout': 'Log out',
       'language': 'Language',
@@ -136,6 +214,47 @@ class AppLocalizations {
   String get dashboard => _string('dashboard');
   String get plans => _string('plans');
   String get integrations => _string('integrations');
+  String get integrationsTitle => _string('integrationsTitle');
+  String get integrationsSubtitle => _string('integrationsSubtitle');
+  String get integrationsConnectionTitle =>
+      _string('integrationsConnectionTitle');
+  String get integrationsConnected => _string('integrationsConnected');
+  String get integrationsDisconnected => _string('integrationsDisconnected');
+  String get integrationsConnectAction => _string('integrationsConnectAction');
+  String get integrationsSyncAction => _string('integrationsSyncAction');
+  String get integrationsSyncing => _string('integrationsSyncing');
+  String get integrationsLastSync => _string('integrationsLastSync');
+  String get integrationsAthleteId => _string('integrationsAthleteId');
+  String get integrationsActivitiesTitle =>
+      _string('integrationsActivitiesTitle');
+  String get integrationsFilterAll => _string('integrationsFilterAll');
+  String get integrationsActivitiesEmpty =>
+      _string('integrationsActivitiesEmpty');
+  String get integrationsMatched => _string('integrationsMatched');
+  String get integrationsUnmatched => _string('integrationsUnmatched');
+  String get integrationsUnmatchedDescription =>
+      _string('integrationsUnmatchedDescription');
+  String get integrationsResultTitle => _string('integrationsResultTitle');
+  String get integrationsImportedActivities =>
+      _string('integrationsImportedActivities');
+  String get integrationsMatchedDays => _string('integrationsMatchedDays');
+  String get integrationsRedirectHint => _string('integrationsRedirectHint');
+  String get integrationsDistance => _string('integrationsDistance');
+  String get integrationsDuration => _string('integrationsDuration');
+  String get integrationsAverageSpeed => _string('integrationsAverageSpeed');
+  String get integrationsAveragePace => _string('integrationsAveragePace');
+  String get integrationsElevation => _string('integrationsElevation');
+  String get integrationsHeartRate => _string('integrationsHeartRate');
+  String get integrationsMatchSection => _string('integrationsMatchSection');
+  String get integrationsActivityLoadError =>
+      _string('integrationsActivityLoadError');
+  String get activityRun => _string('activityRun');
+  String get activityRide => _string('activityRide');
+  String get activitySwim => _string('activitySwim');
+  String get activityWalk => _string('activityWalk');
+  String get activityWorkout => _string('activityWorkout');
+  String get activityStrength => _string('activityStrength');
+  String get activityOther => _string('activityOther');
   String get account => _string('account');
   String get logout => _string('logout');
   String get language => _string('language');

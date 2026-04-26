@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -73,15 +74,35 @@ public class StravaService {
     }
 
     @Transactional(readOnly = true)
-    public StravaConnectionStatusResponse getConnectionStatus() {
+    public StravaConnectionStatusResponse getConnectionStatus(String platform) {
         AppUser user = currentUserService.requireCurrentUserEntity();
         Optional<StravaConnection> connection = stravaConnectionRepository.findByUser(user);
         return new StravaConnectionStatusResponse(
                 connection.isPresent(),
                 connection.map(StravaConnection::getAthleteId).orElse(null),
                 connection.map(StravaConnection::getLastSyncAt).orElse(null),
-                buildAuthorizationUrl()
+                buildAuthorizationUrl(platform)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public String buildPostAuthorizationRedirect(String platform, String code, String error) {
+        String target = isMobilePlatform(platform)
+                ? properties.getMobileRedirectUri()
+                : properties.getWebRedirectUri();
+
+        if (target == null || target.isBlank()) {
+            throw new IllegalStateException("Target redirect URI for Strava is not configured");
+        }
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(target);
+        if (code != null && !code.isBlank()) {
+            builder.queryParam("code", code);
+        }
+        if (error != null && !error.isBlank()) {
+            builder.queryParam("error", error);
+        }
+        return builder.build(true).toUriString();
     }
 
     @Transactional
@@ -403,13 +424,26 @@ public class StravaService {
         return (int) Math.round(Double.parseDouble(String.valueOf(value)));
     }
 
-    private String buildAuthorizationUrl() {
-        return properties.getOauthUrl()
+    private String buildAuthorizationUrl(String platform) {
+        String authorizeUrl = isMobilePlatform(platform)
+                ? properties.getMobileOauthUrl()
+                : properties.getOauthUrl();
+
+        return authorizeUrl
                 + "?client_id=" + urlEncode(properties.getClientId())
                 + "&response_type=code"
-                + "&redirect_uri=" + urlEncode(properties.getRedirectUri())
+                + "&redirect_uri=" + urlEncode(properties.getBackendCallbackUri())
                 + "&approval_prompt=auto"
-                + "&scope=read,activity:read_all";
+                + "&scope=read,activity:read_all"
+                + "&state=" + urlEncode(normalizePlatform(platform));
+    }
+
+    private boolean isMobilePlatform(String platform) {
+        return "mobile".equalsIgnoreCase(platform);
+    }
+
+    private String normalizePlatform(String platform) {
+        return isMobilePlatform(platform) ? "mobile" : "web";
     }
 
     private String urlEncode(String value) {
