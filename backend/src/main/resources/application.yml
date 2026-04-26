@@ -25,6 +25,9 @@ travans:
     jwt-secret: ${TRAVANS_JWT_SECRET:travans-super-secret-key-change-me-1234567890}
     access-token-ttl-minutes: ${TRAVANS_ACCESS_TOKEN_TTL_MINUTES:30}
     refresh-token-ttl-days: ${TRAVANS_REFRESH_TOKEN_TTL_DAYS:30}
+  avatar:
+    storage-path: ${TRAVANS_AVATAR_STORAGE_PATH:./uploads/avatars}
+    max-file-size-bytes: ${TRAVANS_AVATAR_MAX_FILE_SIZE_BYTES:5242880}
   strava:
     base-url: https://www.strava.com/api/v3
     oauth-url: https://www.strava.com/oauth/authorize

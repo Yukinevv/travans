@@ -14,19 +14,28 @@
   <div class="account-grid" *ngIf="!loading">
     <article class="panel">
       <div class="profile-hero" *ngIf="profile">
-        <img
-          *ngIf="profile.avatarUrl; else profileFallbackAvatar"
-          class="profile-avatar"
-          [src]="profile.avatarUrl"
-          [alt]="profile.displayName">
-        <ng-template #profileFallbackAvatar>
-          <span class="profile-avatar fallback">{{ getProfileInitials() }}</span>
-        </ng-template>
+        <label class="profile-avatar-trigger" [class.disabled]="avatarSubmitting">
+          <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" (change)="submitAvatar($event)" [disabled]="avatarSubmitting">
+          <img
+            *ngIf="profile.avatarUrl; else profileFallbackAvatar"
+            class="profile-avatar"
+            [src]="profile.avatarUrl"
+            [alt]="profile.displayName">
+          <ng-template #profileFallbackAvatar>
+            <span class="profile-avatar fallback">{{ getProfileInitials() }}</span>
+          </ng-template>
+          <span class="profile-avatar-overlay">
+            <span class="profile-avatar-pencil" aria-hidden="true"></span>
+          </span>
+        </label>
         <div class="profile-hero-copy">
           <strong>{{ profile.displayName }}</strong>
           <span>{{ profile.email }}</span>
         </div>
       </div>
+
+      <div class="message error-box" *ngIf="avatarErrorMessage">{{ avatarErrorMessage }}</div>
+      <div class="message success-box" *ngIf="avatarSubmitting">{{ moduleStrings.status.avatarUploading }}</div>
 
       <p class="panel-label">{{ moduleStrings.profile.title }}</p>
       <p class="muted">{{ moduleStrings.profile.description }}</p>

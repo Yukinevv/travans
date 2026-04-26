@@ -38,6 +38,10 @@ public class AppUser {
     private String avatarUrl;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 32)
+    private AvatarSource avatarSource;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
     private UserRole role;
 
@@ -78,6 +82,14 @@ public class AppUser {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public AvatarSource getAvatarSource() {
+        return avatarSource;
+    }
+
+    public void setAvatarSource(AvatarSource avatarSource) {
+        this.avatarSource = avatarSource;
     }
 
     public UserRole getRole() {

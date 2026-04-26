@@ -15,7 +15,9 @@ import { ModuleStrings, strings } from './strings';
 })
 export class AccountViewComponent implements OnInit {
   loading = true;
+  avatarSubmitting = false;
   profileSubmitting = false;
+  avatarErrorMessage = '';
   passwordSubmitting = false;
   profileErrorMessage = '';
   profileSuccessMessage = '';
@@ -78,6 +80,53 @@ export class AccountViewComponent implements OnInit {
       .join('');
 
     return initials || '?';
+  }
+
+  submitAvatar(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const file = input?.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    this.avatarErrorMessage = '';
+    this.profileErrorMessage = '';
+    this.profileSuccessMessage = '';
+
+    if (!this.isSupportedAvatarFile(file)) {
+      this.avatarErrorMessage = `${this.moduleStrings.profile.avatarHint} ${this.moduleStrings.profile.avatarError}`;
+      if (input) {
+        input.value = '';
+      }
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
+    this.avatarSubmitting = true;
+
+    this.authService.uploadAvatar(file).subscribe({
+      next: (response) => {
+        this.profile = response.user;
+        this.avatarSubmitting = false;
+        this.avatarErrorMessage = '';
+        this.profileSuccessMessage = this.moduleStrings.profile.success;
+        if (input) {
+          input.value = '';
+        }
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (error: unknown) => {
+        this.avatarSubmitting = false;
+        this.avatarErrorMessage = this.resolveErrorMessage(
+          error,
+          `${this.moduleStrings.profile.avatarHint} ${this.moduleStrings.profile.avatarError}`
+        );
+        if (input) {
+          input.value = '';
+        }
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
   submitProfile(): void {
@@ -199,5 +248,11 @@ export class AccountViewComponent implements OnInit {
     }
 
     return fallback;
+  }
+
+  private isSupportedAvatarFile(file: File): boolean {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    const maxSizeBytes = 5 * 1024 * 1024;
+    return allowedTypes.includes(file.type) && file.size <= maxSizeBytes;
   }
 }

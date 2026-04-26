@@ -11,6 +11,7 @@ import com.travans.backend.api.dto.UserProfileResponse;
 import com.travans.backend.config.AuthProperties;
 import com.travans.backend.domain.AuthProvider;
 import com.travans.backend.domain.AppUser;
+import com.travans.backend.domain.AvatarSource;
 import com.travans.backend.domain.RefreshToken;
 import com.travans.backend.domain.UserRole;
 import com.travans.backend.exception.AuthException;
@@ -28,6 +29,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class AuthService {
@@ -41,6 +44,7 @@ public class AuthService {
     private final AuthProperties authProperties;
     private final Clock clock;
     private final GoogleTokenVerifierService googleTokenVerifierService;
+    private final AvatarStorageService avatarStorageService;
 
     public AuthService(
             AppUserRepository appUserRepository,
@@ -51,7 +55,8 @@ public class AuthService {
             CurrentUserService currentUserService,
             AuthProperties authProperties,
             Clock clock,
-            GoogleTokenVerifierService googleTokenVerifierService) {
+            GoogleTokenVerifierService googleTokenVerifierService,
+            AvatarStorageService avatarStorageService) {
         this.appUserRepository = appUserRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
@@ -61,6 +66,7 @@ public class AuthService {
         this.authProperties = authProperties;
         this.clock = clock;
         this.googleTokenVerifierService = googleTokenVerifierService;
+        this.avatarStorageService = avatarStorageService;
     }
 
     @Transactional
@@ -76,6 +82,7 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setAuthProvider(AuthProvider.LOCAL);
         user.setAvatarUrl(null);
+        user.setAvatarSource(null);
         user.setRole(UserRole.USER);
         user.setCreatedAt(clock.instant());
         user = appUserRepository.save(user);
@@ -173,6 +180,24 @@ public class AuthService {
         return issueTokens(new AuthenticatedUser(updatedUser));
     }
 
+    @Transactional
+    public AuthTokenResponse uploadAvatar(MultipartFile avatarFile) {
+        AppUser user = currentUserService.requireCurrentUserEntity();
+        String previousAvatarUrl = user.getAvatarUrl();
+        AvatarSource previousAvatarSource = user.getAvatarSource();
+
+        String storedAvatarUrl = avatarStorageService.store(avatarFile);
+        user.setAvatarUrl(storedAvatarUrl);
+        user.setAvatarSource(AvatarSource.UPLOAD);
+        AppUser updatedUser = appUserRepository.save(user);
+
+        if (previousAvatarSource == AvatarSource.UPLOAD) {
+            avatarStorageService.deleteIfUploaded(previousAvatarUrl);
+        }
+
+        return issueTokens(new AuthenticatedUser(updatedUser));
+    }
+
     private AuthTokenResponse issueTokens(AuthenticatedUser user) {
         revokeTokens(user.getUser());
 
@@ -200,7 +225,7 @@ public class AuthService {
                 user.getId(),
                 user.getEmail(),
                 user.getDisplayName(),
-                user.getAvatarUrl(),
+                resolveAvatarUrl(user),
                 user.getRole(),
                 resolveAuthProvider(user)
         );
@@ -216,6 +241,7 @@ public class AuthService {
         user.setEmail(googleProfile.email());
         user.setDisplayName(googleProfile.displayName());
         user.setAvatarUrl(googleProfile.pictureUrl());
+        user.setAvatarSource(googleProfile.pictureUrl() == null || googleProfile.pictureUrl().isBlank() ? null : AvatarSource.GOOGLE);
         user.setPasswordHash(passwordEncoder.encode(UUID.randomUUID().toString()));
         user.setAuthProvider(AuthProvider.GOOGLE);
         user.setGoogleSubject(googleProfile.subject());
@@ -237,10 +263,13 @@ public class AuthService {
             changed = true;
         }
 
-        String pictureUrl = googleProfile.pictureUrl();
-        if (pictureUrl == null ? user.getAvatarUrl() != null : !pictureUrl.equals(user.getAvatarUrl())) {
-            user.setAvatarUrl(pictureUrl);
-            changed = true;
+        if (user.getAvatarSource() != AvatarSource.UPLOAD) {
+            String pictureUrl = googleProfile.pictureUrl();
+            if (pictureUrl == null ? user.getAvatarUrl() != null : !pictureUrl.equals(user.getAvatarUrl())) {
+                user.setAvatarUrl(pictureUrl);
+                user.setAvatarSource(pictureUrl == null || pictureUrl.isBlank() ? null : AvatarSource.GOOGLE);
+                changed = true;
+            }
         }
 
         return changed ? appUserRepository.save(user) : user;
@@ -248,5 +277,20 @@ public class AuthService {
 
     private AuthProvider resolveAuthProvider(AppUser user) {
         return user.getAuthProvider() != null ? user.getAuthProvider() : AuthProvider.LOCAL;
+    }
+
+    private String resolveAvatarUrl(AppUser user) {
+        String avatarUrl = user.getAvatarUrl();
+        if (avatarUrl == null || avatarUrl.isBlank()) {
+            return null;
+        }
+
+        if (avatarUrl.startsWith("/")) {
+            return ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path(avatarUrl)
+                    .toUriString();
+        }
+
+        return avatarUrl;
     }
 }

@@ -49,6 +49,15 @@ export class AuthService {
     );
   }
 
+  uploadAvatar(file: File): Observable<AuthResponse> {
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/avatar`, formData).pipe(
+      tap((response) => this.persistSession(response, response.user.email, this.shouldRememberMe()))
+    );
+  }
+
   refresh(): Observable<AuthResponse> {
     const refreshToken = this.getRefreshToken();
     return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/refresh`, { refreshToken }).pipe(

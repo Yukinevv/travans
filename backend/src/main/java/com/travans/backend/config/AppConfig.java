@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-@EnableConfigurationProperties({CorsProperties.class, StravaProperties.class, AuthProperties.class})
+@EnableConfigurationProperties({CorsProperties.class, StravaProperties.class, AuthProperties.class, AvatarProperties.class})
 public class AppConfig {
 
     @Bean

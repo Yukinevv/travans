@@ -8,6 +8,7 @@ frontend/.angular/
 # Java
 backend/target/
 backend/.mvn/
+backend/uploads/
 
 # IDE
 .idea/
