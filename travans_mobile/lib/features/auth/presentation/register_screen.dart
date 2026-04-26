@@ -43,6 +43,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         subtitle: l10n.registerSubtitle,
         isLogin: false,
         googleLabel: l10n.googleSignUp,
+        googleLoading: isSubmitting,
+        onGooglePressed: _handleGoogleSignIn,
         footer: TextButton(
           onPressed: () => context.go('/login'),
           child: Text(l10n.goToLogin),
@@ -150,5 +152,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           password: _passwordController.text,
           rememberMe: _rememberMe,
         );
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    await ref
+        .read(authControllerProvider.notifier)
+        .loginWithGoogle(rememberMe: _rememberMe);
   }
 }

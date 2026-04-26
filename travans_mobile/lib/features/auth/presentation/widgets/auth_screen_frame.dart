@@ -10,8 +10,10 @@ class AuthScreenFrame extends StatelessWidget {
     required this.subtitle,
     required this.isLogin,
     required this.googleLabel,
+    required this.onGooglePressed,
     required this.form,
     required this.footer,
+    this.googleLoading = false,
     super.key,
   });
 
@@ -19,8 +21,10 @@ class AuthScreenFrame extends StatelessWidget {
   final String subtitle;
   final bool isLogin;
   final String googleLabel;
+  final Future<void> Function() onGooglePressed;
   final Widget form;
   final Widget footer;
+  final bool googleLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +84,11 @@ class AuthScreenFrame extends StatelessWidget {
                       const SizedBox(height: 26),
                       _AuthModeSwitcher(isLogin: isLogin),
                       const SizedBox(height: 24),
-                      _GoogleButton(label: googleLabel),
+                      _GoogleButton(
+                        label: googleLabel,
+                        isLoading: googleLoading,
+                        onPressed: onGooglePressed,
+                      ),
                       const SizedBox(height: 18),
                       Center(
                         child: Text(
@@ -179,48 +187,65 @@ class _ModeButton extends StatelessWidget {
 }
 
 class _GoogleButton extends StatelessWidget {
-  const _GoogleButton({required this.label});
+  const _GoogleButton({
+    required this.label,
+    required this.onPressed,
+    required this.isLoading,
+  });
 
   final String label;
+  final Future<void> Function() onPressed;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: null,
+      onPressed: isLoading ? null : () => onPressed(),
       style: OutlinedButton.styleFrom(
         minimumSize: const Size.fromHeight(48),
+        foregroundColor: AppColors.text,
+        backgroundColor: AppColors.surfaceStrong,
         disabledForegroundColor: AppColors.text,
         disabledBackgroundColor: AppColors.surfaceStrong,
         side: const BorderSide(color: AppColors.border),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              color: AppColors.white,
-              shape: BoxShape.circle,
-            ),
-            child: const Text(
-              'G',
-              style: TextStyle(
+      child: isLoading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
                 color: AppColors.accent,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
               ),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: AppColors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Text(
+                    'G',
+                    style: TextStyle(
+                      color: AppColors.accent,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  label,
+                  style: const TextStyle(color: AppColors.text, fontSize: 16),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            label,
-            style: const TextStyle(color: AppColors.text, fontSize: 16),
-          ),
-        ],
-      ),
     );
   }
 }

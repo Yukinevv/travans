@@ -97,6 +97,28 @@ class AuthController extends StateNotifier<AuthState> {
     }
   }
 
+  Future<bool> loginWithGoogle({required bool rememberMe}) async {
+    state = state.copyWith(status: AuthStatus.loading, clearError: true);
+
+    try {
+      final session = await _repository.loginWithGoogle(rememberMe: rememberMe);
+      state = AuthState(status: AuthStatus.authenticated, user: session.user);
+      return true;
+    } on ApiException catch (error) {
+      state = AuthState(
+        status: AuthStatus.unauthenticated,
+        errorMessage: error.message,
+      );
+      return false;
+    } catch (_) {
+      state = AuthState(
+        status: AuthStatus.unauthenticated,
+        errorMessage: 'Google sign-in failed',
+      );
+      return false;
+    }
+  }
+
   Future<void> logout() async {
     await _repository.logout();
     state = AuthState.unauthenticated;

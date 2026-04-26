@@ -27,6 +27,14 @@ class RegisterPayload {
   };
 }
 
+class GoogleLoginPayload {
+  const GoogleLoginPayload({required this.idToken});
+
+  final String idToken;
+
+  Map<String, dynamic> toJson() => {'idToken': idToken};
+}
+
 class AuthSession {
   const AuthSession({
     required this.accessToken,
