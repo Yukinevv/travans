@@ -43,6 +43,9 @@ class AuthRepository {
       );
       await _secureStorageService.saveSession(session);
       await _secureStorageService.saveRememberMe(rememberMe);
+      await _secureStorageService.saveRememberedEmail(
+        rememberMe ? payload.email : null,
+      );
       return session;
     } on DioException catch (error) {
       throw _mapError(error);
@@ -64,6 +67,9 @@ class AuthRepository {
       );
       await _secureStorageService.saveSession(session);
       await _secureStorageService.saveRememberMe(rememberMe);
+      await _secureStorageService.saveRememberedEmail(
+        rememberMe ? payload.email : null,
+      );
       return session;
     } on DioException catch (error) {
       throw _mapError(error);
@@ -81,6 +87,14 @@ class AuthRepository {
 
   Future<void> logout() async {
     await _secureStorageService.clearSession();
+  }
+
+  Future<bool> readRememberMe() {
+    return _secureStorageService.readRememberMe();
+  }
+
+  Future<String?> readRememberedEmail() {
+    return _secureStorageService.readRememberedEmail();
   }
 
   ApiException _mapError(DioException error) {

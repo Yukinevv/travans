@@ -23,6 +23,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _rememberMe = true;
 
   @override
+  void initState() {
+    super.initState();
+    _loadRememberedCredentials();
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -134,5 +140,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           password: _passwordController.text,
           rememberMe: _rememberMe,
         );
+  }
+
+  Future<void> _loadRememberedCredentials() async {
+    final controller = ref.read(authControllerProvider.notifier);
+    final rememberMe = await controller.readRememberMe();
+    final rememberedEmail = await controller.readRememberedEmail();
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _rememberMe = rememberMe;
+      if (rememberMe && rememberedEmail != null && rememberedEmail.isNotEmpty) {
+        _emailController.text = rememberedEmail;
+      }
+    });
   }
 }

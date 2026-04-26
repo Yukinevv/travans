@@ -17,6 +17,7 @@ class SecureStorageService {
   static const _refreshTokenKey = 'travans_refresh_token';
   static const _profileKey = 'travans_user_profile';
   static const _rememberMeKey = 'travans_remember_me';
+  static const _rememberedEmailKey = 'travans_remembered_email';
 
   final FlutterSecureStorage _storage;
 
@@ -60,9 +61,22 @@ class SecureStorageService {
     );
   }
 
+  Future<void> saveRememberedEmail(String? email) async {
+    if (email == null || email.isEmpty) {
+      await _storage.delete(key: _rememberedEmailKey);
+      return;
+    }
+
+    await _storage.write(key: _rememberedEmailKey, value: email);
+  }
+
   Future<bool> readRememberMe() async {
     final value = await _storage.read(key: _rememberMeKey);
     return value == 'true';
+  }
+
+  Future<String?> readRememberedEmail() {
+    return _storage.read(key: _rememberedEmailKey);
   }
 
   Future<String?> readAccessToken() {

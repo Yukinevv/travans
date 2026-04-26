@@ -101,4 +101,12 @@ class AuthController extends StateNotifier<AuthState> {
     await _repository.logout();
     state = AuthState.unauthenticated;
   }
+
+  Future<bool> readRememberMe() {
+    return _repository.readRememberMe();
+  }
+
+  Future<String?> readRememberedEmail() {
+    return _repository.readRememberedEmail();
+  }
 }
