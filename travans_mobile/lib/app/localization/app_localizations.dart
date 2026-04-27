@@ -29,84 +29,104 @@ class AppLocalizations {
     'pl': {
       'appTitle': 'Travans',
       'authKicker': 'Witaj w Travans',
-      'loginTitle': 'Zaloguj się',
+      'loginTitle': 'Logowanie',
       'loginSubtitle':
-          'Zaloguj się, aby zarządzać planem treningowym i synchronizacją Stravy.',
-      'registerTitle': 'Utwórz konto',
+          'Zaloguj sie, aby zarzadzac planem treningowym i synchronizacja Stravy.',
+      'registerTitle': 'Zaloz konto',
       'registerSubtitle':
-          'Załóż konto, aby budować plan treningowy i rozwijać mobilną wersję Travans.',
+          'Utworz konto, aby budowac plan treningowy i rozwijac mobilna wersje Travans.',
       'email': 'Email',
-      'password': 'Hasło',
-      'displayName': 'Nazwa użytkownika',
-      'rememberMe': 'Zapamiętaj mnie',
+      'password': 'Haslo',
+      'displayName': 'Nazwa uzytkownika',
+      'rememberMe': 'Zapamietaj mnie',
       'signIn': 'Zaloguj',
-      'signUp': 'Załóż konto',
+      'signUp': 'Zaloz konto',
       'orSeparator': 'LUB',
-      'googleSignIn': 'Zaloguj się przez Google',
-      'googleSignUp': 'Zarejestruj się przez Google',
-      'goToRegister': 'Nie masz konta? Utwórz je',
-      'goToLogin': 'Masz już konto? Zaloguj się',
+      'googleSignIn': 'Zaloguj sie przez Google',
+      'googleSignUp': 'Zarejestruj sie przez Google',
+      'goToRegister': 'Nie masz konta? Utworz je',
+      'goToLogin': 'Masz juz konto? Zaloguj sie',
       'dashboard': 'Dashboard',
       'plans': 'Plany',
       'integrations': 'Integracje',
-      'integrationsTitle': 'Połączenie ze Stravą',
+      'account': 'Konto',
+      'integrationsTitle': 'Polaczenie ze Strava',
       'integrationsSubtitle':
-          'Połącz konto, synchronizuj aktywności i sprawdzaj dopasowane treningi.',
-      'integrationsConnectionTitle': 'Połączenie konta',
-      'integrationsConnected': 'Połączono',
-      'integrationsDisconnected': 'Nie połączono',
-      'integrationsConnectAction': 'Połącz ze Stravą',
+          'Polacz konto, synchronizuj aktywnosci i sprawdzaj dopasowane treningi.',
+      'integrationsConnectionTitle': 'Polaczenie konta',
+      'integrationsConnected': 'Polaczono',
+      'integrationsDisconnected': 'Nie polaczono',
+      'integrationsConnectAction': 'Polacz ze Strava',
       'integrationsSyncAction': 'Synchronizuj',
       'integrationsSyncing': 'Synchronizacja...',
       'integrationsLastSync': 'Ostatnia synchronizacja',
       'integrationsAthleteId': 'ID atleta',
       'integrationsActivitiesTitle': 'Treningi pobrane ze Stravy',
       'integrationsFilterAll': 'Wszystkie',
-      'integrationsActivitiesEmpty':
-          'Brak pobranych aktywności dla tego filtra.',
+      'integrationsActivitiesEmpty': 'Brak pobranych aktywnosci dla tego filtra.',
       'integrationsMatched': 'DOPASOWANO',
       'integrationsUnmatched': 'BEZ DOPASOWANIA',
       'integrationsUnmatchedDescription':
-          'Ta aktywność nie została jeszcze powiązana z żadnym dniem planu.',
+          'Ta aktywnosc nie zostala jeszcze powiazana z zadnym dniem planu.',
       'integrationsResultTitle': 'Wynik synchronizacji',
-      'integrationsImportedActivities': 'Zaimportowane aktywności',
+      'integrationsImportedActivities': 'Zaimportowane aktywnosci',
       'integrationsMatchedDays': 'Dopasowane dni treningowe',
       'integrationsRedirectHint':
-          'Aby domknąć połączenie w aplikacji mobilnej, backend Stravy musi używać redirect-uri wskazującego na deep link aplikacji.',
+          'Polacz Strave, aby pobierac aktywnosci i synchronizowac je z planem treningowym.',
       'integrationsDistance': 'Dystans',
       'integrationsDuration': 'Czas',
-      'integrationsAverageSpeed': 'Średnia prędkość',
-      'integrationsAveragePace': 'Średnie tempo',
-      'integrationsElevation': 'Przewyższenie',
-      'integrationsHeartRate': 'Tętno',
+      'integrationsAverageSpeed': 'Srednia predkosc',
+      'integrationsAveragePace': 'Srednie tempo',
+      'integrationsElevation': 'Przewyzszenie',
+      'integrationsHeartRate': 'Tetno',
       'integrationsMatchSection': 'Dopasowanie do planu',
       'integrationsActivityLoadError':
-          'Nie udało się pobrać szczegółów aktywności.',
+          'Nie udalo sie pobrac szczegolow aktywnosci.',
       'activityRun': 'Bieg',
       'activityRide': 'Rower',
-      'activitySwim': 'Pływanie',
+      'activitySwim': 'Plywanie',
       'activityWalk': 'Marsz',
       'activityWorkout': 'Trening',
-      'activityStrength': 'Siłownia',
-      'activityOther': 'Inna aktywność',
-      'account': 'Konto',
+      'activityStrength': 'Silownia',
+      'activityOther': 'Inna aktywnosc',
       'logout': 'Wyloguj',
-      'language': 'Język',
-      'tryAgain': 'Spróbuj ponownie',
-      'loading': 'Ładowanie...',
+      'language': 'Jezyk',
+      'tryAgain': 'Sprobuj ponownie',
+      'loading': 'Ladowanie...',
       'requiredField': 'To pole jest wymagane.',
       'invalidEmail': 'Podaj poprawny adres email.',
-      'passwordTooShort': 'Hasło musi mieć co najmniej 8 znaków.',
-      'genericAuthError': 'Nie udało się wykonać operacji autoryzacji.',
+      'passwordTooShort': 'Haslo musi miec co najmniej 8 znakow.',
+      'genericAuthError': 'Nie udalo sie wykonac operacji autoryzacji.',
       'dashboardPlaceholder':
-          'Tu pojawi się dashboard z planem i statystykami.',
-      'plansPlaceholder': 'Tu pojawi się lista planów i edytor.',
-      'integrationsPlaceholder': 'Tu pojawi się integracja ze Stravą.',
-      'accountPlaceholder': 'Tu pojawi się profil użytkownika.',
-      'sessionExpired': 'Sesja wygasła. Zaloguj się ponownie.',
+          'Tu pojawi sie dashboard z planem i statystykami.',
+      'plansPlaceholder': 'Tu pojawi sie lista planow i edytor.',
+      'integrationsPlaceholder': 'Tu pojawi sie integracja ze Strava.',
+      'accountPlaceholder': 'Tu pojawi sie profil uzytkownika.',
+      'sessionExpired': 'Sesja wygasla. Zaloguj sie ponownie.',
+      'welcomeBack': 'Masz juz gotowy fundament aplikacji mobilnej.',
+      'switchLanguage': 'Przelacz jezyk',
+      'shellOpenMenu': 'Otworz menu',
+      'shellNavigation': 'Nawigacja',
+      'shellQuickActions': 'Szybkie akcje',
+      'shellSignedInAs': 'Zalogowano jako',
+      'shellNotConnected': 'Brak aktywnego polaczenia ze Strava',
+      'shellGoToAccount': 'Przejdz do konta',
+      'shellSectionDashboard': 'Podsumowanie',
+      'shellSectionPlans': 'Plany treningowe',
+      'shellSectionIntegrations': 'Polaczenia',
+      'shellSectionAccount': 'Profil i sesja',
+      'emptyStateTitle': 'Jeszcze nic tu nie ma',
+      'errorStateTitle': 'Cos poszlo nie tak',
+      'pullToRefresh': 'Pociagnij, aby odswiezyc',
+      'accountSectionLanguage': 'Jezyk',
+      'accountSectionSession': 'Sesja',
+      'accountConnectedProvider': 'Metoda logowania',
+      'accountOpenProfile':
+          'Ustawienia konta rozszerzymy w kolejnym sprincie.',
+      'authProviderLocal': 'Email i haslo',
+      'authProviderGoogle': 'Google',
+      'invalidActivityId': 'Nieprawidlowe id aktywnosci',
       'helloUser': 'Witaj, {name}',
-      'welcomeBack': 'Masz już gotowy fundament aplikacji mobilnej.',
-      'switchLanguage': 'Przełącz język',
     },
     'en': {
       'appTitle': 'Travans',
@@ -131,6 +151,7 @@ class AppLocalizations {
       'dashboard': 'Dashboard',
       'plans': 'Plans',
       'integrations': 'Integrations',
+      'account': 'Account',
       'integrationsTitle': 'Strava connection',
       'integrationsSubtitle':
           'Connect your account, sync activities, and inspect matched workouts.',
@@ -153,7 +174,7 @@ class AppLocalizations {
       'integrationsImportedActivities': 'Imported activities',
       'integrationsMatchedDays': 'Matched training days',
       'integrationsRedirectHint':
-          'To complete mobile linking, the backend Strava redirect-uri must point to the app deep link.',
+          'Connect Strava to download activities and sync them with your training plan.',
       'integrationsDistance': 'Distance',
       'integrationsDuration': 'Duration',
       'integrationsAverageSpeed': 'Average speed',
@@ -169,7 +190,6 @@ class AppLocalizations {
       'activityWorkout': 'Workout',
       'activityStrength': 'Strength',
       'activityOther': 'Other activity',
-      'account': 'Account',
       'logout': 'Log out',
       'language': 'Language',
       'tryAgain': 'Try again',
@@ -184,9 +204,30 @@ class AppLocalizations {
       'integrationsPlaceholder': 'Strava integration will live here.',
       'accountPlaceholder': 'User profile will live here.',
       'sessionExpired': 'Your session expired. Sign in again.',
-      'helloUser': 'Hello, {name}',
       'welcomeBack': 'You already have the mobile app foundation in place.',
       'switchLanguage': 'Switch language',
+      'shellOpenMenu': 'Open menu',
+      'shellNavigation': 'Navigation',
+      'shellQuickActions': 'Quick actions',
+      'shellSignedInAs': 'Signed in as',
+      'shellNotConnected': 'No active Strava connection',
+      'shellGoToAccount': 'Go to account',
+      'shellSectionDashboard': 'Overview',
+      'shellSectionPlans': 'Training plans',
+      'shellSectionIntegrations': 'Connections',
+      'shellSectionAccount': 'Profile and session',
+      'emptyStateTitle': 'Nothing here yet',
+      'errorStateTitle': 'Something went wrong',
+      'pullToRefresh': 'Pull to refresh',
+      'accountSectionLanguage': 'Language',
+      'accountSectionSession': 'Session',
+      'accountConnectedProvider': 'Connected provider',
+      'accountOpenProfile':
+          'Account settings will be expanded in the next sprint.',
+      'authProviderLocal': 'Email and password',
+      'authProviderGoogle': 'Google',
+      'invalidActivityId': 'Invalid activity id',
+      'helloUser': 'Hello, {name}',
     },
   };
 
@@ -214,6 +255,7 @@ class AppLocalizations {
   String get dashboard => _string('dashboard');
   String get plans => _string('plans');
   String get integrations => _string('integrations');
+  String get account => _string('account');
   String get integrationsTitle => _string('integrationsTitle');
   String get integrationsSubtitle => _string('integrationsSubtitle');
   String get integrationsConnectionTitle =>
@@ -255,7 +297,6 @@ class AppLocalizations {
   String get activityWorkout => _string('activityWorkout');
   String get activityStrength => _string('activityStrength');
   String get activityOther => _string('activityOther');
-  String get account => _string('account');
   String get logout => _string('logout');
   String get language => _string('language');
   String get tryAgain => _string('tryAgain');
@@ -271,6 +312,26 @@ class AppLocalizations {
   String get sessionExpired => _string('sessionExpired');
   String get welcomeBack => _string('welcomeBack');
   String get switchLanguage => _string('switchLanguage');
+  String get shellOpenMenu => _string('shellOpenMenu');
+  String get shellNavigation => _string('shellNavigation');
+  String get shellQuickActions => _string('shellQuickActions');
+  String get shellSignedInAs => _string('shellSignedInAs');
+  String get shellNotConnected => _string('shellNotConnected');
+  String get shellGoToAccount => _string('shellGoToAccount');
+  String get shellSectionDashboard => _string('shellSectionDashboard');
+  String get shellSectionPlans => _string('shellSectionPlans');
+  String get shellSectionIntegrations => _string('shellSectionIntegrations');
+  String get shellSectionAccount => _string('shellSectionAccount');
+  String get emptyStateTitle => _string('emptyStateTitle');
+  String get errorStateTitle => _string('errorStateTitle');
+  String get pullToRefresh => _string('pullToRefresh');
+  String get accountSectionLanguage => _string('accountSectionLanguage');
+  String get accountSectionSession => _string('accountSectionSession');
+  String get accountConnectedProvider => _string('accountConnectedProvider');
+  String get accountOpenProfile => _string('accountOpenProfile');
+  String get authProviderLocal => _string('authProviderLocal');
+  String get authProviderGoogle => _string('authProviderGoogle');
+  String get invalidActivityId => _string('invalidActivityId');
 
   String helloUser(String name) {
     return _string('helloUser').replaceFirst('{name}', name);
@@ -282,9 +343,7 @@ class _AppLocalizationsDelegate
   const _AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) {
-    return ['pl', 'en'].contains(locale.languageCode);
-  }
+  bool isSupported(Locale locale) => ['pl', 'en'].contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) {

@@ -34,6 +34,8 @@ class AuthRepository {
   final SecureStorageService _secureStorageService;
   final GoogleSignIn _googleSignIn;
 
+  Stream<SessionEvent> get sessionEvents => _secureStorageService.sessionEvents;
+
   Future<AuthSession?> restoreSession() {
     return _secureStorageService.readSession();
   }
@@ -48,9 +50,7 @@ class AuthRepository {
         data: payload.toJson(),
       );
 
-      final session = AuthSession.fromJson(
-        response.data ?? <String, dynamic>{},
-      );
+      final session = AuthSession.fromJson(response.data ?? <String, dynamic>{});
       await _secureStorageService.saveSession(session);
       await _secureStorageService.saveRememberMe(rememberMe);
       await _secureStorageService.saveRememberedEmail(
@@ -72,9 +72,7 @@ class AuthRepository {
         data: payload.toJson(),
       );
 
-      final session = AuthSession.fromJson(
-        response.data ?? <String, dynamic>{},
-      );
+      final session = AuthSession.fromJson(response.data ?? <String, dynamic>{});
       await _secureStorageService.saveSession(session);
       await _secureStorageService.saveRememberMe(rememberMe);
       await _secureStorageService.saveRememberedEmail(
@@ -92,7 +90,7 @@ class AuthRepository {
       final account = await _googleSignIn.signIn();
       if (account == null) {
         throw ApiException(
-          'Google sign-in was canceled',
+          'Logowanie Google zostalo anulowane.',
           code: 'GOOGLE_SIGN_IN_CANCELED',
         );
       }
@@ -102,7 +100,7 @@ class AuthRepository {
 
       if (idToken == null || idToken.isEmpty) {
         throw ApiException(
-          'Google did not return an ID token',
+          'Google nie zwrocil tokena ID.',
           code: 'GOOGLE_ID_TOKEN_MISSING',
         );
       }
@@ -112,9 +110,7 @@ class AuthRepository {
         data: GoogleLoginPayload(idToken: idToken).toJson(),
       );
 
-      final session = AuthSession.fromJson(
-        response.data ?? <String, dynamic>{},
-      );
+      final session = AuthSession.fromJson(response.data ?? <String, dynamic>{});
       await _secureStorageService.saveSession(session);
       await _secureStorageService.saveRememberMe(rememberMe);
       await _secureStorageService.saveRememberedEmail(
@@ -128,14 +124,18 @@ class AuthRepository {
     } on DioException catch (error) {
       throw _mapError(error);
     } catch (_) {
-      throw ApiException('Google sign-in failed');
+      throw ApiException('Logowanie Google nie powiodlo sie.');
     }
   }
 
   Future<UserProfile> me() async {
     try {
       final response = await _dio.get<Map<String, dynamic>>('/auth/me');
-      return UserProfile.fromJson(response.data ?? <String, dynamic>{});
+      final profile = UserProfile.fromJson(
+        response.data ?? <String, dynamic>{},
+      );
+      await _secureStorageService.saveUserProfile(profile);
+      return profile;
     } on DioException catch (error) {
       throw _mapError(error);
     }
@@ -164,24 +164,24 @@ class AuthRepository {
       }
     }
 
-    return ApiException('Request failed');
+    return ApiException('Nie udalo sie wykonac zadania.');
   }
 
   ApiException _mapGooglePlatformError(PlatformException error) {
     switch (error.code) {
       case GoogleSignIn.kSignInCanceledError:
         return ApiException(
-          'Logowanie Google zostało anulowane.',
+          'Logowanie Google zostalo anulowane.',
           code: error.code,
         );
       case GoogleSignIn.kNetworkError:
         return ApiException(
-          'Błąd sieci podczas logowania Google. Spróbuj ponownie.',
+          'Blad sieci podczas logowania Google. Sprobuj ponownie.',
           code: error.code,
         );
       case GoogleSignIn.kSignInFailedError:
         return ApiException(
-          'Logowanie Google nie jest poprawnie skonfigurowane dla Androida. Sprawdź package name, SHA-1 i OAuth client w Google Cloud.',
+          'Logowanie Google nie jest poprawnie skonfigurowane dla Androida. Sprawdz package name, SHA-1 i OAuth client w Google Cloud.',
           code: error.code,
         );
       case GoogleSignIn.kSignInRequiredError:
@@ -195,7 +195,7 @@ class AuthRepository {
         }
 
         return ApiException(
-          'Logowanie Google zakończyło się błędem platformy.',
+          'Logowanie Google zakonczylo sie bledem platformy.',
           code: error.code,
         );
     }

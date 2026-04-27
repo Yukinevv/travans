@@ -1,22 +1,35 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/networking/api_exception.dart';
+import '../../../core/storage/secure_storage_service.dart';
 import '../data/auth_models.dart';
 import '../data/auth_repository.dart';
 import 'auth_state.dart';
 
-final authControllerProvider = StateNotifierProvider<AuthController, AuthState>(
-  (ref) {
-    final controller = AuthController(ref.watch(authRepositoryProvider));
-    controller.initialize();
-    return controller;
-  },
-);
+final authControllerProvider = StateNotifierProvider<AuthController, AuthState>((
+  ref,
+) {
+  final controller = AuthController(ref.watch(authRepositoryProvider));
+  controller.initialize();
+  return controller;
+});
 
 class AuthController extends StateNotifier<AuthState> {
-  AuthController(this._repository) : super(AuthState.loading);
+  AuthController(this._repository) : super(AuthState.loading) {
+    _sessionSubscription = _repository.sessionEvents.listen((event) {
+      if (event == SessionEvent.invalidated) {
+        state = AuthState(
+          status: AuthStatus.unauthenticated,
+          errorMessage: 'Sesja wygasla. Zaloguj sie ponownie.',
+        );
+      }
+    });
+  }
 
   final AuthRepository _repository;
+  StreamSubscription<SessionEvent>? _sessionSubscription;
 
   Future<void> initialize() async {
     try {
@@ -27,6 +40,7 @@ class AuthController extends StateNotifier<AuthState> {
       }
 
       state = AuthState(status: AuthStatus.authenticated, user: session.user);
+      await refreshProfile(silent: true);
     } catch (_) {
       state = AuthState.unauthenticated;
     }
@@ -56,7 +70,7 @@ class AuthController extends StateNotifier<AuthState> {
     } catch (_) {
       state = AuthState(
         status: AuthStatus.unauthenticated,
-        errorMessage: 'Authentication failed',
+        errorMessage: 'Logowanie nie powiodlo sie.',
       );
       return false;
     }
@@ -91,7 +105,7 @@ class AuthController extends StateNotifier<AuthState> {
     } catch (_) {
       state = AuthState(
         status: AuthStatus.unauthenticated,
-        errorMessage: 'Registration failed',
+        errorMessage: 'Rejestracja nie powiodla sie.',
       );
       return false;
     }
@@ -113,7 +127,7 @@ class AuthController extends StateNotifier<AuthState> {
     } catch (_) {
       state = AuthState(
         status: AuthStatus.unauthenticated,
-        errorMessage: 'Google sign-in failed',
+        errorMessage: 'Logowanie Google nie powiodlo sie.',
       );
       return false;
     }
@@ -124,11 +138,35 @@ class AuthController extends StateNotifier<AuthState> {
     state = AuthState.unauthenticated;
   }
 
+  Future<void> refreshProfile({bool silent = false}) async {
+    if (!silent) {
+      state = state.copyWith(status: AuthStatus.loading, clearError: true);
+    }
+
+    try {
+      final profile = await _repository.me();
+      state = AuthState(status: AuthStatus.authenticated, user: profile);
+    } on ApiException catch (error) {
+      state = AuthState(
+        status: AuthStatus.unauthenticated,
+        errorMessage: error.message,
+      );
+    } catch (_) {
+      state = AuthState.unauthenticated;
+    }
+  }
+
   Future<bool> readRememberMe() {
     return _repository.readRememberMe();
   }
 
   Future<String?> readRememberedEmail() {
     return _repository.readRememberedEmail();
+  }
+
+  @override
+  void dispose() {
+    _sessionSubscription?.cancel();
+    super.dispose();
   }
 }

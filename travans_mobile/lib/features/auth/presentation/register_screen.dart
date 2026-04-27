@@ -24,6 +24,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _rememberMe = true;
 
   @override
+  void initState() {
+    super.initState();
+    _loadRememberedCredentials();
+  }
+
+  @override
   void dispose() {
     _displayNameController.dispose();
     _emailController.dispose();
@@ -90,7 +96,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(hintText: '••••••••'),
+                decoration: const InputDecoration(hintText: '********'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return l10n.requiredField;
@@ -158,5 +164,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     await ref
         .read(authControllerProvider.notifier)
         .loginWithGoogle(rememberMe: _rememberMe);
+  }
+
+  Future<void> _loadRememberedCredentials() async {
+    final controller = ref.read(authControllerProvider.notifier);
+    final rememberMe = await controller.readRememberMe();
+    final rememberedEmail = await controller.readRememberedEmail();
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _rememberMe = rememberMe;
+      if (rememberMe && rememberedEmail != null && rememberedEmail.isNotEmpty) {
+        _emailController.text = rememberedEmail;
+      }
+    });
   }
 }

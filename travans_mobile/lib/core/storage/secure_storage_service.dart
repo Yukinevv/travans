@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,11 +8,13 @@ import '../../features/auth/data/auth_models.dart';
 import '../../shared/models/user_profile.dart';
 
 final secureStorageServiceProvider = Provider(
-  (ref) => const SecureStorageService(FlutterSecureStorage()),
+  (ref) => SecureStorageService(const FlutterSecureStorage()),
 );
 
+enum SessionEvent { invalidated }
+
 class SecureStorageService {
-  const SecureStorageService(this._storage);
+  SecureStorageService(this._storage);
 
   static const _accessTokenKey = 'travans_access_token';
   static const _refreshTokenKey = 'travans_refresh_token';
@@ -20,14 +23,19 @@ class SecureStorageService {
   static const _rememberedEmailKey = 'travans_remembered_email';
 
   final FlutterSecureStorage _storage;
+  final StreamController<SessionEvent> _sessionEvents =
+      StreamController<SessionEvent>.broadcast();
+
+  Stream<SessionEvent> get sessionEvents => _sessionEvents.stream;
 
   Future<void> saveSession(AuthSession session) async {
     await _storage.write(key: _accessTokenKey, value: session.accessToken);
     await _storage.write(key: _refreshTokenKey, value: session.refreshToken);
-    await _storage.write(
-      key: _profileKey,
-      value: jsonEncode(session.user.toJson()),
-    );
+    await saveUserProfile(session.user);
+  }
+
+  Future<void> saveUserProfile(UserProfile user) async {
+    await _storage.write(key: _profileKey, value: jsonEncode(user.toJson()));
   }
 
   Future<AuthSession?> readSession() async {
@@ -48,10 +56,14 @@ class SecureStorageService {
     );
   }
 
-  Future<void> clearSession() async {
+  Future<void> clearSession({bool emitInvalidatedEvent = false}) async {
     await _storage.delete(key: _accessTokenKey);
     await _storage.delete(key: _refreshTokenKey);
     await _storage.delete(key: _profileKey);
+
+    if (emitInvalidatedEvent) {
+      _sessionEvents.add(SessionEvent.invalidated);
+    }
   }
 
   Future<void> saveRememberMe(bool rememberMe) async {

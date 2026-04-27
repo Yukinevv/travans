@@ -7,6 +7,7 @@ import '../../../core/networking/api_exception.dart';
 import '../../../shared/models/activity_type.dart';
 import '../../../shared/utils/activity_type_labels.dart';
 import '../../../shared/utils/metric_formatters.dart';
+import '../../../shared/widgets/error_view.dart';
 import '../../../shared/widgets/loading_view.dart';
 import '../data/strava_models.dart';
 import '../data/strava_repository.dart';
@@ -37,13 +38,13 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
     final l10n = AppLocalizations.of(context);
 
     if (_loading) {
-      return const Center(child: LoadingView());
+      return Center(child: LoadingView(label: l10n.loading));
     }
 
     if (_errorMessage.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.all(20),
-        child: _ErrorCard(message: _errorMessage),
+        child: ErrorView(message: _errorMessage, onRetry: _loadActivity),
       );
     }
 
@@ -51,7 +52,10 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
     if (activity == null) {
       return Padding(
         padding: const EdgeInsets.all(20),
-        child: _ErrorCard(message: l10n.integrationsActivityLoadError),
+        child: ErrorView(
+          message: l10n.integrationsActivityLoadError,
+          onRetry: _loadActivity,
+        ),
       );
     }
 
@@ -140,6 +144,10 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
   }
 
   Future<void> _loadActivity() async {
+    setState(() {
+      _loading = true;
+    });
+
     try {
       final activity = await ref
           .read(stravaRepositoryProvider)
@@ -215,22 +223,6 @@ class _MetricCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _ErrorCard extends StatelessWidget {
-  const _ErrorCard({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(message, style: const TextStyle(color: AppColors.danger)),
       ),
     );
   }

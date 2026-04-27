@@ -12,6 +12,7 @@ import '../../features/integrations/presentation/integrations_screen.dart';
 import '../../features/plans/presentation/plans_screen.dart';
 import '../../shared/widgets/app_scaffold.dart';
 import '../../shared/widgets/loading_view.dart';
+import '../localization/app_localizations.dart';
 import 'route_guards.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -60,9 +61,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               );
 
               if (activityId == null) {
-                return const Scaffold(
+                final l10n = AppLocalizations.of(context);
+                return Scaffold(
                   body: SafeArea(
-                    child: Center(child: Text('Invalid activity id')),
+                    child: Center(child: Text(l10n.invalidActivityId)),
                   ),
                 );
               }
@@ -85,8 +87,12 @@ class _SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(child: Center(child: LoadingView())),
+    final l10n = AppLocalizations.of(context);
+
+    return Scaffold(
+      body: SafeArea(
+        child: Center(child: LoadingView(label: l10n.loading)),
+      ),
     );
   }
 }

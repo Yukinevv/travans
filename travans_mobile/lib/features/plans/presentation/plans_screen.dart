@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/localization/app_localizations.dart';
+import '../../../shared/widgets/empty_state.dart';
 
 class PlansScreen extends StatelessWidget {
   const PlansScreen({super.key});
@@ -11,18 +13,12 @@ class PlansScreen extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.plans, style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text(l10n.plansPlaceholder),
-            ),
-          ),
-        ],
+      child: EmptyState(
+        icon: Icons.event_note_outlined,
+        title: l10n.emptyStateTitle,
+        message: l10n.plansPlaceholder,
+        actionLabel: l10n.dashboard,
+        onAction: () => context.go('/'),
       ),
     );
   }

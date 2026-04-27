@@ -66,7 +66,7 @@ class AuthInterceptor extends Interceptor {
       final retriedResponse = await _refreshDio.fetch<dynamic>(retryOptions);
       handler.resolve(retriedResponse);
     } catch (_) {
-      await _secureStorageService.clearSession();
+      await _secureStorageService.clearSession(emitInvalidatedEvent: true);
       handler.next(err);
     } finally {
       _refreshInFlight = false;

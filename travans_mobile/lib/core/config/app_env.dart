@@ -1,10 +1,22 @@
 import 'package:flutter/foundation.dart';
 
 class AppEnv {
-  static const googleClientId =
+  static const _defaultGoogleClientId =
       '901273605331-pkfm74l0jqa292mh12h4269tfiukbgho.apps.googleusercontent.com';
+  static const _definedApiBaseUrl = String.fromEnvironment(
+    'TRAVANS_API_BASE_URL',
+    defaultValue: '',
+  );
+  static const googleClientId = String.fromEnvironment(
+    'TRAVANS_GOOGLE_CLIENT_ID',
+    defaultValue: _defaultGoogleClientId,
+  );
 
   static String get apiBaseUrl {
+    if (_definedApiBaseUrl.isNotEmpty) {
+      return _definedApiBaseUrl;
+    }
+
     if (kIsWeb) {
       return 'http://localhost:8080/api';
     }
