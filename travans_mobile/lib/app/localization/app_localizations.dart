@@ -126,6 +126,56 @@ class AppLocalizations {
       'authProviderLocal': 'Email i haslo',
       'authProviderGoogle': 'Google',
       'invalidActivityId': 'Nieprawidlowe id aktywnosci',
+      'trainingStatusPlanned': 'Zaplanowane',
+      'trainingStatusCompleted': 'Wykonane',
+      'trainingStatusPartial': 'Czesciowo',
+      'trainingStatusMissed': 'Pominiete',
+      'dashboardHeaderKicker': 'Pulpit',
+      'dashboardHeaderTitle': 'Postep realizacji planu',
+      'dashboardDisplayedPlan': 'Wyswietlany plan',
+      'dashboardAutoSelect': 'Automatycznie wybrany',
+      'dashboardLoading': 'Ladowanie danych dashboardu...',
+      'dashboardStatsPlanned': 'Zaplanowane',
+      'dashboardStatsCompleted': 'Wykonane',
+      'dashboardStatsPartial': 'Czesciowo',
+      'dashboardStatsMissed': 'Pominiete',
+      'dashboardStatsEffectiveness': 'Skutecznosc',
+      'dashboardDetailsLabel': 'Statystyki szczegolowe',
+      'dashboardDaysMeetingDistanceGoal': 'Dni z celem dystansu',
+      'dashboardDaysMeetingDurationGoal': 'Dni z celem czasu',
+      'dashboardDaysMeetingPaceGoal': 'Dni z celem tempa',
+      'dashboardAverageRunPace': 'Srednie tempo biegu',
+      'dashboardFastestRunPace': 'Najszybsze tempo biegu',
+      'dashboardAverageRideSpeed': 'Srednia predkosc jazdy',
+      'dashboardMaxRideSpeed': 'Maksymalna predkosc jazdy',
+      'dashboardElevationGain': 'Przewyzszenie',
+      'dashboardCurrentPlanLabel': 'Biezacy plan',
+      'dashboardCurrentPlanEmptyTitle': 'Brak aktywnego planu',
+      'dashboardCurrentPlanEmptyDescription':
+          'Dodaj plan treningowy, a dashboard zacznie pokazywac postep i dopasowane treningi ze Stravy.',
+      'dashboardPlanTypePrefix': 'Typ planu:',
+      'dashboardPinnedMessage': 'Plan zostal przypiety do dashboardu.',
+      'dashboardScheduledFor': 'Termin',
+      'dashboardActivity': 'Aktywnosc',
+      'dashboardPlannedSection': 'Plan',
+      'dashboardCompletedSection': 'Wykonanie',
+      'dashboardMatchedActivity': 'Powiazana aktywnosc:',
+      'dashboardNotes': 'Notatki',
+      'dashboardDistanceGoal': 'Cel dystansu',
+      'dashboardDurationGoal': 'Cel czasu',
+      'dashboardPaceGoal': 'Cel tempa',
+      'dashboardAverageSpeed': 'Srednia predkosc',
+      'dashboardMaxSpeed': 'Maks. predkosc',
+      'dashboardAverageHeartrate': 'Srednie tetno',
+      'dashboardMaxHeartrate': 'Maks. tetno',
+      'dashboardAverageCadence': 'Srednia kadencja',
+      'dashboardOverDistance': 'Nadwyzka dystansu',
+      'dashboardOverDuration': 'Nadwyzka czasu',
+      'dashboardSavedTime': 'Zysk czasu',
+      'dashboardGoalAchieved': 'Osiagnieto',
+      'dashboardGoalNotAchieved': 'Nie osiagnieto',
+      'dashboardNoCriteria': 'Brak kryterium',
+      'dashboardNoTrainingDays': 'Ten plan nie ma jeszcze dni treningowych.',
       'helloUser': 'Witaj, {name}',
     },
     'en': {
@@ -227,6 +277,56 @@ class AppLocalizations {
       'authProviderLocal': 'Email and password',
       'authProviderGoogle': 'Google',
       'invalidActivityId': 'Invalid activity id',
+      'trainingStatusPlanned': 'Planned',
+      'trainingStatusCompleted': 'Completed',
+      'trainingStatusPartial': 'Partial',
+      'trainingStatusMissed': 'Missed',
+      'dashboardHeaderKicker': 'Dashboard',
+      'dashboardHeaderTitle': 'Plan completion progress',
+      'dashboardDisplayedPlan': 'Displayed plan',
+      'dashboardAutoSelect': 'Automatically selected',
+      'dashboardLoading': 'Loading dashboard data...',
+      'dashboardStatsPlanned': 'Planned',
+      'dashboardStatsCompleted': 'Completed',
+      'dashboardStatsPartial': 'Partial',
+      'dashboardStatsMissed': 'Missed',
+      'dashboardStatsEffectiveness': 'Effectiveness',
+      'dashboardDetailsLabel': 'Detailed stats',
+      'dashboardDaysMeetingDistanceGoal': 'Days meeting distance goal',
+      'dashboardDaysMeetingDurationGoal': 'Days meeting duration goal',
+      'dashboardDaysMeetingPaceGoal': 'Days meeting pace goal',
+      'dashboardAverageRunPace': 'Average run pace',
+      'dashboardFastestRunPace': 'Fastest run pace',
+      'dashboardAverageRideSpeed': 'Average ride speed',
+      'dashboardMaxRideSpeed': 'Max ride speed',
+      'dashboardElevationGain': 'Elevation gain',
+      'dashboardCurrentPlanLabel': 'Current plan',
+      'dashboardCurrentPlanEmptyTitle': 'No active plan',
+      'dashboardCurrentPlanEmptyDescription':
+          'Add a training plan and the dashboard will start showing progress and matched Strava workouts.',
+      'dashboardPlanTypePrefix': 'Plan type:',
+      'dashboardPinnedMessage': 'The plan has been pinned to the dashboard.',
+      'dashboardScheduledFor': 'Scheduled for',
+      'dashboardActivity': 'Activity',
+      'dashboardPlannedSection': 'Plan',
+      'dashboardCompletedSection': 'Completed',
+      'dashboardMatchedActivity': 'Matched activity:',
+      'dashboardNotes': 'Notes',
+      'dashboardDistanceGoal': 'Distance goal',
+      'dashboardDurationGoal': 'Duration goal',
+      'dashboardPaceGoal': 'Pace goal',
+      'dashboardAverageSpeed': 'Average speed',
+      'dashboardMaxSpeed': 'Max speed',
+      'dashboardAverageHeartrate': 'Average heart rate',
+      'dashboardMaxHeartrate': 'Max heart rate',
+      'dashboardAverageCadence': 'Average cadence',
+      'dashboardOverDistance': 'Distance surplus',
+      'dashboardOverDuration': 'Time surplus',
+      'dashboardSavedTime': 'Time saved',
+      'dashboardGoalAchieved': 'Achieved',
+      'dashboardGoalNotAchieved': 'Not achieved',
+      'dashboardNoCriteria': 'No criteria',
+      'dashboardNoTrainingDays': 'This plan does not have any training days yet.',
       'helloUser': 'Hello, {name}',
     },
   };
@@ -332,6 +432,61 @@ class AppLocalizations {
   String get authProviderLocal => _string('authProviderLocal');
   String get authProviderGoogle => _string('authProviderGoogle');
   String get invalidActivityId => _string('invalidActivityId');
+  String get trainingStatusPlanned => _string('trainingStatusPlanned');
+  String get trainingStatusCompleted => _string('trainingStatusCompleted');
+  String get trainingStatusPartial => _string('trainingStatusPartial');
+  String get trainingStatusMissed => _string('trainingStatusMissed');
+  String get dashboardHeaderKicker => _string('dashboardHeaderKicker');
+  String get dashboardHeaderTitle => _string('dashboardHeaderTitle');
+  String get dashboardDisplayedPlan => _string('dashboardDisplayedPlan');
+  String get dashboardAutoSelect => _string('dashboardAutoSelect');
+  String get dashboardLoading => _string('dashboardLoading');
+  String get dashboardStatsPlanned => _string('dashboardStatsPlanned');
+  String get dashboardStatsCompleted => _string('dashboardStatsCompleted');
+  String get dashboardStatsPartial => _string('dashboardStatsPartial');
+  String get dashboardStatsMissed => _string('dashboardStatsMissed');
+  String get dashboardStatsEffectiveness =>
+      _string('dashboardStatsEffectiveness');
+  String get dashboardDetailsLabel => _string('dashboardDetailsLabel');
+  String get dashboardDaysMeetingDistanceGoal =>
+      _string('dashboardDaysMeetingDistanceGoal');
+  String get dashboardDaysMeetingDurationGoal =>
+      _string('dashboardDaysMeetingDurationGoal');
+  String get dashboardDaysMeetingPaceGoal =>
+      _string('dashboardDaysMeetingPaceGoal');
+  String get dashboardAverageRunPace => _string('dashboardAverageRunPace');
+  String get dashboardFastestRunPace => _string('dashboardFastestRunPace');
+  String get dashboardAverageRideSpeed => _string('dashboardAverageRideSpeed');
+  String get dashboardMaxRideSpeed => _string('dashboardMaxRideSpeed');
+  String get dashboardElevationGain => _string('dashboardElevationGain');
+  String get dashboardCurrentPlanLabel => _string('dashboardCurrentPlanLabel');
+  String get dashboardCurrentPlanEmptyTitle =>
+      _string('dashboardCurrentPlanEmptyTitle');
+  String get dashboardCurrentPlanEmptyDescription =>
+      _string('dashboardCurrentPlanEmptyDescription');
+  String get dashboardPlanTypePrefix => _string('dashboardPlanTypePrefix');
+  String get dashboardPinnedMessage => _string('dashboardPinnedMessage');
+  String get dashboardScheduledFor => _string('dashboardScheduledFor');
+  String get dashboardActivity => _string('dashboardActivity');
+  String get dashboardPlannedSection => _string('dashboardPlannedSection');
+  String get dashboardCompletedSection => _string('dashboardCompletedSection');
+  String get dashboardMatchedActivity => _string('dashboardMatchedActivity');
+  String get dashboardNotes => _string('dashboardNotes');
+  String get dashboardDistanceGoal => _string('dashboardDistanceGoal');
+  String get dashboardDurationGoal => _string('dashboardDurationGoal');
+  String get dashboardPaceGoal => _string('dashboardPaceGoal');
+  String get dashboardAverageSpeed => _string('dashboardAverageSpeed');
+  String get dashboardMaxSpeed => _string('dashboardMaxSpeed');
+  String get dashboardAverageHeartrate => _string('dashboardAverageHeartrate');
+  String get dashboardMaxHeartrate => _string('dashboardMaxHeartrate');
+  String get dashboardAverageCadence => _string('dashboardAverageCadence');
+  String get dashboardOverDistance => _string('dashboardOverDistance');
+  String get dashboardOverDuration => _string('dashboardOverDuration');
+  String get dashboardSavedTime => _string('dashboardSavedTime');
+  String get dashboardGoalAchieved => _string('dashboardGoalAchieved');
+  String get dashboardGoalNotAchieved => _string('dashboardGoalNotAchieved');
+  String get dashboardNoCriteria => _string('dashboardNoCriteria');
+  String get dashboardNoTrainingDays => _string('dashboardNoTrainingDays');
 
   String helloUser(String name) {
     return _string('helloUser').replaceFirst('{name}', name);

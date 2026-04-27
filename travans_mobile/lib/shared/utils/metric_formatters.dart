@@ -39,3 +39,21 @@ String formatPace(double? speedMetersPerSecond) {
   final seconds = (secondsPerKm % 60).round();
   return '$minutes:${seconds.toString().padLeft(2, '0')} min/km';
 }
+
+String formatPaceFromSecondsPerKm(int? secondsPerKm) {
+  if (secondsPerKm == null || secondsPerKm <= 0) {
+    return '-';
+  }
+
+  final minutes = secondsPerKm ~/ 60;
+  final seconds = secondsPerKm % 60;
+  return '$minutes:${seconds.toString().padLeft(2, '0')} min/km';
+}
+
+String formatSpeedKphValue(double? speedKph) {
+  if (speedKph == null || speedKph <= 0) {
+    return '-';
+  }
+
+  return '${speedKph.toStringAsFixed(1)} km/h';
+}

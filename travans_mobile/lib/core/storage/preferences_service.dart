@@ -8,6 +8,7 @@ final preferencesServiceProvider = Provider<PreferencesService>(
 class PreferencesService {
   static const _languageKey = 'travans.language';
   static const _preferredLocaleKey = 'travans.preferred_locale';
+  static const _dashboardPlanIdKey = 'travans-dashboard-plan-id';
 
   Future<String?> readLanguageCode() async {
     final preferences = await SharedPreferences.getInstance();
@@ -19,5 +20,20 @@ class PreferencesService {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setString(_preferredLocaleKey, code);
     await preferences.setString(_languageKey, code);
+  }
+
+  Future<int?> readSelectedPlanId() async {
+    final preferences = await SharedPreferences.getInstance();
+    return preferences.getInt(_dashboardPlanIdKey);
+  }
+
+  Future<void> saveSelectedPlanId(int? planId) async {
+    final preferences = await SharedPreferences.getInstance();
+    if (planId == null) {
+      await preferences.remove(_dashboardPlanIdKey);
+      return;
+    }
+
+    await preferences.setInt(_dashboardPlanIdKey, planId);
   }
 }
