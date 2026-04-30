@@ -27,6 +27,14 @@ class PlansRepository {
     }
   }
 
+  Future<void> deletePlan(int planId) async {
+    try {
+      await _dio.delete<void>('/plans/$planId');
+    } on DioException catch (error) {
+      throw _mapError(error, 'Nie udalo sie usunac planu.');
+    }
+  }
+
   ApiException _mapError(DioException error, String fallback) {
     final data = error.response?.data;
     if (data is Map<String, dynamic>) {

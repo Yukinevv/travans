@@ -176,6 +176,40 @@ class AppLocalizations {
       'dashboardGoalNotAchieved': 'Nie osiagnieto',
       'dashboardNoCriteria': 'Brak kryterium',
       'dashboardNoTrainingDays': 'Ten plan nie ma jeszcze dni treningowych.',
+      'plansLoading': 'Ladowanie listy planow...',
+      'plansHeaderKicker': 'Plany',
+      'plansHeaderTitle': 'Twoje plany treningowe',
+      'plansHeaderSubtitleZero': 'Nie masz jeszcze zadnych planow.',
+      'plansHeaderSubtitleOne': 'Masz 1 zapisany plan treningowy.',
+      'plansHeaderSubtitleMany': 'Masz {count} zapisanych planow treningowych.',
+      'plansEmptyTitle': 'Brak planow treningowych',
+      'plansEmptyDescription':
+          'Gdy dodasz pierwszy plan, zobaczysz tu jego szczegoly i dni treningowe.',
+      'plansTypeLabel': 'Typ',
+      'plansDaysLabel': 'Dni',
+      'plansStartDateLabel': 'Start',
+      'plansCreatedAtLabel': 'Utworzono',
+      'plansDescriptionLabel': 'Opis',
+      'plansDaysSection': 'Dni treningowe',
+      'plansNoTrainingDays': 'Ten plan nie ma jeszcze zdefiniowanych dni.',
+      'plansVisibleOnDashboard': 'Na dashboardzie',
+      'plansShowOnDashboard': 'Pokaz na dashboardzie',
+      'plansDelete': 'Usun',
+      'plansCancel': 'Anuluj',
+      'plansDayPrefix': 'Dzien',
+      'plansDistanceLabel': 'Dystans',
+      'plansDurationLabel': 'Czas',
+      'plansNotesLabel': 'Notatki',
+      'plansMatchedActivityLabel': 'Powiazana aktywnosc',
+      'plansPinDialogTitle': 'Wyswietlac ten plan na dashboardzie?',
+      'plansPinDialogMessage':
+          'Plan "{name}" zostanie przypiety jako glowny widok na dashboardzie.',
+      'plansDeleteDialogTitle': 'Usunac plan?',
+      'plansDeleteDialogMessage':
+          'Plan "{name}" zostanie trwale usuniety wraz z lista dni treningowych.',
+      'plansPinnedSnackbar':
+          'Plan "{name}" jest teraz widoczny na dashboardzie.',
+      'plansDeletedSnackbar': 'Plan "{name}" zostal usuniety.',
       'helloUser': 'Witaj, {name}',
     },
     'en': {
@@ -327,6 +361,40 @@ class AppLocalizations {
       'dashboardGoalNotAchieved': 'Not achieved',
       'dashboardNoCriteria': 'No criteria',
       'dashboardNoTrainingDays': 'This plan does not have any training days yet.',
+      'plansLoading': 'Loading plans list...',
+      'plansHeaderKicker': 'Plans',
+      'plansHeaderTitle': 'Your training plans',
+      'plansHeaderSubtitleZero': 'You do not have any plans yet.',
+      'plansHeaderSubtitleOne': 'You have 1 saved training plan.',
+      'plansHeaderSubtitleMany': 'You have {count} saved training plans.',
+      'plansEmptyTitle': 'No training plans',
+      'plansEmptyDescription':
+          'Once you add your first plan, you will see its details and training days here.',
+      'plansTypeLabel': 'Type',
+      'plansDaysLabel': 'Days',
+      'plansStartDateLabel': 'Start',
+      'plansCreatedAtLabel': 'Created at',
+      'plansDescriptionLabel': 'Description',
+      'plansDaysSection': 'Training days',
+      'plansNoTrainingDays': 'This plan does not define any training days yet.',
+      'plansVisibleOnDashboard': 'On dashboard',
+      'plansShowOnDashboard': 'Show on dashboard',
+      'plansDelete': 'Delete',
+      'plansCancel': 'Cancel',
+      'plansDayPrefix': 'Day',
+      'plansDistanceLabel': 'Distance',
+      'plansDurationLabel': 'Duration',
+      'plansNotesLabel': 'Notes',
+      'plansMatchedActivityLabel': 'Matched activity',
+      'plansPinDialogTitle': 'Show this plan on the dashboard?',
+      'plansPinDialogMessage':
+          'The "{name}" plan will be pinned as the primary dashboard view.',
+      'plansDeleteDialogTitle': 'Delete plan?',
+      'plansDeleteDialogMessage':
+          'The "{name}" plan will be permanently removed together with its training days.',
+      'plansPinnedSnackbar':
+          'The "{name}" plan is now visible on the dashboard.',
+      'plansDeletedSnackbar': 'The "{name}" plan has been deleted.',
       'helloUser': 'Hello, {name}',
     },
   };
@@ -487,9 +555,62 @@ class AppLocalizations {
   String get dashboardGoalNotAchieved => _string('dashboardGoalNotAchieved');
   String get dashboardNoCriteria => _string('dashboardNoCriteria');
   String get dashboardNoTrainingDays => _string('dashboardNoTrainingDays');
+  String get plansLoading => _string('plansLoading');
+  String get plansHeaderKicker => _string('plansHeaderKicker');
+  String get plansHeaderTitle => _string('plansHeaderTitle');
+  String get plansEmptyTitle => _string('plansEmptyTitle');
+  String get plansEmptyDescription => _string('plansEmptyDescription');
+  String get plansTypeLabel => _string('plansTypeLabel');
+  String get plansDaysLabel => _string('plansDaysLabel');
+  String get plansStartDateLabel => _string('plansStartDateLabel');
+  String get plansCreatedAtLabel => _string('plansCreatedAtLabel');
+  String get plansDescriptionLabel => _string('plansDescriptionLabel');
+  String get plansDaysSection => _string('plansDaysSection');
+  String get plansNoTrainingDays => _string('plansNoTrainingDays');
+  String get plansVisibleOnDashboard => _string('plansVisibleOnDashboard');
+  String get plansShowOnDashboard => _string('plansShowOnDashboard');
+  String get plansDelete => _string('plansDelete');
+  String get plansCancel => _string('plansCancel');
+  String get plansDayPrefix => _string('plansDayPrefix');
+  String get plansDistanceLabel => _string('plansDistanceLabel');
+  String get plansDurationLabel => _string('plansDurationLabel');
+  String get plansNotesLabel => _string('plansNotesLabel');
+  String get plansMatchedActivityLabel => _string('plansMatchedActivityLabel');
+  String get plansPinDialogTitle => _string('plansPinDialogTitle');
+  String get plansDeleteDialogTitle => _string('plansDeleteDialogTitle');
 
   String helloUser(String name) {
     return _string('helloUser').replaceFirst('{name}', name);
+  }
+
+  String plansHeaderSubtitle(int count) {
+    if (count == 0) {
+      return _string('plansHeaderSubtitleZero');
+    }
+    if (count == 1) {
+      return _string('plansHeaderSubtitleOne');
+    }
+
+    return _string('plansHeaderSubtitleMany').replaceFirst(
+      '{count}',
+      '$count',
+    );
+  }
+
+  String plansPinDialogMessage(String name) {
+    return _string('plansPinDialogMessage').replaceFirst('{name}', name);
+  }
+
+  String plansDeleteDialogMessage(String name) {
+    return _string('plansDeleteDialogMessage').replaceFirst('{name}', name);
+  }
+
+  String plansPinnedSnackbar(String name) {
+    return _string('plansPinnedSnackbar').replaceFirst('{name}', name);
+  }
+
+  String plansDeletedSnackbar(String name) {
+    return _string('plansDeletedSnackbar').replaceFirst('{name}', name);
   }
 }
 
