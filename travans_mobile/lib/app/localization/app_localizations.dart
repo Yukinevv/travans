@@ -265,6 +265,8 @@ class AppLocalizations {
   String get plansImportPreviewStart => _string('plansImportPreviewStart');
   String get plansImportPreviewStravaStart =>
       _string('plansImportPreviewStravaStart');
+  String get plansImportPreviewDaysSection =>
+      _string('plansImportPreviewDaysSection');
   String get errorAuthSessionExpired => _string('errorAuthSessionExpired');
   String get errorAuthLoginFailed => _string('errorAuthLoginFailed');
   String get errorAuthRegisterFailed => _string('errorAuthRegisterFailed');
@@ -333,6 +335,10 @@ class AppLocalizations {
 
   String plansUpdatedSnackbar(String name) {
     return _string('plansUpdatedSnackbar').replaceFirst('{name}', name);
+  }
+
+  String plansImportPreviewMoreDays(int count) {
+    return _string('plansImportPreviewMoreDays').replaceFirst('{count}', '$count');
   }
 
   String resolveError(String? value, {String? fallback}) {

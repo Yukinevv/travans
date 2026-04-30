@@ -10,6 +10,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../core/networking/api_exception.dart';
 import '../../../shared/models/activity_type.dart';
 import '../../../shared/utils/activity_type_labels.dart';
+import '../../../shared/utils/metric_formatters.dart';
 import '../../../shared/widgets/loading_view.dart';
 import '../data/plan_models.dart';
 import '../data/plans_repository.dart';
@@ -455,7 +456,11 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
         withData: true,
       );
 
-      if (!mounted || result == null || result.files.isEmpty) {
+      if (!mounted) {
+        return;
+      }
+
+      if (result == null || result.files.isEmpty) {
         return;
       }
 
@@ -482,8 +487,8 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
         return;
       }
 
-      final preview = _parseImportedPlan(content);
-      final validationError = _validateImportedPlan(preview);
+      final imported = _parseImportedPlan(content);
+      final validationError = _validateImportedPlan(imported);
       if (validationError != null) {
         setState(() {
           _errorMessage = validationError;
@@ -494,7 +499,7 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
       }
 
       setState(() {
-        _importPreview = preview;
+        _importPreview = imported.plan;
         _importedFileName = fileName;
         _errorMessage = '';
       });
@@ -521,20 +526,38 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
     }
   }
 
-  TrainingPlan _parseImportedPlan(String content) {
+  _ImportedPlanData _parseImportedPlan(String content) {
     final decoded = jsonDecode(content);
     if (decoded is! Map<String, dynamic>) {
       throw const FormatException();
     }
 
-    return TrainingPlan.fromJson(decoded);
+    return _ImportedPlanData(
+      rawJson: decoded,
+      plan: TrainingPlan.fromJson(decoded),
+    );
   }
 
-  String? _validateImportedPlan(TrainingPlan plan) {
+  String? _validateImportedPlan(_ImportedPlanData imported) {
     final l10n = AppLocalizations.of(context);
+    final plan = imported.plan;
+    final raw = imported.rawJson;
+
     if (plan.name.trim().isEmpty ||
         plan.startDate == null ||
         plan.trainingDays.isEmpty) {
+      return l10n.plansImportValidationError;
+    }
+
+    final rawPlanType = raw['planType'];
+    final validPlanType = rawPlanType is String &&
+        ActivityType.values.any((type) => type.apiValue == rawPlanType);
+    if (!validPlanType) {
+      return l10n.plansImportValidationError;
+    }
+
+    final rawDays = raw['trainingDays'];
+    if (rawDays is! List || rawDays.isEmpty) {
       return l10n.plansImportValidationError;
     }
 
@@ -545,6 +568,30 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
     );
     if (hasInvalidDay) {
       return l10n.plansImportValidationError;
+    }
+
+    for (var index = 0; index < rawDays.length; index++) {
+      final day = rawDays[index];
+      if (day is! Map<String, dynamic>) {
+        return l10n.plansImportValidationError;
+      }
+
+      final rawActivityType = day['activityType'];
+      final validDayActivityType = rawActivityType is String &&
+          ActivityType.values.any((type) => type.apiValue == rawActivityType);
+      if (!validDayActivityType) {
+        return l10n.plansImportValidationError;
+      }
+
+      final plannedDistance = day['plannedDistanceMeters'];
+      if (plannedDistance is num && plannedDistance < 0) {
+        return l10n.plansImportValidationError;
+      }
+
+      final plannedDuration = day['plannedDurationSeconds'];
+      if (plannedDuration is num && plannedDuration < 0) {
+        return l10n.plansImportValidationError;
+      }
     }
 
     return null;
@@ -750,6 +797,88 @@ class _ImportPreviewCard extends StatelessWidget {
               ),
             ],
           ),
+          if (preview.trainingDays.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(
+              l10n.plansImportPreviewDaysSection,
+              style: const TextStyle(
+                color: AppColors.accentDark,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
+              ),
+            ),
+            const SizedBox(height: 10),
+            for (final day in preview.trainingDays.take(3)) ...[
+              _ImportPreviewDayCard(day: day),
+              if (day != preview.trainingDays.take(3).last)
+                const SizedBox(height: 8),
+            ],
+            if (preview.trainingDays.length > 3) ...[
+              const SizedBox(height: 10),
+              Text(
+                l10n.plansImportPreviewMoreDays(
+                  preview.trainingDays.length - 3,
+                ),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) {
+      return '-';
+    }
+
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year.toString().padLeft(4, '0');
+    return '$day.$month.$year';
+  }
+}
+
+class _ImportPreviewDayCard extends StatelessWidget {
+  const _ImportPreviewDayCard({required this.day});
+
+  final TrainingDay day;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceStrong,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            day.title,
+            style: const TextStyle(
+              color: AppColors.text,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '${_formatDate(day.scheduledDate)} • ${activityTypeLabel(context, day.activityType)}',
+            style: const TextStyle(color: AppColors.muted),
+          ),
+          if (day.plannedDistanceMeters != null ||
+              day.plannedDurationSeconds != null) ...[
+            const SizedBox(height: 6),
+            Text(
+              '${formatDistanceKm(day.plannedDistanceMeters)} / ${formatDurationShort(day.plannedDurationSeconds)}',
+              style: const TextStyle(color: AppColors.text),
+            ),
+          ],
         ],
       ),
     );
@@ -805,6 +934,13 @@ class _PreviewMetaChip extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ImportedPlanData {
+  const _ImportedPlanData({required this.rawJson, required this.plan});
+
+  final Map<String, dynamic> rawJson;
+  final TrainingPlan plan;
 }
 
 class _EditorHeader extends StatelessWidget {

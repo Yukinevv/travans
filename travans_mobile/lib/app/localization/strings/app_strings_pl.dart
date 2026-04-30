@@ -239,6 +239,8 @@ const Map<String, String> appStringsPl = {
   'plansImportPreviewType': 'Typ planu',
   'plansImportPreviewStart': 'Start',
   'plansImportPreviewStravaStart': 'Start oceny Strava',
+  'plansImportPreviewDaysSection': 'Pierwsze dni treningowe',
+  'plansImportPreviewMoreDays': '... i jeszcze {count} dni',
   'errorAuthSessionExpired': 'Sesja wygasła. Zaloguj się ponownie.',
   'errorAuthLoginFailed': 'Logowanie nie powiodło się.',
   'errorAuthRegisterFailed': 'Rejestracja nie powiodła się.',
