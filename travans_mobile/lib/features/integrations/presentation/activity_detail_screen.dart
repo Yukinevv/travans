@@ -175,8 +175,9 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
   }
 
   String _readableMessage(Object error) {
+    final l10n = AppLocalizations.of(context);
     if (error is ApiException) {
-      return error.message;
+      return l10n.resolveError(error.code ?? error.message);
     }
 
     return error.toString().replaceFirst('Exception: ', '');

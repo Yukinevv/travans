@@ -428,6 +428,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
   }
 
   Future<void> _handleStravaCallback(Uri uri) async {
+    final l10n = AppLocalizations.of(context);
     final error = uri.queryParameters['error'];
     if (error != null && error.isNotEmpty) {
       if (!mounted) {
@@ -435,7 +436,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
       }
 
       setState(() {
-        _errorMessage = 'Autoryzacja Stravy zostala anulowana lub odrzucona.';
+        _errorMessage = l10n.resolveError('errorStravaAuthorizationDenied');
       });
       return;
     }
@@ -467,8 +468,9 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
   }
 
   String _readableMessage(Object error) {
+    final l10n = AppLocalizations.of(context);
     if (error is ApiException) {
-      return error.message;
+      return l10n.resolveError(error.code ?? error.message);
     }
 
     return error.toString().replaceFirst('Exception: ', '');

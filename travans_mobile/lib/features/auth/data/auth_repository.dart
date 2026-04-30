@@ -90,8 +90,8 @@ class AuthRepository {
       final account = await _googleSignIn.signIn();
       if (account == null) {
         throw ApiException(
-          'Logowanie Google zostało anulowane.',
-          code: 'GOOGLE_SIGN_IN_CANCELED',
+          '',
+          code: 'errorGoogleSignInCanceled',
         );
       }
 
@@ -100,8 +100,8 @@ class AuthRepository {
 
       if (idToken == null || idToken.isEmpty) {
         throw ApiException(
-          'Google nie zwrócił tokena ID.',
-          code: 'GOOGLE_ID_TOKEN_MISSING',
+          '',
+          code: 'errorGoogleIdTokenMissing',
         );
       }
 
@@ -124,7 +124,7 @@ class AuthRepository {
     } on DioException catch (error) {
       throw _mapError(error);
     } catch (_) {
-      throw ApiException('Logowanie Google nie powiodło się.');
+      throw ApiException('', code: 'errorAuthGoogleFailed');
     }
   }
 
@@ -164,30 +164,30 @@ class AuthRepository {
       }
     }
 
-    return ApiException('Nie udało się wykonać zadania.');
+    return ApiException('', code: 'errorGenericTaskFailed');
   }
 
   ApiException _mapGooglePlatformError(PlatformException error) {
     switch (error.code) {
       case GoogleSignIn.kSignInCanceledError:
         return ApiException(
-          'Logowanie Google zostało anulowane.',
-          code: error.code,
+          '',
+          code: 'errorGoogleSignInCanceled',
         );
       case GoogleSignIn.kNetworkError:
         return ApiException(
-          'Błąd sieci podczas logowania Google. Spróbuj ponownie.',
-          code: error.code,
+          '',
+          code: 'errorGoogleNetwork',
         );
       case GoogleSignIn.kSignInFailedError:
         return ApiException(
-          'Logowanie Google nie jest poprawnie skonfigurowane dla Androida. Sprawdź package name, SHA-1 i OAuth client w Google Cloud.',
-          code: error.code,
+          '',
+          code: 'errorGoogleAndroidConfig',
         );
       case GoogleSignIn.kSignInRequiredError:
         return ApiException(
-          'Wymagane jest ponowne uruchomienie logowania Google.',
-          code: error.code,
+          '',
+          code: 'errorGoogleRestartRequired',
         );
       default:
         if ((error.message ?? '').trim().isNotEmpty) {
@@ -195,8 +195,8 @@ class AuthRepository {
         }
 
         return ApiException(
-          'Logowanie Google zakończyło się błędem platformy.',
-          code: error.code,
+          '',
+          code: 'errorGooglePlatform',
         );
     }
   }

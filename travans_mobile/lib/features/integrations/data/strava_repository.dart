@@ -34,7 +34,7 @@ class StravaRepository {
       );
       return StravaConnectionStatus.fromJson(response.data ?? {});
     } on DioException catch (error) {
-      throw _mapError(error, fallback: 'Nie udało się pobrać statusu Stravy.');
+      throw _mapError(error, fallback: 'errorStravaStatusLoad');
     }
   }
 
@@ -58,7 +58,7 @@ class StravaRepository {
     } on DioException catch (error) {
       throw _mapError(
         error,
-        fallback: 'Nie udało się pobrać aktywności ze Stravy.',
+        fallback: 'errorStravaActivitiesLoad',
       );
     }
   }
@@ -72,7 +72,7 @@ class StravaRepository {
     } on DioException catch (error) {
       throw _mapError(
         error,
-        fallback: 'Nie udało się pobrać szczegółów aktywności.',
+        fallback: 'errorStravaActivityLoad',
       );
     }
   }
@@ -86,7 +86,7 @@ class StravaRepository {
     } on DioException catch (error) {
       throw _mapError(
         error,
-        fallback: 'Nie udało się zakończyć autoryzacji Stravy.',
+        fallback: 'errorStravaExchange',
       );
     }
   }
@@ -101,7 +101,7 @@ class StravaRepository {
     } on DioException catch (error) {
       throw _mapError(
         error,
-        fallback: 'Nie udało się zsynchronizować aktywności.',
+        fallback: 'errorStravaSync',
       );
     }
   }
@@ -110,7 +110,7 @@ class StravaRepository {
     final uri = Uri.parse(authorizationUrl);
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!opened) {
-      throw ApiException('Nie udało się otworzyć logowania Stravy.');
+      throw ApiException('', code: 'errorStravaOpenLogin');
     }
   }
 
@@ -124,6 +124,6 @@ class StravaRepository {
       }
     }
 
-    return ApiException(fallback);
+    return ApiException('', code: fallback);
   }
 }

@@ -45,12 +45,12 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
           if (state.errorMessage.isNotEmpty && state.plans.isEmpty) ...[
             const SizedBox(height: 16),
             ErrorView(
-              message: state.errorMessage,
+              message: l10n.resolveError(state.errorMessage),
               onRetry: () => ref.read(plansControllerProvider.notifier).reload(),
             ),
           ] else if (state.errorMessage.isNotEmpty) ...[
             const SizedBox(height: 16),
-            _InlineErrorBanner(message: state.errorMessage),
+            _InlineErrorBanner(message: l10n.resolveError(state.errorMessage)),
           ],
           if (state.plans.isEmpty && !state.loading && state.errorMessage.isEmpty)
             Padding(
@@ -155,7 +155,11 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(error ?? l10n.plansDeletedSnackbar(plan.name)),
+        content: Text(
+          error == null
+              ? l10n.plansDeletedSnackbar(plan.name)
+              : l10n.resolveError(error),
+        ),
         backgroundColor: error == null ? null : AppColors.danger,
       ),
     );

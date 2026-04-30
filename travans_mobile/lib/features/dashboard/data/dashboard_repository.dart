@@ -23,7 +23,7 @@ class DashboardRepository {
 
       return DashboardSummary.fromJson(response.data ?? const {});
     } on DioException catch (error) {
-      throw _mapError(error, 'Nie udało się pobrać danych dashboardu.');
+      throw _mapError(error, 'errorDashboardSummaryLoad');
     }
   }
 
@@ -37,6 +37,6 @@ class DashboardRepository {
       }
     }
 
-    return ApiException(fallback);
+    return ApiException('', code: fallback);
   }
 }

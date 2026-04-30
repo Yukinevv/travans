@@ -243,6 +243,33 @@ class AppLocalizations {
   String get plansSavePlan => _string('plansSavePlan');
   String get plansSaveChanges => _string('plansSaveChanges');
   String get plansInvalidPlanId => _string('plansInvalidPlanId');
+  String get errorAuthSessionExpired => _string('errorAuthSessionExpired');
+  String get errorAuthLoginFailed => _string('errorAuthLoginFailed');
+  String get errorAuthRegisterFailed => _string('errorAuthRegisterFailed');
+  String get errorAuthGoogleFailed => _string('errorAuthGoogleFailed');
+  String get errorGoogleSignInCanceled => _string('errorGoogleSignInCanceled');
+  String get errorGoogleIdTokenMissing => _string('errorGoogleIdTokenMissing');
+  String get errorGenericTaskFailed => _string('errorGenericTaskFailed');
+  String get errorGoogleNetwork => _string('errorGoogleNetwork');
+  String get errorGoogleAndroidConfig => _string('errorGoogleAndroidConfig');
+  String get errorGoogleRestartRequired =>
+      _string('errorGoogleRestartRequired');
+  String get errorGooglePlatform => _string('errorGooglePlatform');
+  String get errorDashboardPlansLoad => _string('errorDashboardPlansLoad');
+  String get errorDashboardSummaryLoad => _string('errorDashboardSummaryLoad');
+  String get errorPlansListLoad => _string('errorPlansListLoad');
+  String get errorPlanLoad => _string('errorPlanLoad');
+  String get errorPlanCreate => _string('errorPlanCreate');
+  String get errorPlanUpdate => _string('errorPlanUpdate');
+  String get errorPlanDelete => _string('errorPlanDelete');
+  String get errorStravaStatusLoad => _string('errorStravaStatusLoad');
+  String get errorStravaActivitiesLoad => _string('errorStravaActivitiesLoad');
+  String get errorStravaActivityLoad => _string('errorStravaActivityLoad');
+  String get errorStravaExchange => _string('errorStravaExchange');
+  String get errorStravaSync => _string('errorStravaSync');
+  String get errorStravaOpenLogin => _string('errorStravaOpenLogin');
+  String get errorStravaAuthorizationDenied =>
+      _string('errorStravaAuthorizationDenied');
 
   String helloUser(String name) {
     return _string('helloUser').replaceFirst('{name}', name);
@@ -284,6 +311,46 @@ class AppLocalizations {
 
   String plansUpdatedSnackbar(String name) {
     return _string('plansUpdatedSnackbar').replaceFirst('{name}', name);
+  }
+
+  String resolveError(String? value, {String? fallback}) {
+    if (value == null || value.isEmpty) {
+      return fallback ?? errorStateTitle;
+    }
+
+    const knownCodes = {
+      'errorAuthSessionExpired',
+      'errorAuthLoginFailed',
+      'errorAuthRegisterFailed',
+      'errorAuthGoogleFailed',
+      'errorGoogleSignInCanceled',
+      'errorGoogleIdTokenMissing',
+      'errorGenericTaskFailed',
+      'errorGoogleNetwork',
+      'errorGoogleAndroidConfig',
+      'errorGoogleRestartRequired',
+      'errorGooglePlatform',
+      'errorDashboardPlansLoad',
+      'errorDashboardSummaryLoad',
+      'errorPlansListLoad',
+      'errorPlanLoad',
+      'errorPlanCreate',
+      'errorPlanUpdate',
+      'errorPlanDelete',
+      'errorStravaStatusLoad',
+      'errorStravaActivitiesLoad',
+      'errorStravaActivityLoad',
+      'errorStravaExchange',
+      'errorStravaSync',
+      'errorStravaOpenLogin',
+      'errorStravaAuthorizationDenied',
+    };
+
+    if (knownCodes.contains(value)) {
+      return _string(value);
+    }
+
+    return value;
   }
 }
 

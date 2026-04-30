@@ -77,7 +77,7 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
           _EditorHeader(isEditMode: widget.isEditMode),
           if (_errorMessage.isNotEmpty) ...[
             const SizedBox(height: 16),
-            _EditorErrorBanner(message: _errorMessage),
+            _EditorErrorBanner(message: l10n.resolveError(_errorMessage)),
           ],
           const SizedBox(height: 16),
           Card(
@@ -291,9 +291,9 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
             : plan.trainingDays.map(_EditableTrainingDay.fromPlanDay).toList(),
       );
     } on ApiException catch (error) {
-      _errorMessage = error.message;
+      _errorMessage = error.code ?? error.message;
     } catch (_) {
-      _errorMessage = 'Nie udało się pobrać planu.';
+      _errorMessage = 'errorPlanLoad';
     } finally {
       if (mounted) {
         setState(() {
@@ -405,13 +405,13 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
       context.go('/plans');
     } on ApiException catch (error) {
       setState(() {
-        _errorMessage = error.message;
+        _errorMessage = error.code ?? error.message;
       });
     } catch (_) {
       setState(() {
         _errorMessage = widget.isEditMode
-            ? 'Nie udało się zapisać zmian planu.'
-            : 'Nie udało się utworzyć planu.';
+            ? 'errorPlanUpdate'
+            : 'errorPlanCreate';
       });
     } finally {
       if (mounted) {

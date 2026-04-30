@@ -48,7 +48,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           if (state.errorMessage.isNotEmpty) ...[
             const SizedBox(height: 16),
             ErrorView(
-              message: state.errorMessage,
+              message: l10n.resolveError(state.errorMessage),
               onRetry: () =>
                   ref.read(dashboardControllerProvider.notifier).reload(),
             ),
