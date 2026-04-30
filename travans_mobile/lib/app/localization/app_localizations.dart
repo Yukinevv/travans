@@ -221,6 +221,7 @@ class AppLocalizations {
   String get plansEditorLoading => _string('plansEditorLoading');
   String get plansEditorSectionPlan => _string('plansEditorSectionPlan');
   String get plansEditorSectionDays => _string('plansEditorSectionDays');
+  String get plansEditorSectionImport => _string('plansEditorSectionImport');
   String get plansEditorDaysHint => _string('plansEditorDaysHint');
   String get plansEditorAddDay => _string('plansEditorAddDay');
   String get plansEditorAtLeastOneDay => _string('plansEditorAtLeastOneDay');
@@ -243,6 +244,27 @@ class AppLocalizations {
   String get plansSavePlan => _string('plansSavePlan');
   String get plansSaveChanges => _string('plansSaveChanges');
   String get plansInvalidPlanId => _string('plansInvalidPlanId');
+  String get plansImportTitle => _string('plansImportTitle');
+  String get plansImportDescription => _string('plansImportDescription');
+  String get plansImportPickFile => _string('plansImportPickFile');
+  String get plansImportSelectedFile => _string('plansImportSelectedFile');
+  String get plansImportPreviewTitle => _string('plansImportPreviewTitle');
+  String get plansImportApply => _string('plansImportApply');
+  String get plansImportReplaceNotice => _string('plansImportReplaceNotice');
+  String get plansImportNoPreview => _string('plansImportNoPreview');
+  String get plansImportInvalidFile => _string('plansImportInvalidFile');
+  String get plansImportReadError => _string('plansImportReadError');
+  String get plansImportInvalidJson => _string('plansImportInvalidJson');
+  String get plansImportValidationError =>
+      _string('plansImportValidationError');
+  String get plansImportApplied => _string('plansImportApplied');
+  String get plansImportPreviewDescription =>
+      _string('plansImportPreviewDescription');
+  String get plansImportPreviewDays => _string('plansImportPreviewDays');
+  String get plansImportPreviewType => _string('plansImportPreviewType');
+  String get plansImportPreviewStart => _string('plansImportPreviewStart');
+  String get plansImportPreviewStravaStart =>
+      _string('plansImportPreviewStravaStart');
   String get errorAuthSessionExpired => _string('errorAuthSessionExpired');
   String get errorAuthLoginFailed => _string('errorAuthLoginFailed');
   String get errorAuthRegisterFailed => _string('errorAuthRegisterFailed');

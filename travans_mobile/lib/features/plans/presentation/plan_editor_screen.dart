@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -36,6 +40,9 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
   DateTime? _startDate;
   DateTime? _stravaEvaluationStartDate;
   ActivityType _planType = ActivityType.run;
+  TrainingPlan? _importPreview;
+  String _importedFileName = '';
+  bool _importLoading = false;
   bool _loading = false;
   bool _saving = false;
   String _errorMessage = '';
@@ -78,6 +85,16 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
           if (_errorMessage.isNotEmpty) ...[
             const SizedBox(height: 16),
             _EditorErrorBanner(message: l10n.resolveError(_errorMessage)),
+          ],
+          if (!widget.isEditMode) ...[
+            const SizedBox(height: 16),
+            _ImportCard(
+              fileName: _importedFileName,
+              importLoading: _importLoading,
+              preview: _importPreview,
+              onPickFile: _pickJsonFile,
+              onApplyImport: _importPreview == null ? null : _applyImportPreview,
+            ),
           ],
           const SizedBox(height: 16),
           Card(
@@ -422,6 +439,144 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
     }
   }
 
+  Future<void> _pickJsonFile() async {
+    final l10n = AppLocalizations.of(context);
+    FocusScope.of(context).unfocus();
+
+    setState(() {
+      _importLoading = true;
+      _errorMessage = '';
+    });
+
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: const ['json'],
+        withData: true,
+      );
+
+      if (!mounted || result == null || result.files.isEmpty) {
+        return;
+      }
+
+      final file = result.files.single;
+      final fileName = file.name;
+      if (!fileName.toLowerCase().endsWith('.json')) {
+        setState(() {
+          _errorMessage = l10n.plansImportInvalidFile;
+        });
+        return;
+      }
+
+      String? content;
+      if (file.bytes != null) {
+        content = utf8.decode(file.bytes!);
+      } else if (file.path != null) {
+        content = await File(file.path!).readAsString();
+      }
+
+      if (content == null || content.trim().isEmpty) {
+        setState(() {
+          _errorMessage = l10n.plansImportReadError;
+        });
+        return;
+      }
+
+      final preview = _parseImportedPlan(content);
+      final validationError = _validateImportedPlan(preview);
+      if (validationError != null) {
+        setState(() {
+          _errorMessage = validationError;
+          _importPreview = null;
+          _importedFileName = fileName;
+        });
+        return;
+      }
+
+      setState(() {
+        _importPreview = preview;
+        _importedFileName = fileName;
+        _errorMessage = '';
+      });
+    } on FormatException {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _errorMessage = l10n.plansImportInvalidJson;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _errorMessage = l10n.plansImportReadError;
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _importLoading = false;
+        });
+      }
+    }
+  }
+
+  TrainingPlan _parseImportedPlan(String content) {
+    final decoded = jsonDecode(content);
+    if (decoded is! Map<String, dynamic>) {
+      throw const FormatException();
+    }
+
+    return TrainingPlan.fromJson(decoded);
+  }
+
+  String? _validateImportedPlan(TrainingPlan plan) {
+    final l10n = AppLocalizations.of(context);
+    if (plan.name.trim().isEmpty ||
+        plan.startDate == null ||
+        plan.trainingDays.isEmpty) {
+      return l10n.plansImportValidationError;
+    }
+
+    final hasInvalidDay = plan.trainingDays.any(
+      (day) =>
+          day.scheduledDate == null ||
+          day.title.trim().isEmpty,
+    );
+    if (hasInvalidDay) {
+      return l10n.plansImportValidationError;
+    }
+
+    return null;
+  }
+
+  void _applyImportPreview() {
+    final l10n = AppLocalizations.of(context);
+    final preview = _importPreview;
+    if (preview == null) {
+      return;
+    }
+
+    setState(() {
+      _nameController.text = preview.name;
+      _descriptionController.text = preview.description ?? '';
+      _startDate = preview.startDate;
+      _stravaEvaluationStartDate =
+          preview.stravaEvaluationStartDate ?? preview.startDate;
+      _planType = preview.planType;
+      _replaceDays(
+        preview.trainingDays
+            .map(_EditableTrainingDay.fromPlanDay)
+            .toList(),
+      );
+      _errorMessage = '';
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.plansImportApplied)),
+    );
+  }
+
   int? _parseNullableInt(String value) {
     final trimmed = value.trim();
     if (trimmed.isEmpty) {
@@ -429,6 +584,226 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
     }
 
     return int.tryParse(trimmed);
+  }
+}
+
+class _ImportCard extends StatelessWidget {
+  const _ImportCard({
+    required this.fileName,
+    required this.importLoading,
+    required this.preview,
+    required this.onPickFile,
+    required this.onApplyImport,
+  });
+
+  final String fileName;
+  final bool importLoading;
+  final TrainingPlan? preview;
+  final Future<void> Function() onPickFile;
+  final VoidCallback? onApplyImport;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.plansEditorSectionImport.toUpperCase(),
+              style: const TextStyle(
+                color: AppColors.accentDark,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.2,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              l10n.plansImportTitle,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.plansImportDescription,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: importLoading ? null : onPickFile,
+              icon: importLoading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.upload_file_rounded),
+              label: Text(l10n.plansImportPickFile),
+            ),
+            if (fileName.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                '${l10n.plansImportSelectedFile}: $fileName',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
+            const SizedBox(height: 16),
+            if (preview == null)
+              Text(
+                l10n.plansImportNoPreview,
+                style: Theme.of(context).textTheme.bodyLarge,
+              )
+            else
+              _ImportPreviewCard(preview: preview!),
+            if (preview != null) ...[
+              const SizedBox(height: 16),
+              Text(
+                l10n.plansImportReplaceNotice,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 12),
+              FilledButton.icon(
+                onPressed: onApplyImport,
+                icon: const Icon(Icons.playlist_add_check_rounded),
+                label: Text(l10n.plansImportApply),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ImportPreviewCard extends StatelessWidget {
+  const _ImportPreviewCard({required this.preview});
+
+  final TrainingPlan preview;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.plansImportPreviewTitle,
+            style: const TextStyle(
+              color: AppColors.text,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            preview.name,
+            style: const TextStyle(
+              color: AppColors.text,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          if (preview.description?.trim().isNotEmpty ?? false) ...[
+            const SizedBox(height: 8),
+            Text(
+              preview.description!,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              _PreviewMetaChip(
+                label: l10n.plansImportPreviewType,
+                value: activityTypeLabel(context, preview.planType),
+              ),
+              _PreviewMetaChip(
+                label: l10n.plansImportPreviewDays,
+                value: preview.trainingDays.length.toString(),
+              ),
+              _PreviewMetaChip(
+                label: l10n.plansImportPreviewStart,
+                value: _formatDate(preview.startDate),
+              ),
+              _PreviewMetaChip(
+                label: l10n.plansImportPreviewStravaStart,
+                value: _formatDate(
+                  preview.stravaEvaluationStartDate ?? preview.startDate,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) {
+      return '-';
+    }
+
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year.toString().padLeft(4, '0');
+    return '$day.$month.$year';
+  }
+}
+
+class _PreviewMetaChip extends StatelessWidget {
+  const _PreviewMetaChip({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceStrong,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.muted,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              color: AppColors.text,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
