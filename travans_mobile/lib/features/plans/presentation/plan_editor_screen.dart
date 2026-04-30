@@ -293,7 +293,7 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
     } on ApiException catch (error) {
       _errorMessage = error.message;
     } catch (_) {
-      _errorMessage = 'Nie udalo sie pobrac planu.';
+      _errorMessage = 'Nie udało się pobrać planu.';
     } finally {
       if (mounted) {
         setState(() {
@@ -410,8 +410,8 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
     } catch (_) {
       setState(() {
         _errorMessage = widget.isEditMode
-            ? 'Nie udalo sie zapisac zmian planu.'
-            : 'Nie udalo sie utworzyc planu.';
+            ? 'Nie udało się zapisać zmian planu.'
+            : 'Nie udało się utworzyć planu.';
       });
     } finally {
       if (mounted) {

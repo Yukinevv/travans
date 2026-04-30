@@ -51,7 +51,7 @@ class PlansController extends StateNotifier<PlansState> {
     } catch (_) {
       state = state.copyWith(
         loading: false,
-        errorMessage: 'Nie udalo sie pobrac listy planow.',
+        errorMessage: 'Nie udało się pobrać listy planów.',
       );
     }
   }
@@ -93,7 +93,7 @@ class PlansController extends StateNotifier<PlansState> {
       );
       return error.message;
     } catch (_) {
-      const message = 'Nie udalo sie usunac planu.';
+      const message = 'Nie udało się usunąć planu.';
       state = state.copyWith(
         clearDeletingPlanId: true,
         errorMessage: message,

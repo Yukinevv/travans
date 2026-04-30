@@ -664,7 +664,7 @@ class _TrainingDayCard extends StatelessWidget {
       return '-';
     }
 
-    const weekdays = ['pon', 'wt', 'sr', 'czw', 'pt', 'sob', 'niedz'];
+    const weekdays = ['pon.', 'wt.', 'śr.', 'czw.', 'pt.', 'sob.', 'niedz.'];
     final weekday = weekdays[(date.weekday - 1).clamp(0, 6)];
     return '$weekday, ${_formatDate(date)}';
   }

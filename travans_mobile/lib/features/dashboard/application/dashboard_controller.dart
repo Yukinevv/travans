@@ -63,7 +63,7 @@ class DashboardController extends StateNotifier<DashboardState> {
       state = state.copyWith(
         loading: false,
         loadingPlans: false,
-        errorMessage: 'Nie udalo sie pobrac listy planow.',
+        errorMessage: 'Nie udało się pobrać listy planów.',
       );
     }
   }
@@ -101,7 +101,7 @@ class DashboardController extends StateNotifier<DashboardState> {
     } catch (_) {
       state = state.copyWith(
         loading: false,
-        errorMessage: 'Nie udalo sie pobrac danych dashboardu.',
+        errorMessage: 'Nie udało się pobrać danych dashboardu.',
       );
     }
   }

@@ -90,7 +90,7 @@ class AuthRepository {
       final account = await _googleSignIn.signIn();
       if (account == null) {
         throw ApiException(
-          'Logowanie Google zostalo anulowane.',
+          'Logowanie Google zostało anulowane.',
           code: 'GOOGLE_SIGN_IN_CANCELED',
         );
       }
@@ -100,7 +100,7 @@ class AuthRepository {
 
       if (idToken == null || idToken.isEmpty) {
         throw ApiException(
-          'Google nie zwrocil tokena ID.',
+          'Google nie zwrócił tokena ID.',
           code: 'GOOGLE_ID_TOKEN_MISSING',
         );
       }
@@ -124,7 +124,7 @@ class AuthRepository {
     } on DioException catch (error) {
       throw _mapError(error);
     } catch (_) {
-      throw ApiException('Logowanie Google nie powiodlo sie.');
+      throw ApiException('Logowanie Google nie powiodło się.');
     }
   }
 
@@ -164,24 +164,24 @@ class AuthRepository {
       }
     }
 
-    return ApiException('Nie udalo sie wykonac zadania.');
+    return ApiException('Nie udało się wykonać zadania.');
   }
 
   ApiException _mapGooglePlatformError(PlatformException error) {
     switch (error.code) {
       case GoogleSignIn.kSignInCanceledError:
         return ApiException(
-          'Logowanie Google zostalo anulowane.',
+          'Logowanie Google zostało anulowane.',
           code: error.code,
         );
       case GoogleSignIn.kNetworkError:
         return ApiException(
-          'Blad sieci podczas logowania Google. Sprobuj ponownie.',
+          'Błąd sieci podczas logowania Google. Spróbuj ponownie.',
           code: error.code,
         );
       case GoogleSignIn.kSignInFailedError:
         return ApiException(
-          'Logowanie Google nie jest poprawnie skonfigurowane dla Androida. Sprawdz package name, SHA-1 i OAuth client w Google Cloud.',
+          'Logowanie Google nie jest poprawnie skonfigurowane dla Androida. Sprawdź package name, SHA-1 i OAuth client w Google Cloud.',
           code: error.code,
         );
       case GoogleSignIn.kSignInRequiredError:
@@ -195,7 +195,7 @@ class AuthRepository {
         }
 
         return ApiException(
-          'Logowanie Google zakonczylo sie bledem platformy.',
+          'Logowanie Google zakończyło się błędem platformy.',
           code: error.code,
         );
     }

@@ -23,7 +23,7 @@ class PlansRepository {
           .map((item) => TrainingPlan.fromJson(Map<String, dynamic>.from(item)))
           .toList();
     } on DioException catch (error) {
-      throw _mapError(error, 'Nie udalo sie pobrac listy planow.');
+      throw _mapError(error, 'Nie udało się pobrać listy planów.');
     }
   }
 
@@ -32,7 +32,7 @@ class PlansRepository {
       final response = await _dio.get<Map<String, dynamic>>('/plans/$planId');
       return TrainingPlan.fromJson(response.data ?? const {});
     } on DioException catch (error) {
-      throw _mapError(error, 'Nie udalo sie pobrac planu.');
+      throw _mapError(error, 'Nie udało się pobrać planu.');
     }
   }
 
@@ -44,7 +44,7 @@ class PlansRepository {
       );
       return TrainingPlan.fromJson(response.data ?? const {});
     } on DioException catch (error) {
-      throw _mapError(error, 'Nie udalo sie utworzyc planu.');
+      throw _mapError(error, 'Nie udało się utworzyć planu.');
     }
   }
 
@@ -59,7 +59,7 @@ class PlansRepository {
       );
       return TrainingPlan.fromJson(response.data ?? const {});
     } on DioException catch (error) {
-      throw _mapError(error, 'Nie udalo sie zapisac zmian planu.');
+      throw _mapError(error, 'Nie udało się zapisać zmian planu.');
     }
   }
 
@@ -67,7 +67,7 @@ class PlansRepository {
     try {
       await _dio.delete<void>('/plans/$planId');
     } on DioException catch (error) {
-      throw _mapError(error, 'Nie udalo sie usunac planu.');
+      throw _mapError(error, 'Nie udało się usunąć planu.');
     }
   }
 

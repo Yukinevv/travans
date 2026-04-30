@@ -22,7 +22,7 @@ class AuthController extends StateNotifier<AuthState> {
       if (event == SessionEvent.invalidated) {
         state = AuthState(
           status: AuthStatus.unauthenticated,
-          errorMessage: 'Sesja wygasla. Zaloguj sie ponownie.',
+          errorMessage: 'Sesja wygasła. Zaloguj się ponownie.',
         );
       }
     });
@@ -70,7 +70,7 @@ class AuthController extends StateNotifier<AuthState> {
     } catch (_) {
       state = AuthState(
         status: AuthStatus.unauthenticated,
-        errorMessage: 'Logowanie nie powiodlo sie.',
+        errorMessage: 'Logowanie nie powiodło się.',
       );
       return false;
     }
@@ -105,7 +105,7 @@ class AuthController extends StateNotifier<AuthState> {
     } catch (_) {
       state = AuthState(
         status: AuthStatus.unauthenticated,
-        errorMessage: 'Rejestracja nie powiodla sie.',
+        errorMessage: 'Rejestracja nie powiodła się.',
       );
       return false;
     }
@@ -127,7 +127,7 @@ class AuthController extends StateNotifier<AuthState> {
     } catch (_) {
       state = AuthState(
         status: AuthStatus.unauthenticated,
-        errorMessage: 'Logowanie Google nie powiodlo sie.',
+        errorMessage: 'Logowanie Google nie powiodło się.',
       );
       return false;
     }
