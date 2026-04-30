@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/localization/app_localizations.dart';
 import '../../../app/theme/app_colors.dart';
@@ -37,7 +38,10 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
       child: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          _PlansHeader(planCount: state.plans.length),
+          _PlansHeader(
+            planCount: state.plans.length,
+            onCreate: () => context.go('/plans/new'),
+          ),
           if (state.errorMessage.isNotEmpty && state.plans.isEmpty) ...[
             const SizedBox(height: 16),
             ErrorView(
@@ -72,6 +76,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                 },
                 onPin: () => _confirmPin(plan),
                 onDelete: () => _confirmDelete(plan),
+                onEdit: () => context.go('/plans/${plan.id}/edit'),
               ),
               const SizedBox(height: 14),
             ],
@@ -158,9 +163,10 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
 }
 
 class _PlansHeader extends StatelessWidget {
-  const _PlansHeader({required this.planCount});
+  const _PlansHeader({required this.planCount, required this.onCreate});
 
   final int planCount;
+  final VoidCallback onCreate;
 
   @override
   Widget build(BuildContext context) {
@@ -191,6 +197,12 @@ class _PlansHeader extends StatelessWidget {
               l10n.plansHeaderSubtitle(planCount),
               style: Theme.of(context).textTheme.bodyLarge,
             ),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: onCreate,
+              icon: const Icon(Icons.add_rounded),
+              label: Text(l10n.plansCreateAction),
+            ),
           ],
         ),
       ),
@@ -207,6 +219,7 @@ class _PlanCard extends StatelessWidget {
     required this.onToggle,
     required this.onPin,
     required this.onDelete,
+    required this.onEdit,
   });
 
   final TrainingPlan plan;
@@ -216,6 +229,7 @@ class _PlanCard extends StatelessWidget {
   final VoidCallback onToggle;
   final VoidCallback onPin;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -319,6 +333,15 @@ class _PlanCard extends StatelessWidget {
                               : l10n.plansShowOnDashboard,
                         ),
                       ),
+                    ),
+                    const SizedBox(width: 10),
+                    IconButton.filledTonal(
+                      onPressed: onEdit,
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.accent.withOpacity(0.12),
+                        foregroundColor: AppColors.accentDark,
+                      ),
+                      icon: const Icon(Icons.edit_outlined),
                     ),
                     const SizedBox(width: 10),
                     IconButton.filledTonal(

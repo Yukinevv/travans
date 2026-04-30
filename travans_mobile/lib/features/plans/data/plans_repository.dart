@@ -27,6 +27,42 @@ class PlansRepository {
     }
   }
 
+  Future<TrainingPlan> getPlan(int planId) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>('/plans/$planId');
+      return TrainingPlan.fromJson(response.data ?? const {});
+    } on DioException catch (error) {
+      throw _mapError(error, 'Nie udalo sie pobrac planu.');
+    }
+  }
+
+  Future<TrainingPlan> createPlan(TrainingPlanUpsertPayload payload) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/plans',
+        data: payload.toJson(),
+      );
+      return TrainingPlan.fromJson(response.data ?? const {});
+    } on DioException catch (error) {
+      throw _mapError(error, 'Nie udalo sie utworzyc planu.');
+    }
+  }
+
+  Future<TrainingPlan> updatePlan(
+    int planId,
+    TrainingPlanUpsertPayload payload,
+  ) async {
+    try {
+      final response = await _dio.put<Map<String, dynamic>>(
+        '/plans/$planId',
+        data: payload.toJson(),
+      );
+      return TrainingPlan.fromJson(response.data ?? const {});
+    } on DioException catch (error) {
+      throw _mapError(error, 'Nie udalo sie zapisac zmian planu.');
+    }
+  }
+
   Future<void> deletePlan(int planId) async {
     try {
       await _dio.delete<void>('/plans/$planId');

@@ -9,6 +9,8 @@ import '../../features/auth/presentation/register_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/integrations/presentation/activity_detail_screen.dart';
 import '../../features/integrations/presentation/integrations_screen.dart';
+import '../../features/plans/data/plans_repository.dart';
+import '../../features/plans/presentation/plan_editor_screen.dart';
 import '../../features/plans/presentation/plans_screen.dart';
 import '../../shared/widgets/app_scaffold.dart';
 import '../../shared/widgets/loading_view.dart';
@@ -48,6 +50,31 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/plans',
             builder: (context, state) => const PlansScreen(),
+          ),
+          GoRoute(
+            path: '/plans/new',
+            builder: (context, state) => PlanEditorScreen(
+              repository: ref.read(plansRepositoryProvider),
+            ),
+          ),
+          GoRoute(
+            path: '/plans/:planId/edit',
+            builder: (context, state) {
+              final planId = int.tryParse(state.pathParameters['planId'] ?? '');
+              if (planId == null) {
+                final l10n = AppLocalizations.of(context);
+                return Scaffold(
+                  body: SafeArea(
+                    child: Center(child: Text(l10n.plansInvalidPlanId)),
+                  ),
+                );
+              }
+
+              return PlanEditorScreen(
+                repository: ref.read(plansRepositoryProvider),
+                planId: planId,
+              );
+            },
           ),
           GoRoute(
             path: '/integrations',

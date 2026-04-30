@@ -42,6 +42,62 @@ class TrainingPlan {
   }
 }
 
+class TrainingPlanUpsertPayload {
+  const TrainingPlanUpsertPayload({
+    required this.name,
+    required this.description,
+    required this.startDate,
+    required this.stravaEvaluationStartDate,
+    required this.planType,
+    required this.trainingDays,
+  });
+
+  final String name;
+  final String? description;
+  final DateTime startDate;
+  final DateTime? stravaEvaluationStartDate;
+  final ActivityType planType;
+  final List<TrainingDayUpsertPayload> trainingDays;
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'description': description?.trim().isEmpty ?? true ? null : description,
+    'startDate': _formatDateOnly(startDate),
+    'stravaEvaluationStartDate': stravaEvaluationStartDate == null
+        ? null
+        : _formatDateOnly(stravaEvaluationStartDate!),
+    'planType': planType.apiValue,
+    'trainingDays': trainingDays.map((day) => day.toJson()).toList(),
+  };
+}
+
+class TrainingDayUpsertPayload {
+  const TrainingDayUpsertPayload({
+    required this.scheduledDate,
+    required this.title,
+    required this.activityType,
+    required this.plannedDistanceMeters,
+    required this.plannedDurationSeconds,
+    required this.notes,
+  });
+
+  final DateTime scheduledDate;
+  final String title;
+  final ActivityType activityType;
+  final int? plannedDistanceMeters;
+  final int? plannedDurationSeconds;
+  final String? notes;
+
+  Map<String, dynamic> toJson() => {
+    'scheduledDate': _formatDateOnly(scheduledDate),
+    'title': title,
+    'activityType': activityType.apiValue,
+    'plannedDistanceMeters': plannedDistanceMeters,
+    'plannedDurationSeconds': plannedDurationSeconds,
+    'notes': notes?.trim().isEmpty ?? true ? null : notes,
+  };
+}
+
 class TrainingDay {
   const TrainingDay({
     required this.id,
@@ -150,4 +206,12 @@ DateTime? _parseDateTime(String? value) {
   }
 
   return DateTime.tryParse(value);
+}
+
+String _formatDateOnly(DateTime value) {
+  final normalized = DateTime(value.year, value.month, value.day);
+  final year = normalized.year.toString().padLeft(4, '0');
+  final month = normalized.month.toString().padLeft(2, '0');
+  final day = normalized.day.toString().padLeft(2, '0');
+  return '$year-$month-$day';
 }

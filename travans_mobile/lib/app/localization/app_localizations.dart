@@ -182,6 +182,7 @@ class AppLocalizations {
       'plansHeaderSubtitleZero': 'Nie masz jeszcze zadnych planow.',
       'plansHeaderSubtitleOne': 'Masz 1 zapisany plan treningowy.',
       'plansHeaderSubtitleMany': 'Masz {count} zapisanych planow treningowych.',
+      'plansCreateAction': 'Nowy plan',
       'plansEmptyTitle': 'Brak planow treningowych',
       'plansEmptyDescription':
           'Gdy dodasz pierwszy plan, zobaczysz tu jego szczegoly i dni treningowe.',
@@ -210,6 +211,39 @@ class AppLocalizations {
       'plansPinnedSnackbar':
           'Plan "{name}" jest teraz widoczny na dashboardzie.',
       'plansDeletedSnackbar': 'Plan "{name}" zostal usuniety.',
+      'plansCreatedSnackbar': 'Plan "{name}" zostal utworzony.',
+      'plansUpdatedSnackbar': 'Plan "{name}" zostal zaktualizowany.',
+      'plansCreateTitle': 'Nowy plan treningowy',
+      'plansEditTitle': 'Edytuj plan treningowy',
+      'plansCreateSubtitle':
+          'Zbuduj plan, dodaj dni treningowe i przygotuj go pod analize Stravy.',
+      'plansEditSubtitle':
+          'Zmien dane planu i uporzadkuj dni treningowe bez wychodzenia z aplikacji.',
+      'plansEditorKicker': 'Edytor planu',
+      'plansEditorLoading': 'Ladowanie formularza planu...',
+      'plansEditorSectionPlan': 'Dane planu',
+      'plansEditorSectionDays': 'Dni treningowe',
+      'plansEditorDaysHint':
+          'Ustaw kolejnosc dni, terminy i planowane wartosci treningowe.',
+      'plansEditorAddDay': 'Dodaj dzien',
+      'plansEditorAtLeastOneDay': 'Plan musi zawierac co najmniej jeden dzien treningowy.',
+      'plansEditorName': 'Nazwa planu',
+      'plansEditorDescription': 'Opis',
+      'plansEditorStartDate': 'Data startu',
+      'plansEditorStravaStartDate': 'Start oceny Strava',
+      'plansEditorPlanType': 'Typ planu',
+      'plansEditorDayDate': 'Termin',
+      'plansEditorDayTitle': 'Tytul treningu',
+      'plansEditorDayActivityType': 'Typ aktywnosci',
+      'plansEditorDayDistance': 'Planowany dystans (m)',
+      'plansEditorDayDuration': 'Planowany czas (s)',
+      'plansEditorDayNotes': 'Notatki',
+      'plansEditorValidationError':
+          'Uzupelnij wymagane pola planu i wszystkich dni treningowych.',
+      'plansEditorInvalidNumber': 'Podaj poprawna liczbe dodatnia lub zostaw pole puste.',
+      'plansSavePlan': 'Zapisz plan',
+      'plansSaveChanges': 'Zapisz zmiany',
+      'plansInvalidPlanId': 'Nieprawidlowe id planu',
       'helloUser': 'Witaj, {name}',
     },
     'en': {
@@ -367,6 +401,7 @@ class AppLocalizations {
       'plansHeaderSubtitleZero': 'You do not have any plans yet.',
       'plansHeaderSubtitleOne': 'You have 1 saved training plan.',
       'plansHeaderSubtitleMany': 'You have {count} saved training plans.',
+      'plansCreateAction': 'New plan',
       'plansEmptyTitle': 'No training plans',
       'plansEmptyDescription':
           'Once you add your first plan, you will see its details and training days here.',
@@ -395,6 +430,40 @@ class AppLocalizations {
       'plansPinnedSnackbar':
           'The "{name}" plan is now visible on the dashboard.',
       'plansDeletedSnackbar': 'The "{name}" plan has been deleted.',
+      'plansCreatedSnackbar': 'The "{name}" plan has been created.',
+      'plansUpdatedSnackbar': 'The "{name}" plan has been updated.',
+      'plansCreateTitle': 'New training plan',
+      'plansEditTitle': 'Edit training plan',
+      'plansCreateSubtitle':
+          'Build a plan, add training days, and prepare it for Strava analysis.',
+      'plansEditSubtitle':
+          'Update plan details and reorder training days without leaving the app.',
+      'plansEditorKicker': 'Plan editor',
+      'plansEditorLoading': 'Loading plan form...',
+      'plansEditorSectionPlan': 'Plan details',
+      'plansEditorSectionDays': 'Training days',
+      'plansEditorDaysHint':
+          'Set the order of days, schedule dates, and planned workout values.',
+      'plansEditorAddDay': 'Add day',
+      'plansEditorAtLeastOneDay': 'A plan must contain at least one training day.',
+      'plansEditorName': 'Plan name',
+      'plansEditorDescription': 'Description',
+      'plansEditorStartDate': 'Start date',
+      'plansEditorStravaStartDate': 'Strava evaluation start',
+      'plansEditorPlanType': 'Plan type',
+      'plansEditorDayDate': 'Schedule date',
+      'plansEditorDayTitle': 'Workout title',
+      'plansEditorDayActivityType': 'Activity type',
+      'plansEditorDayDistance': 'Planned distance (m)',
+      'plansEditorDayDuration': 'Planned duration (s)',
+      'plansEditorDayNotes': 'Notes',
+      'plansEditorValidationError':
+          'Fill in the required plan fields and all required training day fields.',
+      'plansEditorInvalidNumber':
+          'Enter a valid positive number or leave the field empty.',
+      'plansSavePlan': 'Save plan',
+      'plansSaveChanges': 'Save changes',
+      'plansInvalidPlanId': 'Invalid plan id',
       'helloUser': 'Hello, {name}',
     },
   };
@@ -558,6 +627,7 @@ class AppLocalizations {
   String get plansLoading => _string('plansLoading');
   String get plansHeaderKicker => _string('plansHeaderKicker');
   String get plansHeaderTitle => _string('plansHeaderTitle');
+  String get plansCreateAction => _string('plansCreateAction');
   String get plansEmptyTitle => _string('plansEmptyTitle');
   String get plansEmptyDescription => _string('plansEmptyDescription');
   String get plansTypeLabel => _string('plansTypeLabel');
@@ -578,6 +648,36 @@ class AppLocalizations {
   String get plansMatchedActivityLabel => _string('plansMatchedActivityLabel');
   String get plansPinDialogTitle => _string('plansPinDialogTitle');
   String get plansDeleteDialogTitle => _string('plansDeleteDialogTitle');
+  String get plansCreateTitle => _string('plansCreateTitle');
+  String get plansEditTitle => _string('plansEditTitle');
+  String get plansCreateSubtitle => _string('plansCreateSubtitle');
+  String get plansEditSubtitle => _string('plansEditSubtitle');
+  String get plansEditorKicker => _string('plansEditorKicker');
+  String get plansEditorLoading => _string('plansEditorLoading');
+  String get plansEditorSectionPlan => _string('plansEditorSectionPlan');
+  String get plansEditorSectionDays => _string('plansEditorSectionDays');
+  String get plansEditorDaysHint => _string('plansEditorDaysHint');
+  String get plansEditorAddDay => _string('plansEditorAddDay');
+  String get plansEditorAtLeastOneDay => _string('plansEditorAtLeastOneDay');
+  String get plansEditorName => _string('plansEditorName');
+  String get plansEditorDescription => _string('plansEditorDescription');
+  String get plansEditorStartDate => _string('plansEditorStartDate');
+  String get plansEditorStravaStartDate =>
+      _string('plansEditorStravaStartDate');
+  String get plansEditorPlanType => _string('plansEditorPlanType');
+  String get plansEditorDayDate => _string('plansEditorDayDate');
+  String get plansEditorDayTitle => _string('plansEditorDayTitle');
+  String get plansEditorDayActivityType =>
+      _string('plansEditorDayActivityType');
+  String get plansEditorDayDistance => _string('plansEditorDayDistance');
+  String get plansEditorDayDuration => _string('plansEditorDayDuration');
+  String get plansEditorDayNotes => _string('plansEditorDayNotes');
+  String get plansEditorValidationError =>
+      _string('plansEditorValidationError');
+  String get plansEditorInvalidNumber => _string('plansEditorInvalidNumber');
+  String get plansSavePlan => _string('plansSavePlan');
+  String get plansSaveChanges => _string('plansSaveChanges');
+  String get plansInvalidPlanId => _string('plansInvalidPlanId');
 
   String helloUser(String name) {
     return _string('helloUser').replaceFirst('{name}', name);
@@ -611,6 +711,14 @@ class AppLocalizations {
 
   String plansDeletedSnackbar(String name) {
     return _string('plansDeletedSnackbar').replaceFirst('{name}', name);
+  }
+
+  String plansCreatedSnackbar(String name) {
+    return _string('plansCreatedSnackbar').replaceFirst('{name}', name);
+  }
+
+  String plansUpdatedSnackbar(String name) {
+    return _string('plansUpdatedSnackbar').replaceFirst('{name}', name);
   }
 }
 
