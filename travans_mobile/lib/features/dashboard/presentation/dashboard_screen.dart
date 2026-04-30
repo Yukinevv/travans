@@ -158,9 +158,7 @@ class _DashboardHeader extends ConsumerWidget {
             DropdownButtonFormField<int?>(
               isExpanded: true,
               value: state.selectedPlanId,
-              decoration: InputDecoration(
-                labelText: l10n.dashboardDisplayedPlan,
-              ),
+              decoration: InputDecoration(labelText: l10n.dashboardDisplayedPlan),
               items: [
                 DropdownMenuItem<int?>(
                   value: null,
@@ -182,7 +180,9 @@ class _DashboardHeader extends ConsumerWidget {
               onChanged: state.loadingPlans
                   ? null
                   : (value) {
-                      ref.read(dashboardControllerProvider.notifier).selectPlan(value);
+                      ref
+                          .read(dashboardControllerProvider.notifier)
+                          .selectPlan(value);
                     },
             ),
           ],
@@ -334,9 +334,7 @@ class _DetailedStatsCard extends StatelessWidget {
                     mainAxisSpacing: 12,
                     mainAxisExtent: crossAxisCount == 1 ? 116 : 132,
                   ),
-                  itemBuilder: (context, index) {
-                    return cards[index];
-                  },
+                  itemBuilder: (context, index) => cards[index],
                 );
               },
             ),
@@ -437,6 +435,65 @@ class _TrainingDayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final detailCards = [
+      _DetailMetricCard(
+        label: l10n.dashboardDistanceGoal,
+        value: _goalLabel(context, day.distanceGoalMet),
+      ),
+      _DetailMetricCard(
+        label: l10n.dashboardDurationGoal,
+        value: _goalLabel(context, day.durationGoalMet),
+      ),
+      _DetailMetricCard(
+        label: l10n.dashboardPaceGoal,
+        value: _goalLabel(context, day.paceGoalMet),
+      ),
+      if (day.matchedAverageSpeedMetersPerSecond != null)
+        _DetailMetricCard(
+          label: l10n.dashboardAverageSpeed,
+          value: formatSpeedKph(day.matchedAverageSpeedMetersPerSecond),
+        ),
+      if (day.matchedMaxSpeedMetersPerSecond != null)
+        _DetailMetricCard(
+          label: l10n.dashboardMaxSpeed,
+          value: formatSpeedKph(day.matchedMaxSpeedMetersPerSecond),
+        ),
+      if (day.matchedElevationGainMeters != null)
+        _DetailMetricCard(
+          label: l10n.dashboardElevationGain,
+          value: '${day.matchedElevationGainMeters} m',
+        ),
+      if (day.matchedAverageHeartrateBpm != null)
+        _DetailMetricCard(
+          label: l10n.dashboardAverageHeartrate,
+          value: '${day.matchedAverageHeartrateBpm!.round()} bpm',
+        ),
+      if (day.matchedMaxHeartrateBpm != null)
+        _DetailMetricCard(
+          label: l10n.dashboardMaxHeartrate,
+          value: '${day.matchedMaxHeartrateBpm} bpm',
+        ),
+      if (day.matchedAverageCadenceRpm != null)
+        _DetailMetricCard(
+          label: l10n.dashboardAverageCadence,
+          value: '${day.matchedAverageCadenceRpm!.round()}',
+        ),
+      if (day.distanceOverMeters != null && day.distanceOverMeters! > 0)
+        _DetailMetricCard(
+          label: l10n.dashboardOverDistance,
+          value: formatDistanceKm(day.distanceOverMeters),
+        ),
+      if (day.durationOverSeconds != null && day.durationOverSeconds! > 0)
+        _DetailMetricCard(
+          label: l10n.dashboardOverDuration,
+          value: formatDurationShort(day.durationOverSeconds),
+        ),
+      if (day.timeSavedSeconds != null && day.timeSavedSeconds! > 0)
+        _DetailMetricCard(
+          label: l10n.dashboardSavedTime,
+          value: formatDurationShort(day.timeSavedSeconds),
+        ),
+    ];
 
     return Container(
       decoration: BoxDecoration(
@@ -444,148 +501,144 @@ class _TrainingDayCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.border),
       ),
-      child: ExpansionTile(
-        key: PageStorageKey(day.id ?? '${day.title}-${day.scheduledDate}'),
-        initiallyExpanded: expanded,
-        collapsedShape: RoundedRectangleBorder(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
           borderRadius: BorderRadius.circular(20),
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        onExpansionChanged: (_) => onToggle(),
-        title: Text(
-          day.title,
-          style: const TextStyle(
-            color: AppColors.text,
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 6),
-          child: Text(
-            '${_formatDate(day.scheduledDate)} • ${activityTypeLabel(context, day.activityType)}',
-            style: const TextStyle(color: AppColors.muted),
-          ),
-        ),
-        trailing: _StatusChip(status: day.status),
-        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _OverviewCard(
-                  label: l10n.dashboardScheduledFor,
-                  primary: _formatWeekdayDate(day.scheduledDate),
+          onTap: onToggle,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            day.title,
+                            style: const TextStyle(
+                              color: AppColors.text,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            '${_formatDate(day.scheduledDate)} • ${activityTypeLabel(context, day.activityType)}',
+                            style: const TextStyle(color: AppColors.muted),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _StatusChip(status: day.status),
+                        const SizedBox(height: 10),
+                        AnimatedRotation(
+                          turns: expanded ? 0.5 : 0,
+                          duration: const Duration(milliseconds: 180),
+                          child: const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: AppColors.muted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _OverviewCard(
-                  label: l10n.dashboardActivity,
-                  primary: activityTypeLabel(context, day.activityType),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: _OverviewCard(
-                  label: l10n.dashboardPlannedSection,
-                  primary: formatDistanceKm(day.plannedDistanceMeters),
-                  secondary: formatDurationShort(day.plannedDurationSeconds),
-                ),
-              ),
-              if (day.matchedActivityId != null) ...[
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _OverviewCard(
-                    label: l10n.dashboardCompletedSection,
-                    primary: formatDistanceKm(day.matchedDistanceMeters),
-                    secondary: formatDurationShort(day.matchedMovingTimeSeconds),
+                AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 220),
+                  crossFadeState: expanded
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  firstChild: const SizedBox.shrink(),
+                  secondChild: Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _OverviewCard(
+                                label: l10n.dashboardScheduledFor,
+                                primary: _formatWeekdayDate(day.scheduledDate),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: _OverviewCard(
+                                label: l10n.dashboardActivity,
+                                primary: activityTypeLabel(
+                                  context,
+                                  day.activityType,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _OverviewCard(
+                                label: l10n.dashboardPlannedSection,
+                                primary: formatDistanceKm(
+                                  day.plannedDistanceMeters,
+                                ),
+                                secondary: formatDurationShort(
+                                  day.plannedDurationSeconds,
+                                ),
+                              ),
+                            ),
+                            if (day.matchedActivityId != null) ...[
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _OverviewCard(
+                                  label: l10n.dashboardCompletedSection,
+                                  primary: formatDistanceKm(
+                                    day.matchedDistanceMeters,
+                                  ),
+                                  secondary: formatDurationShort(
+                                    day.matchedMovingTimeSeconds,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        if (day.matchedActivityId != null) ...[
+                          const SizedBox(height: 14),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              '${l10n.dashboardMatchedActivity} ${day.matchedActivityName ?? ''}'
+                              '${day.matchedActivityDate != null ? ' (${_formatDate(day.matchedActivityDate)})' : ''}',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ),
+                        ],
+                        if (day.notes?.trim().isNotEmpty ?? false) ...[
+                          const SizedBox(height: 14),
+                          _NoteBlock(notes: day.notes!),
+                        ],
+                        if (detailCards.isNotEmpty) ...[
+                          const SizedBox(height: 14),
+                          _DetailMetricsGrid(cards: detailCards),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
               ],
-            ],
-          ),
-          if (day.matchedActivityId != null) ...[
-            const SizedBox(height: 14),
-            Text(
-              '${l10n.dashboardMatchedActivity} ${day.matchedActivityName ?? ''}'
-              '${day.matchedActivityDate != null ? ' (${_formatDate(day.matchedActivityDate)})' : ''}',
-              style: Theme.of(context).textTheme.bodyLarge,
             ),
-          ],
-          if (day.notes?.trim().isNotEmpty ?? false) ...[
-            const SizedBox(height: 14),
-            _NoteBlock(notes: day.notes!),
-          ],
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              _DetailPill(
-                text:
-                    '${l10n.dashboardDistanceGoal}: ${_goalLabel(context, day.distanceGoalMet)}',
-              ),
-              _DetailPill(
-                text:
-                    '${l10n.dashboardDurationGoal}: ${_goalLabel(context, day.durationGoalMet)}',
-              ),
-              _DetailPill(
-                text:
-                    '${l10n.dashboardPaceGoal}: ${_goalLabel(context, day.paceGoalMet)}',
-              ),
-              if (day.matchedAverageSpeedMetersPerSecond != null)
-                _DetailPill(
-                  text:
-                      '${l10n.dashboardAverageSpeed}: ${formatSpeedKph(day.matchedAverageSpeedMetersPerSecond)}',
-                ),
-              if (day.matchedMaxSpeedMetersPerSecond != null)
-                _DetailPill(
-                  text:
-                      '${l10n.dashboardMaxSpeed}: ${formatSpeedKph(day.matchedMaxSpeedMetersPerSecond)}',
-                ),
-              if (day.matchedElevationGainMeters != null)
-                _DetailPill(
-                  text:
-                      '${l10n.dashboardElevationGain}: ${day.matchedElevationGainMeters} m',
-                ),
-              if (day.matchedAverageHeartrateBpm != null)
-                _DetailPill(
-                  text:
-                      '${l10n.dashboardAverageHeartrate}: ${day.matchedAverageHeartrateBpm!.round()} bpm',
-                ),
-              if (day.matchedMaxHeartrateBpm != null)
-                _DetailPill(
-                  text:
-                      '${l10n.dashboardMaxHeartrate}: ${day.matchedMaxHeartrateBpm} bpm',
-                ),
-              if (day.matchedAverageCadenceRpm != null)
-                _DetailPill(
-                  text:
-                      '${l10n.dashboardAverageCadence}: ${day.matchedAverageCadenceRpm!.round()}',
-                ),
-              if (day.distanceOverMeters != null && day.distanceOverMeters! > 0)
-                _DetailPill(
-                  text:
-                      '${l10n.dashboardOverDistance}: ${formatDistanceKm(day.distanceOverMeters)}',
-                ),
-              if (day.durationOverSeconds != null && day.durationOverSeconds! > 0)
-                _DetailPill(
-                  text:
-                      '${l10n.dashboardOverDuration}: ${formatDurationShort(day.durationOverSeconds)}',
-                ),
-              if (day.timeSavedSeconds != null && day.timeSavedSeconds! > 0)
-                _DetailPill(
-                  text:
-                      '${l10n.dashboardSavedTime}: ${formatDurationShort(day.timeSavedSeconds)}',
-                ),
-            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -611,15 +664,7 @@ class _TrainingDayCard extends StatelessWidget {
       return '-';
     }
 
-    const weekdays = [
-      'pon',
-      'wt',
-      'sr',
-      'czw',
-      'pt',
-      'sob',
-      'niedz',
-    ];
+    const weekdays = ['pon', 'wt', 'sr', 'czw', 'pt', 'sob', 'niedz'];
     final weekday = weekdays[(date.weekday - 1).clamp(0, 6)];
     return '$weekday, ${_formatDate(date)}';
   }
@@ -706,13 +751,13 @@ class _StatusChip extends StatelessWidget {
       TrainingDayStatus.planned => AppColors.accentDark,
     };
 
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(999),
-        ),
-        child: Text(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
         trainingDayStatusLabel(context, status),
         style: TextStyle(
           color: color,
@@ -811,20 +856,93 @@ class _NoteBlock extends StatelessWidget {
   }
 }
 
-class _DetailPill extends StatelessWidget {
-  const _DetailPill({required this.text});
+class _DetailMetricsGrid extends StatelessWidget {
+  const _DetailMetricsGrid({required this.cards});
 
-  final String text;
+  final List<Widget> cards;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final useSingleColumn = constraints.maxWidth < 260;
+        if (useSingleColumn) {
+          return Column(
+            children: [
+              for (var i = 0; i < cards.length; i++) ...[
+                cards[i],
+                if (i < cards.length - 1) const SizedBox(height: 10),
+              ],
+            ],
+          );
+        }
+
+        final rows = <Widget>[];
+        for (var i = 0; i < cards.length; i += 2) {
+          final left = cards[i];
+          final right = i + 1 < cards.length ? cards[i + 1] : null;
+
+          rows.add(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: left),
+                const SizedBox(width: 10),
+                Expanded(child: right ?? const SizedBox.shrink()),
+              ],
+            ),
+          );
+        }
+
+        return Column(
+          children: [
+            for (var i = 0; i < rows.length; i++) ...[
+              rows[i],
+              if (i < rows.length - 1) const SizedBox(height: 10),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DetailMetricCard extends StatelessWidget {
+  const _DetailMetricCard({required this.label, required this.value});
+
+  final String label;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Text(text, style: const TextStyle(color: AppColors.text)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.muted,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              color: AppColors.text,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
