@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/networking/api_client.dart';
+import '../../../core/networking/api_endpoints.dart';
 import '../../../core/networking/api_exception.dart';
 import 'dashboard_models.dart';
 
@@ -17,7 +18,7 @@ class DashboardRepository {
   Future<DashboardSummary> getSummary({int? planId}) async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
-        '/dashboard/summary',
+        ApiEndpoints.dashboard.summary,
         queryParameters: planId == null ? null : {'planId': planId},
       );
 

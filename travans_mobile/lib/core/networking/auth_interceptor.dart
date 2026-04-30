@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../features/auth/data/auth_models.dart';
+import 'api_endpoints.dart';
 import '../storage/secure_storage_service.dart';
 
 class AuthInterceptor extends Interceptor {
@@ -51,7 +52,7 @@ class AuthInterceptor extends Interceptor {
 
     try {
       final response = await _refreshDio.post<Map<String, dynamic>>(
-        '$_apiBaseUrl/auth/refresh',
+        '$_apiBaseUrl${ApiEndpoints.auth.refresh}',
         data: {'refreshToken': refreshToken},
       );
 

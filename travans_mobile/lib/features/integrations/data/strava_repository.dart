@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/networking/api_exception.dart';
 import '../../../core/networking/api_client.dart';
+import '../../../core/networking/api_endpoints.dart';
 import '../../../shared/models/activity_type.dart';
 import 'strava_models.dart';
 
@@ -29,7 +30,7 @@ class StravaRepository {
   Future<StravaConnectionStatus> getStatus() async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
-        '/integrations/strava/status',
+        ApiEndpoints.strava.status,
         queryParameters: const {'platform': 'mobile'},
       );
       return StravaConnectionStatus.fromJson(response.data ?? {});
@@ -43,7 +44,7 @@ class StravaRepository {
   }) async {
     try {
       final response = await _dio.get<List<dynamic>>(
-        '/integrations/strava/activities',
+        ApiEndpoints.strava.activities,
         queryParameters: activityType == null
             ? null
             : {'activityType': activityType.apiValue},
@@ -66,7 +67,7 @@ class StravaRepository {
   Future<StravaActivity> getActivity(int activityId) async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
-        '/integrations/strava/activities/$activityId',
+        ApiEndpoints.strava.activityDetail(activityId),
       );
       return StravaActivity.fromJson(response.data ?? {});
     } on DioException catch (error) {
@@ -80,7 +81,7 @@ class StravaRepository {
   Future<void> exchangeToken(String code) async {
     try {
       await _dio.post<void>(
-        '/integrations/strava/exchange-token',
+        ApiEndpoints.strava.exchangeToken,
         queryParameters: {'code': code},
       );
     } on DioException catch (error) {
@@ -94,7 +95,7 @@ class StravaRepository {
   Future<StravaSyncResult> sync(int athleteId) async {
     try {
       final response = await _dio.patch<Map<String, dynamic>>(
-        '/integrations/strava/sync',
+        ApiEndpoints.strava.sync,
         queryParameters: {'athleteId': athleteId},
       );
       return StravaSyncResult.fromJson(response.data ?? {});

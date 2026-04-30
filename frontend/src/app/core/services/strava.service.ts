@@ -4,7 +4,7 @@ import { Observable, of, tap } from 'rxjs';
 
 import { ActivityType } from '../types/training-plan.model';
 import { StravaActivity, StravaConnectionStatus, StravaSyncResult } from '../types/strava.model';
-import { API_BASE_URL } from './api-base';
+import { API_ENDPOINTS } from './api-endpoints';
 
 @Injectable({ providedIn: 'root' })
 export class StravaService {
@@ -16,7 +16,7 @@ export class StravaService {
   constructor(private readonly http: HttpClient) {}
 
   getStatus(): Observable<StravaConnectionStatus> {
-    return this.http.get<StravaConnectionStatus>(`${API_BASE_URL}/integrations/strava/status?platform=web`);
+    return this.http.get<StravaConnectionStatus>(`${API_ENDPOINTS.strava.status}?platform=web`);
   }
 
   getActivities(activityType?: ActivityType | '', forceRefresh = false): Observable<StravaActivity[]> {
@@ -36,7 +36,7 @@ export class StravaService {
     }
 
     const suffix = activityType ? `?activityType=${activityType}` : '';
-    return this.http.get<StravaActivity[]>(`${API_BASE_URL}/integrations/strava/activities${suffix}`).pipe(
+    return this.http.get<StravaActivity[]>(`${API_ENDPOINTS.strava.activities}${suffix}`).pipe(
       tap((activities) => {
         this.activitiesCache.set(cacheKey, activities);
         sessionStorage.setItem(this.activitiesStorageKey(cacheKey), JSON.stringify(activities));
@@ -59,7 +59,7 @@ export class StravaService {
       }
     }
 
-    return this.http.get<StravaActivity>(`${API_BASE_URL}/integrations/strava/activities/${activityId}`).pipe(
+    return this.http.get<StravaActivity>(API_ENDPOINTS.strava.activityDetail(activityId)).pipe(
       tap((activity) => {
         this.activityDetailsCache.set(activityId, activity);
         sessionStorage.setItem(this.activityDetailStorageKey(activityId), JSON.stringify(activity));
@@ -68,11 +68,11 @@ export class StravaService {
   }
 
   exchangeToken(code: string): Observable<void> {
-    return this.http.post<void>(`${API_BASE_URL}/integrations/strava/exchange-token?code=${encodeURIComponent(code)}`, {});
+    return this.http.post<void>(`${API_ENDPOINTS.strava.exchangeToken}?code=${encodeURIComponent(code)}`, {});
   }
 
   sync(athleteId: number): Observable<StravaSyncResult> {
-    return this.http.patch<StravaSyncResult>(`${API_BASE_URL}/integrations/strava/sync?athleteId=${athleteId}`, {}).pipe(
+    return this.http.patch<StravaSyncResult>(`${API_ENDPOINTS.strava.sync}?athleteId=${athleteId}`, {}).pipe(
       tap(() => this.clearActivitiesCache())
     );
   }

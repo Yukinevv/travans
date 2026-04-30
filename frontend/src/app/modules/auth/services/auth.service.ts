@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
-import { API_BASE_URL } from '../../../core/services/api-base';
+import { API_ENDPOINTS } from '../../../core/services/api-endpoints';
 import { AuthResponse, ChangePasswordPayload, GoogleLoginPayload, LoginPayload, RegisterPayload, UpdateProfilePayload, UserProfile } from '../types/auth.model';
 
 @Injectable({ providedIn: 'root' })
@@ -16,35 +16,35 @@ export class AuthService {
   constructor(private readonly http: HttpClient) {}
 
   login(payload: LoginPayload, rememberMe: boolean): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/login`, payload).pipe(
+    return this.http.post<AuthResponse>(API_ENDPOINTS.auth.login, payload).pipe(
       tap((response) => this.persistSession(response, payload.email, rememberMe))
     );
   }
 
   loginWithGoogle(payload: GoogleLoginPayload, rememberMe: boolean): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/google`, payload).pipe(
+    return this.http.post<AuthResponse>(API_ENDPOINTS.auth.google, payload).pipe(
       tap((response) => this.persistSession(response, response.user.email, rememberMe))
     );
   }
 
   register(payload: RegisterPayload, rememberMe: boolean): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/register`, payload).pipe(
+    return this.http.post<AuthResponse>(API_ENDPOINTS.auth.register, payload).pipe(
       tap((response) => this.persistSession(response, payload.email, rememberMe))
     );
   }
 
   me(): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${API_BASE_URL}/auth/me`);
+    return this.http.get<UserProfile>(API_ENDPOINTS.auth.me);
   }
 
   updateProfile(payload: UpdateProfilePayload): Observable<AuthResponse> {
-    return this.http.put<AuthResponse>(`${API_BASE_URL}/auth/me`, payload).pipe(
+    return this.http.put<AuthResponse>(API_ENDPOINTS.auth.me, payload).pipe(
       tap((response) => this.persistSession(response, response.user.email, this.shouldRememberMe()))
     );
   }
 
   changePassword(payload: ChangePasswordPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/change-password`, payload).pipe(
+    return this.http.post<AuthResponse>(API_ENDPOINTS.auth.changePassword, payload).pipe(
       tap((response) => this.persistSession(response, response.user.email, this.shouldRememberMe()))
     );
   }
@@ -53,14 +53,14 @@ export class AuthService {
     const formData = new FormData();
     formData.append('avatar', file);
 
-    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/avatar`, formData).pipe(
+    return this.http.post<AuthResponse>(API_ENDPOINTS.auth.avatar, formData).pipe(
       tap((response) => this.persistSession(response, response.user.email, this.shouldRememberMe()))
     );
   }
 
   refresh(): Observable<AuthResponse> {
     const refreshToken = this.getRefreshToken();
-    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/refresh`, { refreshToken }).pipe(
+    return this.http.post<AuthResponse>(API_ENDPOINTS.auth.refresh, { refreshToken }).pipe(
       tap((response) => this.persistSession(response, this.getRememberedEmail(), this.shouldRememberMe()))
     );
   }

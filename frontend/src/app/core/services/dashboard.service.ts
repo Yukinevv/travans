@@ -3,14 +3,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { DashboardSummary } from '../types/dashboard.model';
-import { API_BASE_URL } from './api-base';
+import { API_ENDPOINTS } from './api-endpoints';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   constructor(private readonly http: HttpClient) {}
 
   getSummary(planId?: number): Observable<DashboardSummary> {
-    const url = planId ? `${API_BASE_URL}/dashboard/summary?planId=${planId}` : `${API_BASE_URL}/dashboard/summary`;
+    const url = planId
+      ? `${API_ENDPOINTS.dashboard.summary}?planId=${planId}`
+      : API_ENDPOINTS.dashboard.summary;
     return this.http.get<DashboardSummary>(url);
   }
 }

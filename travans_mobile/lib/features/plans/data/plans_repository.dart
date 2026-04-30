@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/networking/api_client.dart';
+import '../../../core/networking/api_endpoints.dart';
 import '../../../core/networking/api_exception.dart';
 import 'plan_models.dart';
 
@@ -16,7 +17,7 @@ class PlansRepository {
 
   Future<List<TrainingPlan>> getPlans() async {
     try {
-      final response = await _dio.get<List<dynamic>>('/plans');
+      final response = await _dio.get<List<dynamic>>(ApiEndpoints.plans.collection);
 
       return (response.data ?? const [])
           .whereType<Map>()
@@ -29,7 +30,9 @@ class PlansRepository {
 
   Future<TrainingPlan> getPlan(int planId) async {
     try {
-      final response = await _dio.get<Map<String, dynamic>>('/plans/$planId');
+      final response = await _dio.get<Map<String, dynamic>>(
+        ApiEndpoints.plans.detail(planId),
+      );
       return TrainingPlan.fromJson(response.data ?? const {});
     } on DioException catch (error) {
       throw _mapError(error, 'errorPlanLoad');
@@ -39,7 +42,7 @@ class PlansRepository {
   Future<TrainingPlan> createPlan(TrainingPlanUpsertPayload payload) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>(
-        '/plans',
+        ApiEndpoints.plans.collection,
         data: payload.toJson(),
       );
       return TrainingPlan.fromJson(response.data ?? const {});
@@ -54,7 +57,7 @@ class PlansRepository {
   ) async {
     try {
       final response = await _dio.put<Map<String, dynamic>>(
-        '/plans/$planId',
+        ApiEndpoints.plans.detail(planId),
         data: payload.toJson(),
       );
       return TrainingPlan.fromJson(response.data ?? const {});
@@ -65,7 +68,7 @@ class PlansRepository {
 
   Future<void> deletePlan(int planId) async {
     try {
-      await _dio.delete<void>('/plans/$planId');
+      await _dio.delete<void>(ApiEndpoints.plans.detail(planId));
     } on DioException catch (error) {
       throw _mapError(error, 'errorPlanDelete');
     }

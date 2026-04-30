@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../core/config/app_env.dart';
+import '../../../core/networking/api_endpoints.dart';
 import '../../../core/networking/api_exception.dart';
 import '../../../core/networking/api_client.dart';
 import '../../../core/storage/secure_storage_service.dart';
@@ -46,7 +47,7 @@ class AuthRepository {
   }) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>(
-        '/auth/login',
+        ApiEndpoints.auth.login,
         data: payload.toJson(),
       );
 
@@ -68,7 +69,7 @@ class AuthRepository {
   }) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>(
-        '/auth/register',
+        ApiEndpoints.auth.register,
         data: payload.toJson(),
       );
 
@@ -106,7 +107,7 @@ class AuthRepository {
       }
 
       final response = await _dio.post<Map<String, dynamic>>(
-        '/auth/google',
+        ApiEndpoints.auth.google,
         data: GoogleLoginPayload(idToken: idToken).toJson(),
       );
 
@@ -130,7 +131,7 @@ class AuthRepository {
 
   Future<UserProfile> me() async {
     try {
-      final response = await _dio.get<Map<String, dynamic>>('/auth/me');
+      final response = await _dio.get<Map<String, dynamic>>(ApiEndpoints.auth.me);
       final profile = UserProfile.fromJson(
         response.data ?? <String, dynamic>{},
       );
