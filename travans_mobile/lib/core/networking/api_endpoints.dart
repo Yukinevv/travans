@@ -15,6 +15,8 @@ class _AuthEndpoints {
   final String register = '/auth/register';
   final String me = '/auth/me';
   final String refresh = '/auth/refresh';
+  final String changePassword = '/auth/change-password';
+  final String avatar = '/auth/avatar';
 }
 
 class _PlansEndpoints {

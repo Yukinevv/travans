@@ -35,6 +35,33 @@ class GoogleLoginPayload {
   Map<String, dynamic> toJson() => {'idToken': idToken};
 }
 
+class UpdateProfilePayload {
+  const UpdateProfilePayload({required this.displayName, required this.email});
+
+  final String displayName;
+  final String email;
+
+  Map<String, dynamic> toJson() => {
+    'displayName': displayName,
+    'email': email,
+  };
+}
+
+class ChangePasswordPayload {
+  const ChangePasswordPayload({
+    required this.currentPassword,
+    required this.newPassword,
+  });
+
+  final String currentPassword;
+  final String newPassword;
+
+  Map<String, dynamic> toJson() => {
+    'currentPassword': currentPassword,
+    'newPassword': newPassword,
+  };
+}
+
 class AuthSession {
   const AuthSession({
     required this.accessToken,

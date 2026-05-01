@@ -129,8 +129,38 @@ class AppLocalizations {
   String get pullToRefresh => _string('pullToRefresh');
   String get accountSectionLanguage => _string('accountSectionLanguage');
   String get accountSectionSession => _string('accountSectionSession');
+  String get accountSectionProfile => _string('accountSectionProfile');
+  String get accountSectionSecurity => _string('accountSectionSecurity');
   String get accountConnectedProvider => _string('accountConnectedProvider');
   String get accountOpenProfile => _string('accountOpenProfile');
+  String get accountHeaderKicker => _string('accountHeaderKicker');
+  String get accountHeaderTitle => _string('accountHeaderTitle');
+  String get accountHeaderSubtitle => _string('accountHeaderSubtitle');
+  String get accountProfileDescription => _string('accountProfileDescription');
+  String get accountProfileAvatarHint => _string('accountProfileAvatarHint');
+  String get accountProfileAvatarUploading =>
+      _string('accountProfileAvatarUploading');
+  String get accountProfileSave => _string('accountProfileSave');
+  String get accountProfileSaved => _string('accountProfileSaved');
+  String get accountProfilePickAvatar => _string('accountProfilePickAvatar');
+  String get accountSecurityDescription =>
+      _string('accountSecurityDescription');
+  String get accountSecurityGoogleManaged =>
+      _string('accountSecurityGoogleManaged');
+  String get accountSecurityCurrentPassword =>
+      _string('accountSecurityCurrentPassword');
+  String get accountSecurityNewPassword =>
+      _string('accountSecurityNewPassword');
+  String get accountSecurityRepeatPassword =>
+      _string('accountSecurityRepeatPassword');
+  String get accountSecurityChangePassword =>
+      _string('accountSecurityChangePassword');
+  String get accountSecurityPasswordChanged =>
+      _string('accountSecurityPasswordChanged');
+  String get accountSecurityPasswordMismatch =>
+      _string('accountSecurityPasswordMismatch');
+  String get accountLoading => _string('accountLoading');
+  String get accountAvatarInvalid => _string('accountAvatarInvalid');
   String get authProviderLocal => _string('authProviderLocal');
   String get authProviderGoogle => _string('authProviderGoogle');
   String get invalidActivityId => _string('invalidActivityId');
@@ -286,6 +316,11 @@ class AppLocalizations {
   String get errorPlanCreate => _string('errorPlanCreate');
   String get errorPlanUpdate => _string('errorPlanUpdate');
   String get errorPlanDelete => _string('errorPlanDelete');
+  String get errorAccountProfileLoad => _string('errorAccountProfileLoad');
+  String get errorAccountProfileUpdate => _string('errorAccountProfileUpdate');
+  String get errorAccountPasswordChange =>
+      _string('errorAccountPasswordChange');
+  String get errorAccountAvatarUpload => _string('errorAccountAvatarUpload');
   String get errorStravaStatusLoad => _string('errorStravaStatusLoad');
   String get errorStravaActivitiesLoad => _string('errorStravaActivitiesLoad');
   String get errorStravaActivityLoad => _string('errorStravaActivityLoad');
@@ -365,6 +400,10 @@ class AppLocalizations {
       'errorPlanCreate',
       'errorPlanUpdate',
       'errorPlanDelete',
+      'errorAccountProfileLoad',
+      'errorAccountProfileUpdate',
+      'errorAccountPasswordChange',
+      'errorAccountAvatarUpload',
       'errorStravaStatusLoad',
       'errorStravaActivitiesLoad',
       'errorStravaActivityLoad',

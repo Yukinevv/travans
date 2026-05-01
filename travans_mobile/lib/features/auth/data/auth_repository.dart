@@ -52,10 +52,10 @@ class AuthRepository {
       );
 
       final session = AuthSession.fromJson(response.data ?? <String, dynamic>{});
-      await _secureStorageService.saveSession(session);
-      await _secureStorageService.saveRememberMe(rememberMe);
-      await _secureStorageService.saveRememberedEmail(
-        rememberMe ? payload.email : null,
+      await _persistSession(
+        session,
+        rememberMeOverride: rememberMe,
+        rememberedEmailOverride: rememberMe ? payload.email : null,
       );
       return session;
     } on DioException catch (error) {
@@ -74,10 +74,10 @@ class AuthRepository {
       );
 
       final session = AuthSession.fromJson(response.data ?? <String, dynamic>{});
-      await _secureStorageService.saveSession(session);
-      await _secureStorageService.saveRememberMe(rememberMe);
-      await _secureStorageService.saveRememberedEmail(
-        rememberMe ? payload.email : null,
+      await _persistSession(
+        session,
+        rememberMeOverride: rememberMe,
+        rememberedEmailOverride: rememberMe ? payload.email : null,
       );
       return session;
     } on DioException catch (error) {
@@ -112,10 +112,10 @@ class AuthRepository {
       );
 
       final session = AuthSession.fromJson(response.data ?? <String, dynamic>{});
-      await _secureStorageService.saveSession(session);
-      await _secureStorageService.saveRememberMe(rememberMe);
-      await _secureStorageService.saveRememberedEmail(
-        rememberMe ? session.user.email : null,
+      await _persistSession(
+        session,
+        rememberMeOverride: rememberMe,
+        rememberedEmailOverride: rememberMe ? session.user.email : null,
       );
       return session;
     } on ApiException {
@@ -138,7 +138,53 @@ class AuthRepository {
       await _secureStorageService.saveUserProfile(profile);
       return profile;
     } on DioException catch (error) {
-      throw _mapError(error);
+      throw _mapError(error, fallbackCode: 'errorAccountProfileLoad');
+    }
+  }
+
+  Future<AuthSession> updateProfile(UpdateProfilePayload payload) async {
+    try {
+      final response = await _dio.put<Map<String, dynamic>>(
+        ApiEndpoints.auth.me,
+        data: payload.toJson(),
+      );
+      final session = AuthSession.fromJson(response.data ?? <String, dynamic>{});
+      await _persistSession(session);
+      return session;
+    } on DioException catch (error) {
+      throw _mapError(error, fallbackCode: 'errorAccountProfileUpdate');
+    }
+  }
+
+  Future<AuthSession> changePassword(ChangePasswordPayload payload) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        ApiEndpoints.auth.changePassword,
+        data: payload.toJson(),
+      );
+      final session = AuthSession.fromJson(response.data ?? <String, dynamic>{});
+      await _persistSession(session);
+      return session;
+    } on DioException catch (error) {
+      throw _mapError(error, fallbackCode: 'errorAccountPasswordChange');
+    }
+  }
+
+  Future<AuthSession> uploadAvatar(String filePath) async {
+    try {
+      final fileName = filePath.split(RegExp(r'[\\/]')).last;
+      final formData = FormData.fromMap({
+        'avatar': await MultipartFile.fromFile(filePath, filename: fileName),
+      });
+      final response = await _dio.post<Map<String, dynamic>>(
+        ApiEndpoints.auth.avatar,
+        data: formData,
+      );
+      final session = AuthSession.fromJson(response.data ?? <String, dynamic>{});
+      await _persistSession(session);
+      return session;
+    } on DioException catch (error) {
+      throw _mapError(error, fallbackCode: 'errorAccountAvatarUpload');
     }
   }
 
@@ -155,7 +201,21 @@ class AuthRepository {
     return _secureStorageService.readRememberedEmail();
   }
 
-  ApiException _mapError(DioException error) {
+  Future<void> _persistSession(
+    AuthSession session, {
+    bool? rememberMeOverride,
+    String? rememberedEmailOverride,
+  }) async {
+    await _secureStorageService.saveSession(session);
+    final rememberMe =
+        rememberMeOverride ?? await _secureStorageService.readRememberMe();
+    await _secureStorageService.saveRememberMe(rememberMe);
+    await _secureStorageService.saveRememberedEmail(
+      rememberMe ? (rememberedEmailOverride ?? session.user.email) : null,
+    );
+  }
+
+  ApiException _mapError(DioException error, {String? fallbackCode}) {
     final data = error.response?.data;
     if (data is Map<String, dynamic>) {
       final message = data['message'] as String?;
@@ -165,7 +225,7 @@ class AuthRepository {
       }
     }
 
-    return ApiException('', code: 'errorGenericTaskFailed');
+    return ApiException('', code: fallbackCode ?? 'errorGenericTaskFailed');
   }
 
   ApiException _mapGooglePlatformError(PlatformException error) {

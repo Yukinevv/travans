@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/networking/api_exception.dart';
 import '../../../core/storage/secure_storage_service.dart';
+import '../../../shared/models/user_profile.dart';
 import '../data/auth_models.dart';
 import '../data/auth_repository.dart';
 import 'auth_state.dart';
@@ -154,6 +155,10 @@ class AuthController extends StateNotifier<AuthState> {
     } catch (_) {
       state = AuthState.unauthenticated;
     }
+  }
+
+  void setAuthenticatedUser(UserProfile user) {
+    state = AuthState(status: AuthStatus.authenticated, user: user);
   }
 
   Future<bool> readRememberMe() {
