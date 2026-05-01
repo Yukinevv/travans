@@ -43,7 +43,7 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
 
     if (_errorMessage.isNotEmpty) {
       return Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: ErrorView(message: _errorMessage, onRetry: _loadActivity),
       );
     }
@@ -51,7 +51,7 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
     final activity = _activity;
     if (activity == null) {
       return Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: ErrorView(
           message: l10n.integrationsActivityLoadError,
           onRetry: _loadActivity,
@@ -60,18 +60,18 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
     }
 
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       children: [
         Text(activity.name, style: Theme.of(context).textTheme.headlineMedium),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Text(
           '${_formatDate(activity.activityDate)} / ${activityTypeLabel(context, activity.activityType)}',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 14),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          spacing: 10,
+          runSpacing: 10,
           children: [
             _MetricCard(
               label: l10n.integrationsDistance,
@@ -103,10 +103,10 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
               ),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 14),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -119,13 +119,13 @@ class _ActivityDetailScreenState extends ConsumerState<ActivityDetailScreen> {
                     letterSpacing: 1.3,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 if (activity.matchedToPlan) ...[
                   Text(
                     activity.matchedTrainingDayTitle ?? '',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   Text(
                     activity.matchedPlanName ?? '',
                     style: Theme.of(context).textTheme.bodyLarge,
@@ -201,10 +201,10 @@ class _MetricCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 164,
+      width: 156,
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -212,7 +212,7 @@ class _MetricCard extends StatelessWidget {
                 label,
                 style: const TextStyle(color: AppColors.muted, fontSize: 13),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
                 value,
                 style: const TextStyle(

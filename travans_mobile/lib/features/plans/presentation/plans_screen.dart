@@ -36,25 +36,25 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
     return RefreshIndicator(
       onRefresh: () => ref.read(plansControllerProvider.notifier).reload(),
       child: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
         children: [
           _PlansHeader(
             planCount: state.plans.length,
             onCreate: () => context.go('/plans/new'),
           ),
           if (state.errorMessage.isNotEmpty && state.plans.isEmpty) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             ErrorView(
               message: l10n.resolveError(state.errorMessage),
               onRetry: () => ref.read(plansControllerProvider.notifier).reload(),
             ),
           ] else if (state.errorMessage.isNotEmpty) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _InlineErrorBanner(message: l10n.resolveError(state.errorMessage)),
           ],
           if (state.plans.isEmpty && !state.loading && state.errorMessage.isEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 16),
+              padding: const EdgeInsets.only(top: 12),
               child: EmptyState(
                 icon: Icons.event_note_outlined,
                 title: l10n.plansEmptyTitle,
@@ -62,7 +62,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
               ),
             )
           else ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             for (final plan in state.plans) ...[
               _PlanCard(
                 plan: plan,
@@ -78,7 +78,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                 onDelete: () => _confirmDelete(plan),
                 onEdit: () => context.go('/plans/${plan.id}/edit'),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
             ],
           ],
         ],
@@ -178,7 +178,7 @@ class _PlansHeader extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -191,17 +191,17 @@ class _PlansHeader extends StatelessWidget {
                 letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Text(
               l10n.plansHeaderTitle,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Text(
               l10n.plansHeaderSubtitle(planCount),
               style: Theme.of(context).textTheme.bodyLarge,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: onCreate,
               icon: const Icon(Icons.add_rounded),
@@ -251,7 +251,7 @@ class _PlanCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(28),
           onTap: onToggle,
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -269,7 +269,7 @@ class _PlanCard extends StatelessWidget {
                                   plan.name,
                                   style: const TextStyle(
                                     color: AppColors.text,
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
@@ -282,7 +282,7 @@ class _PlanCard extends StatelessWidget {
                                 ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 10),
                           Wrap(
                             spacing: 10,
                             runSpacing: 10,
@@ -312,7 +312,7 @@ class _PlanCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 14),
                 Row(
                   children: [
                     IconButton(
@@ -326,7 +326,7 @@ class _PlanCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 4),
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: pinnedToDashboard ? null : onPin,
@@ -338,7 +338,7 @@ class _PlanCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     IconButton.filledTonal(
                       onPressed: onEdit,
                       style: IconButton.styleFrom(
@@ -347,7 +347,7 @@ class _PlanCard extends StatelessWidget {
                       ),
                       icon: const Icon(Icons.edit_outlined),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     IconButton.filledTonal(
                       onPressed: deleting ? null : onDelete,
                       style: IconButton.styleFrom(
@@ -371,7 +371,7 @@ class _PlanCard extends StatelessWidget {
                       : CrossFadeState.showFirst,
                   firstChild: const SizedBox.shrink(),
                   secondChild: Padding(
-                    padding: const EdgeInsets.only(top: 18),
+                    padding: const EdgeInsets.only(top: 14),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -386,13 +386,13 @@ class _PlanCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                        if (plan.createdAt != null) const SizedBox(height: 12),
+                        if (plan.createdAt != null) const SizedBox(height: 10),
                         if (plan.description?.trim().isNotEmpty ?? false) ...[
                           _SectionCard(
                             label: l10n.plansDescriptionLabel,
                             child: Text(plan.description!),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 10),
                         ],
                         if (plan.trainingDays.isEmpty)
                           _SectionCard(
@@ -409,11 +409,11 @@ class _PlanCard extends StatelessWidget {
                               letterSpacing: 1.0,
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 8),
                           for (var index = 0; index < plan.trainingDays.length; index++)
                             Padding(
                               padding: EdgeInsets.only(
-                                bottom: index == plan.trainingDays.length - 1 ? 0 : 10,
+                                bottom: index == plan.trainingDays.length - 1 ? 0 : 8,
                               ),
                               child: _TrainingDayPreviewCard(
                                 day: plan.trainingDays[index],
@@ -464,7 +464,7 @@ class _TrainingDayPreviewCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
@@ -484,11 +484,11 @@ class _TrainingDayPreviewCard extends StatelessWidget {
                       '${l10n.plansDayPrefix} ${index + 1}: ${day.title}',
                       style: const TextStyle(
                         color: AppColors.text,
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       '${_formatDate(day.scheduledDate)} | ${activityTypeLabel(context, day.activityType)}',
                       style: const TextStyle(color: AppColors.muted),
@@ -503,7 +503,7 @@ class _TrainingDayPreviewCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
@@ -512,7 +512,7 @@ class _TrainingDayPreviewCard extends StatelessWidget {
                   primary: formatDistanceKm(day.plannedDistanceMeters),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                 child: _MetricCard(
                   label: l10n.plansDurationLabel,
@@ -522,14 +522,14 @@ class _TrainingDayPreviewCard extends StatelessWidget {
             ],
           ),
           if (day.notes?.trim().isNotEmpty ?? false) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             _SectionCard(
               label: l10n.plansNotesLabel,
               child: Text(day.notes!),
             ),
           ],
           if (day.matchedActivityName?.trim().isNotEmpty ?? false) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             _SectionCard(
               label: l10n.plansMatchedActivityLabel,
               child: Text(
@@ -573,7 +573,7 @@ class _InlineErrorBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.danger.withOpacity(0.08),
         borderRadius: BorderRadius.circular(16),
@@ -599,7 +599,7 @@ class _MetaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
@@ -639,7 +639,7 @@ class _Badge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(999),
@@ -666,7 +666,7 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
@@ -682,7 +682,7 @@ class _SectionCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           child,
         ],
       ),
@@ -699,7 +699,7 @@ class _MetricCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.surfaceStrong,
         borderRadius: BorderRadius.circular(16),
@@ -716,7 +716,7 @@ class _MetricCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(
             primary,
             style: const TextStyle(

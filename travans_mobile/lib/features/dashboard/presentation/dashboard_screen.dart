@@ -38,15 +38,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return RefreshIndicator(
       onRefresh: () => ref.read(dashboardControllerProvider.notifier).reload(),
       child: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
         children: [
           _DashboardHeader(state: state),
           if (state.loading && state.summary != null) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Center(child: LoadingView(label: l10n.dashboardLoading)),
           ],
           if (state.errorMessage.isNotEmpty) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             ErrorView(
               message: l10n.resolveError(state.errorMessage),
               onRetry: () =>
@@ -54,21 +54,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ),
           ],
           if (state.summary != null) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _buildStatsGrid(context, state.summary!),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _EffectivenessCard(summary: state.summary!),
             if (state.summary!.currentPlanId == null) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               EmptyState(
                 icon: Icons.flag_outlined,
                 title: l10n.dashboardCurrentPlanEmptyTitle,
                 message: l10n.dashboardCurrentPlanEmptyDescription,
               ),
             ] else ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _DetailedStatsCard(summary: state.summary!),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _CurrentPlanCard(
                 summary: state.summary!,
                 expandedDayId: _expandedDayId,
@@ -93,9 +93,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 1.3,
+      crossAxisSpacing: 8,
+      mainAxisSpacing: 8,
+      childAspectRatio: 2.05,
       children: [
         _StatCard(
           label: l10n.dashboardStatsPlanned,
@@ -136,7 +136,7 @@ class _DashboardHeader extends ConsumerWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -149,12 +149,12 @@ class _DashboardHeader extends ConsumerWidget {
                 letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Text(
               l10n.dashboardHeaderTitle,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 14),
             DropdownButtonFormField<int?>(
               isExpanded: true,
               value: state.selectedPlanId,
@@ -203,7 +203,7 @@ class _EffectivenessCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -216,12 +216,12 @@ class _EffectivenessCard extends StatelessWidget {
                 letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 10),
             Text(
               '${summary.completionRate.toStringAsFixed(1)}%',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             ClipRRect(
               borderRadius: BorderRadius.circular(999),
               child: LinearProgressIndicator(
@@ -306,7 +306,7 @@ class _DetailedStatsCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -319,7 +319,7 @@ class _DetailedStatsCard extends StatelessWidget {
                 letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             LayoutBuilder(
               builder: (context, constraints) {
                 final crossAxisCount = constraints.maxWidth < 260 ? 1 : 2;
@@ -330,9 +330,9 @@ class _DetailedStatsCard extends StatelessWidget {
                   itemCount: cards.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    mainAxisExtent: crossAxisCount == 1 ? 116 : 132,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    mainAxisExtent: crossAxisCount == 1 ? 78 : 86,
                   ),
                   itemBuilder: (context, index) => cards[index],
                 );
@@ -362,7 +362,7 @@ class _CurrentPlanCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -375,7 +375,7 @@ class _CurrentPlanCard extends StatelessWidget {
                 letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Text(
               summary.currentPlanName ?? '-',
               style: Theme.of(context).textTheme.titleLarge,
@@ -394,7 +394,7 @@ class _CurrentPlanCard extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             if (summary.trainingDays.isEmpty)
               EmptyState(
                 icon: Icons.calendar_month_outlined,
@@ -408,7 +408,7 @@ class _CurrentPlanCard extends StatelessWidget {
                   expanded: expandedDayId == _dayKey(day),
                   onToggle: () => onToggleDay(day),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
               ],
           ],
         ),
@@ -507,7 +507,7 @@ class _TrainingDayCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           onTap: onToggle,
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -522,11 +522,11 @@ class _TrainingDayCard extends StatelessWidget {
                             day.title,
                             style: const TextStyle(
                               color: AppColors.text,
-                              fontSize: 17,
+                              fontSize: 16,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 4),
                           Text(
                             '${_formatDate(day.scheduledDate)} • ${activityTypeLabel(context, day.activityType)}',
                             style: const TextStyle(color: AppColors.muted),
@@ -559,7 +559,7 @@ class _TrainingDayCard extends StatelessWidget {
                       : CrossFadeState.showFirst,
                   firstChild: const SizedBox.shrink(),
                   secondChild: Padding(
-                    padding: const EdgeInsets.only(top: 16),
+                    padding: const EdgeInsets.only(top: 12),
                     child: Column(
                       children: [
                         Row(
@@ -582,7 +582,7 @@ class _TrainingDayCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 8),
                         Row(
                           children: [
                             Expanded(
@@ -597,7 +597,7 @@ class _TrainingDayCard extends StatelessWidget {
                               ),
                             ),
                             if (day.matchedActivityId != null) ...[
-                              const SizedBox(width: 10),
+                              const SizedBox(width: 8),
                               Expanded(
                                 child: _OverviewCard(
                                   label: l10n.dashboardCompletedSection,
@@ -613,7 +613,7 @@ class _TrainingDayCard extends StatelessWidget {
                           ],
                         ),
                         if (day.matchedActivityId != null) ...[
-                          const SizedBox(height: 14),
+                          const SizedBox(height: 12),
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -624,11 +624,11 @@ class _TrainingDayCard extends StatelessWidget {
                           ),
                         ],
                         if (day.notes?.trim().isNotEmpty ?? false) ...[
-                          const SizedBox(height: 14),
+                          const SizedBox(height: 12),
                           _NoteBlock(notes: day.notes!),
                         ],
                         if (detailCards.isNotEmpty) ...[
-                          const SizedBox(height: 14),
+                          const SizedBox(height: 12),
                           _DetailMetricsGrid(cards: detailCards),
                         ],
                       ],
@@ -685,17 +685,18 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(label, style: Theme.of(context).textTheme.bodyLarge),
+            const SizedBox(height: 8),
             Text(
               value,
               style: TextStyle(
                 color: accentColor,
-                fontSize: 28,
+                fontSize: 20,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -716,17 +717,18 @@ class _MiniStatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(label, style: Theme.of(context).textTheme.bodyLarge),
-            const SizedBox(height: 8),
+            const SizedBox(height: 3),
             Text(
               value,
               style: const TextStyle(
                 color: AppColors.text,
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -783,7 +785,7 @@ class _OverviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
@@ -799,7 +801,7 @@ class _OverviewCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(
             primary,
             style: const TextStyle(
@@ -832,7 +834,7 @@ class _NoteBlock extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
@@ -848,7 +850,7 @@ class _NoteBlock extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(notes, style: const TextStyle(color: AppColors.text)),
         ],
       ),
@@ -871,7 +873,7 @@ class _DetailMetricsGrid extends StatelessWidget {
             children: [
               for (var i = 0; i < cards.length; i++) ...[
                 cards[i],
-                if (i < cards.length - 1) const SizedBox(height: 10),
+                if (i < cards.length - 1) const SizedBox(height: 8),
               ],
             ],
           );
@@ -887,7 +889,7 @@ class _DetailMetricsGrid extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: left),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 Expanded(child: right ?? const SizedBox.shrink()),
               ],
             ),
@@ -898,7 +900,7 @@ class _DetailMetricsGrid extends StatelessWidget {
           children: [
             for (var i = 0; i < rows.length; i++) ...[
               rows[i],
-              if (i < rows.length - 1) const SizedBox(height: 10),
+              if (i < rows.length - 1) const SizedBox(height: 8),
             ],
           ],
         );
@@ -916,7 +918,7 @@ class _DetailMetricCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
@@ -932,7 +934,7 @@ class _DetailMetricCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(
             value,
             style: const TextStyle(

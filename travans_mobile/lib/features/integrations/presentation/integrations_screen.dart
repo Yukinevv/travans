@@ -57,24 +57,24 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
     return RefreshIndicator(
       onRefresh: _loadStatus,
       child: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
         children: [
           Text(
             l10n.integrationsTitle,
             style: Theme.of(context).textTheme.headlineMedium,
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(
             l10n.integrationsSubtitle,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
           _buildConnectionCard(context),
           if (_syncResult != null) ...[
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
             _buildSyncResultCard(context),
           ],
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
           _buildActivitiesSection(context),
         ],
       ),
@@ -88,7 +88,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -101,12 +101,12 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                 letterSpacing: 1.3,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Text(
               l10n.integrationsConnectionTitle,
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 12,
@@ -124,7 +124,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                   Text('${l10n.integrationsAthleteId}: ${status!.athleteId}'),
               ],
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 14),
             if (!connected)
               ElevatedButton(
                 onPressed: _openStravaConnect,
@@ -140,21 +140,21 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                 ),
               ),
             if (status?.lastSyncAt != null) ...[
-              const SizedBox(height: 18),
+              const SizedBox(height: 14),
               Text(
                 '${l10n.integrationsLastSync}: ${_formatDateTime(status!.lastSyncAt)}',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],
             if (_errorMessage.isNotEmpty) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
                 _errorMessage,
                 style: const TextStyle(color: AppColors.danger, fontSize: 15),
               ),
             ],
             if (!connected) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
                 l10n.integrationsRedirectHint,
                 style: Theme.of(context).textTheme.bodyLarge,
@@ -172,7 +172,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -180,11 +180,11 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
               l10n.integrationsResultTitle,
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Text(
               '${l10n.integrationsImportedActivities}: ${result.importedActivities}',
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Text(
               '${l10n.integrationsMatchedDays}: ${result.matchedTrainingDays}',
             ),
@@ -199,7 +199,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -212,12 +212,12 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                 letterSpacing: 1.3,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Text(
               l10n.integrationsActivitiesTitle,
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 14),
             DropdownButtonFormField<ActivityType?>(
               value: _selectedActivityType,
               decoration: InputDecoration(hintText: l10n.integrationsFilterAll),
@@ -243,13 +243,13 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
             if (_activitiesLoading)
               const Center(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24),
+                  padding: EdgeInsets.symmetric(vertical: 18),
                   child: LoadingView(),
                 ),
               )
             else if (_activities.isEmpty)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   l10n.integrationsActivitiesEmpty,
                   style: Theme.of(context).textTheme.bodyLarge,
@@ -260,7 +260,7 @@ class _IntegrationsScreenState extends ConsumerState<IntegrationsScreen> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: _activities.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 14),
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final activity = _activities[index];
                   return _ActivityCard(
@@ -500,10 +500,10 @@ class _ActivityCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.surfaceStrong,
-          borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
           border: Border.all(color: AppColors.border),
         ),
         child: Column(
@@ -535,7 +535,7 @@ class _ActivityCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Text(
               activity.name,
               style: const TextStyle(
@@ -544,15 +544,15 @@ class _ActivityCard extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               '${formatDistanceKm(activity.distanceMeters)} / ${formatDurationShort(activity.movingTimeSeconds)}',
               style: const TextStyle(color: AppColors.text, fontSize: 16),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 10),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: activity.matchedToPlan
                     ? const Color(0xFFE6F0DE)
@@ -565,7 +565,7 @@ class _ActivityCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
-                      vertical: 6,
+                      vertical: 5,
                     ),
                     decoration: BoxDecoration(
                       color: activity.matchedToPlan
@@ -585,7 +585,7 @@ class _ActivityCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   Text(
                     activity.matchedToPlan
                         ? (activity.matchedTrainingDayTitle ?? '')
@@ -594,7 +594,7 @@ class _ActivityCard extends StatelessWidget {
                   ),
                   if (activity.matchedToPlan &&
                       (activity.matchedPlanName?.isNotEmpty ?? false)) ...[
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       activity.matchedPlanName!,
                       style: const TextStyle(

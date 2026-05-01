@@ -74,14 +74,14 @@ class AppScaffold extends ConsumerWidget {
         actions: [
           if (user != null)
             Padding(
-              padding: const EdgeInsets.only(right: 16),
+              padding: const EdgeInsets.only(right: 12),
               child: InkWell(
                 borderRadius: BorderRadius.circular(999),
                 onTap: () => context.go('/account'),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
+                    horizontal: 8,
+                    vertical: 4,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -126,7 +126,7 @@ class AppScaffold extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
                 child: Container(
-                  padding: const EdgeInsets.all(18),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceStrong,
                     borderRadius: BorderRadius.circular(24),
@@ -157,7 +157,7 @@ class AppScaffold extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       Text(
                         l10n.shellSignedInAs,
                         style: const TextStyle(
@@ -242,9 +242,9 @@ class AppScaffold extends ConsumerWidget {
                   },
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                 child: OutlinedButton.icon(
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -322,7 +322,7 @@ class _AvatarBubble extends StatelessWidget {
               .toUpperCase();
 
     return CircleAvatar(
-      radius: 18,
+      radius: 17,
       backgroundColor: AppColors.accent,
       foregroundColor: AppColors.white,
       child: Text(
@@ -351,6 +351,8 @@ class _DrawerNavTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: ListTile(
+        dense: true,
+        visualDensity: const VisualDensity(horizontal: 0, vertical: -1),
         leading: Icon(icon, color: selected ? AppColors.accent : null),
         selected: selected,
         selectedTileColor: AppColors.surfaceStrong,

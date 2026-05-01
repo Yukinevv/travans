@@ -74,7 +74,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     if (user == null) {
       return Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: ErrorView(
           message: l10n.resolveError(
             authState.errorMessage,
@@ -93,11 +93,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final isGoogleManaged = user.authProvider == 'GOOGLE';
 
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       children: [
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -110,7 +110,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     letterSpacing: 1.2,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 Text(
                   l10n.accountHeaderTitle,
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -129,7 +129,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         const SizedBox(height: 16),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -141,7 +141,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       isLoading: _avatarSubmitting,
                       onTap: _avatarSubmitting ? null : _pickAndUploadAvatar,
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,9 +150,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             l10n.helloUser(user.displayName),
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 4),
                           Text(user.email),
-                          const SizedBox(height: 14),
+                          const SizedBox(height: 10),
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
@@ -172,7 +172,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 14),
                 Text(
                   l10n.accountProfileAvatarHint,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -180,7 +180,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   ),
                 ),
                 if (_avatarError != null) ...[
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _InlineMessage(
                     message: l10n.resolveError(
                       _avatarError,
@@ -190,7 +190,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   ),
                 ],
                 if (_avatarSubmitting) ...[
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   _InlineMessage(
                     message: l10n.accountProfileAvatarUploading,
                     color: AppColors.accentDark,
@@ -203,7 +203,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         const SizedBox(height: 16),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(20),
             child: Form(
               key: _profileFormKey,
               child: Column(
@@ -213,14 +213,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     l10n.accountSectionProfile,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     l10n.accountProfileDescription,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: AppColors.muted,
                     ),
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 14),
                   TextFormField(
                     controller: _displayNameController,
                     decoration: InputDecoration(labelText: l10n.displayName),
@@ -231,7 +231,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -249,7 +249,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     },
                   ),
                   if (_profileError != null) ...[
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     _InlineMessage(
                       message: l10n.resolveError(
                         _profileError,
@@ -259,13 +259,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     ),
                   ],
                   if (_profileSuccess != null) ...[
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     _InlineMessage(
                       message: _profileSuccess!,
                       color: AppColors.success,
                     ),
                   ],
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 14),
                   PrimaryButton(
                     label: l10n.accountProfileSave,
                     isLoading: _profileSubmitting,
@@ -279,7 +279,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         const SizedBox(height: 16),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(20),
             child: Form(
               key: _passwordFormKey,
               child: Column(
@@ -289,7 +289,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     l10n.accountSectionSecurity,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     isGoogleManaged
                         ? l10n.accountSecurityGoogleManaged
@@ -299,7 +299,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     ),
                   ),
                   if (!isGoogleManaged) ...[
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 14),
                     TextFormField(
                       controller: _currentPasswordController,
                       obscureText: true,
@@ -316,7 +316,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     TextFormField(
                       controller: _newPasswordController,
                       obscureText: true,
@@ -333,7 +333,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                     TextFormField(
                       controller: _repeatPasswordController,
                       obscureText: true,
@@ -351,7 +351,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       },
                     ),
                     if (_passwordError != null) ...[
-                      const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                       _InlineMessage(
                         message: l10n.resolveError(
                           _passwordError,
@@ -361,13 +361,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       ),
                     ],
                     if (_passwordSuccess != null) ...[
-                      const SizedBox(height: 14),
+                    const SizedBox(height: 12),
                       _InlineMessage(
                         message: _passwordSuccess!,
                         color: AppColors.success,
                       ),
                     ],
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 14),
                     PrimaryButton(
                       label: l10n.accountSecurityChangePassword,
                       isLoading: _passwordSubmitting,
@@ -382,7 +382,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         const SizedBox(height: 16),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -410,7 +410,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         const SizedBox(height: 16),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -685,7 +685,7 @@ class _AvatarButton extends StatelessWidget {
           alignment: Alignment.bottomRight,
           children: [
             CircleAvatar(
-              radius: 38,
+              radius: 34,
               backgroundColor: AppColors.accent.withValues(alpha: 0.16),
               backgroundImage: user.avatarUrl != null && user.avatarUrl!.isNotEmpty
                   ? NetworkImage(user.avatarUrl!)
@@ -703,8 +703,8 @@ class _AvatarButton extends StatelessWidget {
             ),
             if (!isLoading)
               Container(
-                width: 28,
-                height: 28,
+                width: 26,
+                height: 26,
                 decoration: BoxDecoration(
                   color: AppColors.accent,
                   borderRadius: BorderRadius.circular(14),
@@ -712,7 +712,7 @@ class _AvatarButton extends StatelessWidget {
                 ),
                 child: const Icon(
                   Icons.edit_rounded,
-                  size: 16,
+                  size: 14,
                   color: AppColors.white,
                 ),
               ),
@@ -733,7 +733,7 @@ class _InlineMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16),
