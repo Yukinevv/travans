@@ -79,211 +79,212 @@ class _PlanEditorScreenState extends State<PlanEditorScreen> {
 
     return Form(
       key: _formKey,
-      child: ListView(
-        padding: const EdgeInsets.all(20),
+      child: Stack(
         children: [
-          _EditorHeader(isEditMode: widget.isEditMode),
-          if (_errorMessage.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            _EditorErrorBanner(message: l10n.resolveError(_errorMessage)),
-          ],
-          if (!widget.isEditMode) ...[
-            const SizedBox(height: 16),
-            _ImportCard(
-              fileName: _importedFileName,
-              importLoading: _importLoading,
-              preview: _importPreview,
-              onPickFile: _pickJsonFile,
-              onApplyImport: _importPreview == null ? null : _applyImportPreview,
-            ),
-          ],
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.plansEditorSectionPlan.toUpperCase(),
-                    style: const TextStyle(
-                      color: AppColors.accentDark,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(labelText: l10n.plansEditorName),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return l10n.requiredField;
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 14),
-                  TextFormField(
-                    controller: _descriptionController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      labelText: l10n.plansEditorDescription,
-                      alignLabelWithHint: true,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  _DatePickerField(
-                    label: l10n.plansEditorStartDate,
-                    value: _startDate,
-                    required: true,
-                    onSelected: (date) {
-                      setState(() {
-                        _startDate = date;
-                        _stravaEvaluationStartDate ??= date;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 14),
-                  _DatePickerField(
-                    label: l10n.plansEditorStravaStartDate,
-                    value: _stravaEvaluationStartDate,
-                    onSelected: (date) {
-                      setState(() {
-                        _stravaEvaluationStartDate = date;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 14),
-                  DropdownButtonFormField<ActivityType>(
-                    initialValue: _planType,
-                    decoration: InputDecoration(labelText: l10n.plansEditorPlanType),
-                    items: ActivityType.values
-                        .map(
-                          (type) => DropdownMenuItem<ActivityType>(
-                            value: type,
-                            child: Text(activityTypeLabel(context, type)),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      if (value == null) {
-                        return;
-                      }
-                      setState(() {
-                        _planType = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l10n.plansEditorSectionDays.toUpperCase(),
-                              style: const TextStyle(
-                                color: AppColors.accentDark,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              l10n.plansEditorDaysHint,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      FilledButton.icon(
-                        onPressed: _addDay,
-                        icon: const Icon(Icons.add_rounded),
-                        label: Text(l10n.plansEditorAddDay),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  if (_days.isEmpty)
-                    Text(
-                      l10n.plansEditorAtLeastOneDay,
-                      style: const TextStyle(color: AppColors.danger),
-                    )
-                  else
-                    for (var index = 0; index < _days.length; index++) ...[
-                      _TrainingDayEditorCard(
-                        key: ValueKey(_days[index].localId),
-                        index: index,
-                        day: _days[index],
-                        onRemove: _days.length == 1
-                            ? null
-                            : () => _removeDay(index),
-                        onMoveUp: index == 0 ? null : () => _moveDay(index, -1),
-                        onMoveDown: index == _days.length - 1
-                            ? null
-                            : () => _moveDay(index, 1),
-                        onDateSelected: (date) {
-                          setState(() {
-                            _days[index].scheduledDate = date;
-                          });
-                        },
-                        onActivityChanged: (type) {
-                          setState(() {
-                            _days[index].activityType = type;
-                          });
-                        },
-                      ),
-                      if (index < _days.length - 1) const SizedBox(height: 12),
-                    ],
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 18),
-          Row(
+          ListView(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 108),
             children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _saving ? null : () => context.pop(),
-                  child: Text(l10n.plansCancel),
+              _EditorHeader(isEditMode: widget.isEditMode),
+              if (_errorMessage.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                _EditorErrorBanner(message: l10n.resolveError(_errorMessage)),
+              ],
+              if (!widget.isEditMode) ...[
+                const SizedBox(height: 16),
+                _ImportCard(
+                  fileName: _importedFileName,
+                  importLoading: _importLoading,
+                  preview: _importPreview,
+                  onPickFile: _pickJsonFile,
+                  onApplyImport: _importPreview == null ? null : _applyImportPreview,
+                ),
+              ],
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.plansEditorSectionPlan.toUpperCase(),
+                        style: const TextStyle(
+                          color: AppColors.accentDark,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(labelText: l10n.plansEditorName),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return l10n.requiredField;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      TextFormField(
+                        controller: _descriptionController,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          labelText: l10n.plansEditorDescription,
+                          alignLabelWithHint: true,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      _DatePickerField(
+                        label: l10n.plansEditorStartDate,
+                        value: _startDate,
+                        required: true,
+                        onSelected: (date) {
+                          setState(() {
+                            _startDate = date;
+                            _stravaEvaluationStartDate ??= date;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      _DatePickerField(
+                        label: l10n.plansEditorStravaStartDate,
+                        value: _stravaEvaluationStartDate,
+                        onSelected: (date) {
+                          setState(() {
+                            _stravaEvaluationStartDate = date;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      DropdownButtonFormField<ActivityType>(
+                        initialValue: _planType,
+                        decoration: InputDecoration(labelText: l10n.plansEditorPlanType),
+                        items: ActivityType.values
+                            .map(
+                              (type) => DropdownMenuItem<ActivityType>(
+                                value: type,
+                                child: Text(activityTypeLabel(context, type)),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() {
+                            _planType = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _saving ? null : _submit,
-                  child: _saving
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Text(
-                          widget.isEditMode
-                              ? l10n.plansSaveChanges
-                              : l10n.plansSavePlan,
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.plansEditorSectionDays.toUpperCase(),
+                        style: const TextStyle(
+                          color: AppColors.accentDark,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.2,
                         ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.plansEditorDaysHint,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      const SizedBox(height: 16),
+                      if (_days.isEmpty)
+                        Text(
+                          l10n.plansEditorAtLeastOneDay,
+                          style: const TextStyle(color: AppColors.danger),
+                        )
+                      else
+                        for (var index = 0; index < _days.length; index++) ...[
+                          _TrainingDayEditorCard(
+                            key: ValueKey(_days[index].localId),
+                            index: index,
+                            day: _days[index],
+                            onRemove: _days.length == 1
+                                ? null
+                                : () => _removeDay(index),
+                            onMoveUp: index == 0 ? null : () => _moveDay(index, -1),
+                            onMoveDown: index == _days.length - 1
+                                ? null
+                                : () => _moveDay(index, 1),
+                            onDateSelected: (date) {
+                              setState(() {
+                                _days[index].scheduledDate = date;
+                              });
+                            },
+                            onActivityChanged: (type) {
+                              setState(() {
+                                _days[index].activityType = type;
+                              });
+                            },
+                          ),
+                          if (index < _days.length - 1) const SizedBox(height: 12),
+                        ],
+                    ],
+                  ),
                 ),
+              ),
+              const SizedBox(height: 18),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _saving ? null : () => context.pop(),
+                      child: Text(l10n.plansCancel),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _saving ? null : _submit,
+                      child: _saving
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              widget.isEditMode
+                                  ? l10n.plansSaveChanges
+                                  : l10n.plansSavePlan,
+                            ),
+                    ),
+                  ),
+                ],
               ),
             ],
+          ),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: SafeArea(
+              top: false,
+              child: FloatingActionButton.extended(
+                onPressed: _addDay,
+                backgroundColor: AppColors.accent,
+                foregroundColor: AppColors.white,
+                icon: const Icon(Icons.add_rounded),
+                label: Text(l10n.plansEditorAddDay),
+              ),
+            ),
           ),
         ],
       ),

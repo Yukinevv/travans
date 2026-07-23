@@ -10,7 +10,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -36,7 +35,7 @@ public class AvatarStorageService {
             Path storageDirectory = resolveStorageDirectory();
             Files.createDirectories(storageDirectory);
 
-            String extension = resolveExtension(file.getOriginalFilename(), file.getContentType());
+            String extension = resolveExtension(file.getContentType());
             String filename = UUID.randomUUID() + extension;
             Path target = storageDirectory.resolve(filename).normalize();
 
@@ -85,12 +84,10 @@ public class AvatarStorageService {
         }
     }
 
-    private String resolveExtension(String originalFilename, String contentType) {
-        String filenameExtension = StringUtils.getFilenameExtension(originalFilename);
-        if (filenameExtension != null && !filenameExtension.isBlank()) {
-            return "." + filenameExtension.toLowerCase();
-        }
-
+    private String resolveExtension(String contentType) {
+        // Rozszerzenie wyprowadzamy wylacznie ze zweryfikowanego (whitelist) typu MIME,
+        // a nie z nazwy pliku od uzytkownika. Dzieki temu nie da sie zapisac np. pliku
+        // .html/.svg, ktory po wystawieniu jako statyczny zasob wykonalby sie w przegladarce (XSS).
         return switch (contentType) {
             case "image/jpeg" -> ".jpg";
             case "image/png" -> ".png";

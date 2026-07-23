@@ -1,6 +1,15 @@
 # Node
 frontend/node_modules/
 frontend/dist/
+frontend-playground/
+frontend-quiz/
+plan_generator/
+
+# Osobne repo (nie nalezy do travansa)
+cv/
+
+# Dokumentacja projektow rozszerzen VS Code (lokalne notatki)
+docs/vscode-extension-projects/
 
 # Angular
 frontend/.angular/
